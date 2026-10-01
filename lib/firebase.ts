@@ -3,11 +3,12 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import {
   GoogleAuthProvider,
+  browserLocalPersistence,
   getAuth,
   onAuthStateChanged,
+  setPersistence,
   signInAnonymously,
   signInWithPopup,
-  signInWithRedirect,
   signOut,
   type User,
 } from "firebase/auth";
@@ -48,24 +49,12 @@ export async function signInTeacherWithGoogle(): Promise<User | null> {
   if (services.auth.currentUser && !services.auth.currentUser.isAnonymous) return services.auth.currentUser;
   if (services.auth.currentUser?.isAnonymous) await signOut(services.auth);
 
+  await setPersistence(services.auth, browserLocalPersistence);
   const provider = new GoogleAuthProvider();
-  const isMobile = typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  provider.setCustomParameters({ prompt: "select_account" });
 
-  if (isMobile) {
-    await signInWithRedirect(services.auth, provider);
-    return null;
-  }
-
-  try {
-    const credential = await signInWithPopup(services.auth, provider);
-    return credential.user;
-  } catch (error: any) {
-    if (["auth/popup-blocked", "auth/operation-not-supported-in-this-environment", "auth/web-storage-unsupported"].includes(error?.code)) {
-      await signInWithRedirect(services.auth, provider);
-      return null;
-    }
-    throw error;
-  }
+  const credential = await signInWithPopup(services.auth, provider);
+  return credential.user;
 }
 
 export function watchFirebaseAuth(callback: (user: User | null) => void) {
