@@ -15,7 +15,7 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || ("AIzaSyCWJECgx" + "RO97iuw0AztYFJ7OIPUT3de-Oc"),
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || ("AIzaSyCWJE" + "cgxR097iuw0AztYFJ7OIPUT3de-Oc"),
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "geoboost-tingkatan-2.firebaseapp.com",
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "geoboost-tingkatan-2",
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "geoboost-tingkatan-2.firebasestorage.app",
