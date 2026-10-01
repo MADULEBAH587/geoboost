@@ -1,4 +1,4 @@
-const CACHE = 'geoboost-v1.1';
+const CACHE = 'geoboost-v1.1.1';
 const CORE = ['/', '/murid', '/pantas', '/uasa', '/pemulihan', '/manifest.webmanifest', '/geoboost-icon.svg', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', event => {
