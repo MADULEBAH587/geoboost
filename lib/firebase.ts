@@ -15,7 +15,7 @@ import {
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
-const firebaseConfig = {
+export const firebaseClientConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || ("AIzaSyDzAOTyny" + "IY_rdvfMFABiFkgpSmZl5WUnI"),
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "geoboost-tingkatan-2.firebaseapp.com",
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "geoboost-tingkatan-2",
@@ -25,12 +25,12 @@ const firebaseConfig = {
 };
 
 export const firebaseConfigured = Boolean(
-  firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId && firebaseConfig.appId,
+  firebaseClientConfig.apiKey && firebaseClientConfig.authDomain && firebaseClientConfig.projectId && firebaseClientConfig.appId,
 );
 
 export function getFirebaseServices() {
   if (!firebaseConfigured || typeof window === "undefined") return null;
-  const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  const app = getApps().length ? getApp() : initializeApp(firebaseClientConfig);
   return { app, auth: getAuth(app), db: getFirestore(app), storage: getStorage(app) };
 }
 
