@@ -114,7 +114,8 @@ export default function TeacherPage() {
           <span className={`source-pill ${source}`}>{source === "firebase" ? "☁️ Firebase" : "📱 Peranti"}</span>
           {firebaseConfigured ? (source === "firebase" ? <><b>{teacherEmail}</b><button onClick={disconnectTeacher}>Log keluar</button></> : <button className="teacher-login" onClick={connectTeacher}>Masuk Google Guru</button>) : <span>Firebase env belum diisi</span>}
         </div>
-        {message ? <div className="teacher-message">{message}{teacherUid && source !== "firebase" ? <><br/><small>UID guru: <code>{teacherUid}</code> · Cipta dokumen <b>teachers/{teacherUid}</b> di Firestore untuk beri akses.</small></> : null}</div> : null}
+        {message ? <div className="teacher-message">{message}</div> : null}
+        {teacherUid && source !== "firebase" ? <div className="teacher-bootstrap"><div><small>UID UNTUK AKTIFKAN ADMIN</small><code>{teacherUid}</code><span>{teacherEmail || "Akaun Google guru"}</span></div><button onClick={async()=>{await navigator.clipboard.writeText(teacherUid); setMessage("UID guru telah disalin.");}}>Salin UID</button></div> : null}
       </section>
 
       <section className="teacher-content">
