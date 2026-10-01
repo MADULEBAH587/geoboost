@@ -91,7 +91,7 @@ export default function StudentLoginPage() {
           <button className="primary full" type="submit" disabled={saving}>{saving ? "Menyimpan..." : "Masuk GeoBoost →"}</button>
         </form>
         {hasExisting ? <button className="student-logout" type="button" onClick={logoutStudent}>Keluar murid ini / guna akaun lain</button> : null}
-        <small className="auth-note">v1.0 · {firebaseConfigured ? "Firebase dikesan" : "Mod peranti sehingga Firebase env diisi"}</small>
+        <small className="auth-note">v1.1 · {firebaseConfigured ? "Firebase dikesan" : "Mod peranti sehingga Firebase env diisi"}</small>
         {note ? <small className="auth-note">{note}</small> : null}
       </section>
     </main>
