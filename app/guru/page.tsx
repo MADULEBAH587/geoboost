@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { chapters } from "@/lib/data";
 import { questions } from "@/lib/questions";
 import { AttemptRecord, getLocalAttempts, getRemoteAttempts } from "@/lib/repository";
-import { firebaseConfigured, getFirebaseServices, signInTeacherWithGoogle, signOutFirebaseUser } from "@/lib/firebase";
+import { firebaseConfigured, getFirebaseServices, signInTeacherWithGoogle, signOutFirebaseUser, watchFirebaseAuth } from "@/lib/firebase";
 import { ClassRecord, listClasses, removeClass, saveClass } from "@/lib/classroom";
 
 type Source = "local" | "firebase";
@@ -34,24 +34,29 @@ export default function TeacherPage() {
 
   useEffect(() => {
     setAttempts(getLocalAttempts().filter(a=>a.studentId!=="demo"));
-    const services = getFirebaseServices();
-    const user = services?.auth.currentUser;
-    if (user && !user.isAnonymous) { setTeacherEmail(user.email || "Guru"); setTeacherUid(user.uid); }
+    const stop = watchFirebaseAuth((user) => {
+      if (user && !user.isAnonymous) {
+        setTeacherEmail(user.email || "Guru");
+        setTeacherUid(user.uid);
+      }
+    });
+    return stop;
   }, []);
 
   async function connectTeacher() {
     setMessage("Menyambung ke Firebase...");
     try {
       const user = await signInTeacherWithGoogle();
-      if (!user) { setMessage("Firebase belum dikonfigurasi."); return; }
+      if (!user) { setMessage("Log masuk Google sedang dibuka. Selepas kembali ke GeoBoost, UID guru akan dipaparkan."); return; }
       setTeacherEmail(user.email || "Guru"); setTeacherUid(user.uid);
       const remote = await getRemoteAttempts();
       const remoteClasses = await listClasses();
       setManagedClasses(remoteClasses);
       setAttempts(remote); setSource("firebase"); setMessage(`Berjaya memuat ${remote.length} rekod pusat.`);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      setMessage("Akaun ini belum diberi akses guru dalam koleksi teachers, atau Firestore belum disediakan.");
+      const detail = error?.code ? ` (${error.code})` : "";
+      setMessage(`Akaun ini belum diberi akses guru dalam koleksi teachers, atau Firestore belum disediakan.${detail}`);
     }
   }
 
