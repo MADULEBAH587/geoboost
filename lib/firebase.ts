@@ -20,7 +20,7 @@ const firebaseConfig = {
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "geoboost-tingkatan-2",
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "geoboost-tingkatan-2.firebasestorage.app",
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "28554239431",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:28554239431:web:1d4e54e4591f7198244de2",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:28554239431:web:db0974d2b9658762244de2",
 };
 
 export const firebaseConfigured = Boolean(
