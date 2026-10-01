@@ -1,0 +1,95 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isTeacher() {
+      return signedIn() && exists(/databases/$(database)/documents/teachers/$(request.auth.uid));
+    }
+    function isStudent(studentId) {
+      return signedIn() && request.auth.uid == studentId;
+    }
+    function validStudentProfile() {
+      return request.resource.data.keys().hasOnly([
+        'name', 'className', 'classCode', 'localStudentId', 'updatedAt'
+      ])
+      && request.resource.data.name is string
+      && request.resource.data.className is string
+      && request.resource.data.classCode is string
+      && request.resource.data.localStudentId is string;
+    }
+    function validAttempt() {
+      return request.resource.data.keys().hasOnly([
+        'id', 'studentId', 'localStudentId', 'studentName', 'className', 'classCode',
+        'chapter', 'label', 'mode', 'score', 'total', 'percentage', 'durationSeconds',
+        'wrongSubtopics', 'responses', 'completedAt'
+      ])
+      && request.resource.data.studentId == request.auth.uid
+      && request.resource.data.studentName is string
+      && request.resource.data.className is string
+      && request.resource.data.chapter is int
+      && request.resource.data.score is int
+      && request.resource.data.total is int
+      && request.resource.data.percentage is int
+      && request.resource.data.durationSeconds is int
+      && request.resource.data.wrongSubtopics is list
+      && request.resource.data.responses is list
+      && request.resource.data.score >= 0
+      && request.resource.data.total > 0
+      && request.resource.data.score <= request.resource.data.total
+      && request.resource.data.percentage >= 0
+      && request.resource.data.percentage <= 100;
+    }
+
+    match /chapters/{chapterId} {
+      allow read: if true;
+      allow write: if isTeacher();
+    }
+
+    match /questions/{questionId} {
+      allow read: if true;
+      allow write: if isTeacher();
+    }
+
+    match /classes/{classId} {
+      allow get: if signedIn();
+      allow list, create, update, delete: if isTeacher();
+    }
+
+    match /students/{studentId} {
+      allow read: if isTeacher() || isStudent(studentId);
+      allow create, update: if isStudent(studentId) && validStudentProfile();
+      allow delete: if isTeacher();
+    }
+
+    match /attempts/{attemptId} {
+      allow create: if signedIn() && validAttempt();
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow update: if signedIn()
+        && resource.data.studentId == request.auth.uid
+        && validAttempt();
+      allow delete: if isTeacher();
+    }
+
+    match /responses/{responseId} {
+      allow create: if signedIn() && request.resource.data.studentId == request.auth.uid;
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow update: if false;
+      allow delete: if isTeacher();
+    }
+
+    match /progress/{studentId} {
+      allow read: if isTeacher() || isStudent(studentId);
+      allow write: if isTeacher() || isStudent(studentId);
+    }
+
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isTeacher();
+    }
+
+    match /teachers/{teacherId} {
+      allow read: if signedIn() && request.auth.uid == teacherId;
+      allow write: if false;
+    }
+  }
+}

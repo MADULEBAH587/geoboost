@@ -1,0 +1,30 @@
+{
+  "name": "GeoBoost Tingkatan 2",
+  "short_name": "GeoBoost",
+  "description": "Latihan Pengukuhan Interaktif Geografi Tingkatan 2 · By Cikgu Zulhasif",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5faf8",
+  "theme_color": "#0f766e",
+  "lang": "ms",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/geoboost-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

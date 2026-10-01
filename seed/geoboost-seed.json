@@ -1,0 +1,131 @@
+{
+  "chapters": [
+    {
+      "id": 1,
+      "title": "Skala dan Jarak",
+      "questionBank": 32,
+      "active": true,
+      "sessionSize": 20,
+      "mix": {
+        "easy": 7,
+        "medium": 9,
+        "kbat": 4
+      }
+    },
+    {
+      "id": 2,
+      "title": "Peta Topografi",
+      "questionBank": 41,
+      "active": true,
+      "sessionSize": 20,
+      "mix": {
+        "easy": 7,
+        "medium": 9,
+        "kbat": 4
+      }
+    },
+    {
+      "id": 3,
+      "title": "Pengaruh Pergerakan Bumi terhadap Cuaca dan Iklim",
+      "questionBank": 28,
+      "active": true,
+      "sessionSize": 20,
+      "mix": {
+        "easy": 7,
+        "medium": 9,
+        "kbat": 4
+      }
+    },
+    {
+      "id": 4,
+      "title": "Cuaca dan Iklim di Malaysia",
+      "questionBank": 38,
+      "active": true,
+      "sessionSize": 20,
+      "mix": {
+        "easy": 7,
+        "medium": 9,
+        "kbat": 4
+      }
+    },
+    {
+      "id": 5,
+      "title": "Pengangkutan di Malaysia",
+      "questionBank": 60,
+      "active": true,
+      "sessionSize": 20,
+      "mix": {
+        "easy": 7,
+        "medium": 9,
+        "kbat": 4
+      }
+    },
+    {
+      "id": 6,
+      "title": "Telekomunikasi di Malaysia",
+      "questionBank": 38,
+      "active": true,
+      "sessionSize": 20,
+      "mix": {
+        "easy": 7,
+        "medium": 9,
+        "kbat": 4
+      }
+    },
+    {
+      "id": 7,
+      "title": "Kepelbagaian Iklim dan Pengaruhnya terhadap Kegiatan Manusia di Asia",
+      "questionBank": 48,
+      "active": true,
+      "sessionSize": 20,
+      "mix": {
+        "easy": 7,
+        "medium": 9,
+        "kbat": 4
+      }
+    },
+    {
+      "id": 8,
+      "title": "Jenis dan Kemajuan Pengangkutan di Asia",
+      "questionBank": 33,
+      "active": true,
+      "sessionSize": 20,
+      "mix": {
+        "easy": 7,
+        "medium": 9,
+        "kbat": 4
+      }
+    },
+    {
+      "id": 9,
+      "title": "Pemanasan Global",
+      "questionBank": 35,
+      "active": true,
+      "sessionSize": 20,
+      "mix": {
+        "easy": 7,
+        "medium": 9,
+        "kbat": 4
+      }
+    },
+    {
+      "id": 10,
+      "title": "Teknologi Hijau",
+      "questionBank": 37,
+      "active": true,
+      "sessionSize": 20,
+      "mix": {
+        "easy": 7,
+        "medium": 9,
+        "kbat": 4
+      }
+    }
+  ],
+  "settings": {
+    "appName": "GeoBoost Tingkatan 2",
+    "tagline": "Latihan Pengukuhan Interaktif Geografi",
+    "byline": "By Cikgu Zulhasif",
+    "version": "0.1.0",
+    "questionBankTotal": 390
+  }
+}

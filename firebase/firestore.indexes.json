@@ -1,0 +1,33 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "questions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath":"chapter","order":"ASCENDING"},
+        {"fieldPath":"subtopic","order":"ASCENDING"},
+        {"fieldPath":"difficulty","order":"ASCENDING"},
+        {"fieldPath":"active","order":"ASCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "attempts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath":"studentId","order":"ASCENDING"},
+        {"fieldPath":"chapterId","order":"ASCENDING"},
+        {"fieldPath":"completedAt","order":"DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "attempts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath":"classId","order":"ASCENDING"},
+        {"fieldPath":"chapterId","order":"ASCENDING"},
+        {"fieldPath":"completedAt","order":"DESCENDING"}
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

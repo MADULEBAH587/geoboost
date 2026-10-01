@@ -1,0 +1,6238 @@
+[
+  {
+    "id": "GB01-001",
+    "chapter": 1,
+    "subtopic": "1.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Apakah maksud skala pada peta?",
+    "options": [
+      "Jarak antara dua bandar",
+      "Nisbah jarak pada peta dengan jarak sebenar",
+      "Masa perjalanan",
+      "Arah sesuatu tempat"
+    ],
+    "answer": "Nisbah jarak pada peta dengan jarak sebenar",
+    "explanation": "Skala membandingkan jarak pada peta dengan jarak sebenar di permukaan bumi."
+  },
+  {
+    "id": "GB01-002",
+    "chapter": 1,
+    "subtopic": "1.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Yang manakah merupakan skala penyata?",
+    "options": [
+      "1 : 100 000",
+      "0—1—2—3 km",
+      "1 cm mewakili 1 km",
+      "100 000 cm"
+    ],
+    "answer": "1 cm mewakili 1 km",
+    "explanation": "Skala penyata dinyatakan dalam bentuk ayat atau pernyataan."
+  },
+  {
+    "id": "GB01-003",
+    "chapter": 1,
+    "subtopic": "1.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "1 : 200 000 ialah contoh...",
+    "options": [
+      "Skala lurus",
+      "Pecahan wakilan",
+      "Jarak relatif",
+      "Skala masa"
+    ],
+    "answer": "Pecahan wakilan",
+    "explanation": "Pecahan wakilan dinyatakan dalam bentuk nisbah."
+  },
+  {
+    "id": "GB01-004",
+    "chapter": 1,
+    "subtopic": "1.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Skala 1 : 100 000 bermaksud 1 cm pada peta bersamaan...",
+    "options": [
+      "100 m",
+      "500 m",
+      "1 km",
+      "10 km"
+    ],
+    "answer": "1 km",
+    "explanation": "100 000 cm bersamaan 1 km."
+  },
+  {
+    "id": "GB01-005",
+    "chapter": 1,
+    "subtopic": "1.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Antara skala 1 : 30 000 dan 1 : 300 000, yang manakah lebih besar?",
+    "options": [
+      "1 : 30 000",
+      "1 : 300 000",
+      "Kedua-duanya sama",
+      "Tidak dapat ditentukan"
+    ],
+    "answer": "1 : 30 000",
+    "explanation": "Penyebut yang lebih kecil menunjukkan skala yang lebih besar."
+  },
+  {
+    "id": "GB01-006",
+    "chapter": 1,
+    "subtopic": "1.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Jarak 12 km antara rumah Amir dengan sekolah ialah contoh...",
+    "options": [
+      "Jarak relatif",
+      "Jarak mutlak",
+      "Skala penyata",
+      "Pecahan wakilan"
+    ],
+    "answer": "Jarak mutlak",
+    "explanation": "Jarak mutlak dinyatakan dalam unit seperti meter atau kilometer."
+  },
+  {
+    "id": "GB01-007",
+    "chapter": 1,
+    "subtopic": "1.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Jarak relatif biasanya dinyatakan berdasarkan...",
+    "options": [
+      "Kos dan masa",
+      "Meter dan kilometer",
+      "Arah dan bearing",
+      "Latitud dan longitud"
+    ],
+    "answer": "Kos dan masa",
+    "explanation": "Jarak relatif berubah mengikut kos dan masa perjalanan."
+  },
+  {
+    "id": "GB01-008",
+    "chapter": 1,
+    "subtopic": "1.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Amin dan Mei tinggal 5 km dari sekolah. Amin mengambil 10 minit, Mei 25 minit. Mengapakah jarak relatif mereka berbeza?",
+    "options": [
+      "Jarak mutlak berubah",
+      "Cara atau keadaan perjalanan berbeza",
+      "Kilometer tidak tepat",
+      "Skala peta berubah"
+    ],
+    "answer": "Cara atau keadaan perjalanan berbeza",
+    "explanation": "Masa perjalanan boleh berbeza walaupun jarak mutlak sama."
+  },
+  {
+    "id": "GB01-009",
+    "chapter": 1,
+    "subtopic": "1.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Jarak pada peta ialah 7 cm. Skala 1 cm mewakili 2 km. Berapakah jarak sebenar?",
+    "options": [
+      "3.5 km",
+      "7 km",
+      "9 km",
+      "14 km"
+    ],
+    "answer": "14 km",
+    "explanation": "7 × 2 km = 14 km."
+  },
+  {
+    "id": "GB01-010",
+    "chapter": 1,
+    "subtopic": "1.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Alat paling sesuai untuk mengukur jarak lurus antara dua titik pada peta ialah...",
+    "options": [
+      "Benang",
+      "Pembaris",
+      "Termometer",
+      "Kompas"
+    ],
+    "answer": "Pembaris",
+    "explanation": "Pembaris sesuai untuk jarak lurus."
+  },
+  {
+    "id": "GB01-011",
+    "chapter": 1,
+    "subtopic": "1.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Skala 1 : 50 000. Jarak pada peta = 8 cm. Berapakah jarak sebenar?",
+    "options": [
+      "2 km",
+      "4 km",
+      "8 km",
+      "40 km"
+    ],
+    "answer": "4 km",
+    "explanation": "1 cm = 0.5 km, maka 8 cm = 4 km."
+  },
+  {
+    "id": "GB01-012",
+    "chapter": 1,
+    "subtopic": "1.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapakah sungai berliku lebih sesuai diukur menggunakan benang berbanding pembaris lurus?",
+    "options": [
+      "Benang lebih murah",
+      "Benang boleh mengikuti lengkungan sungai",
+      "Pembaris tidak mempunyai unit",
+      "Benang menunjukkan arah utara"
+    ],
+    "answer": "Benang boleh mengikuti lengkungan sungai",
+    "explanation": "Jarak melengkung perlu diikuti sepanjang bentuk sebenar laluan."
+  },
+  {
+    "id": "GB02-001",
+    "chapter": 2,
+    "subtopic": "2.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Apakah maksud peta topografi?",
+    "options": [
+      "Peta cuaca harian",
+      "Peta yang menggambarkan ciri pandang darat fizikal dan budaya",
+      "Peta sempadan politik sahaja",
+      "Peta taburan penduduk sahaja"
+    ],
+    "answer": "Peta yang menggambarkan ciri pandang darat fizikal dan budaya",
+    "explanation": "Peta topografi menunjukkan keadaan muka bumi serta ciri fizikal dan budaya sesuatu kawasan."
+  },
+  {
+    "id": "GB02-002",
+    "chapter": 2,
+    "subtopic": "2.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Antara berikut, yang manakah unsur penting peta topografi?",
+    "options": [
+      "Tajuk, petunjuk dan skala",
+      "Harga, tarikh dan warna",
+      "Nama murid dan kelas",
+      "Suhu dan tekanan udara"
+    ],
+    "answer": "Tajuk, petunjuk dan skala",
+    "explanation": "Peta topografi yang lengkap mempunyai tajuk, petunjuk dan skala."
+  },
+  {
+    "id": "GB02-003",
+    "chapter": 2,
+    "subtopic": "2.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Garisan grid yang dilukis secara menegak dikenali sebagai...",
+    "options": [
+      "Garisan utaraan",
+      "Garisan timuran",
+      "Garisan kontur",
+      "Garisan khatulistiwa"
+    ],
+    "answer": "Garisan timuran",
+    "explanation": "Garisan timuran dilukis menegak dan nilainya bertambah ke arah timur."
+  },
+  {
+    "id": "GB02-004",
+    "chapter": 2,
+    "subtopic": "2.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Garisan utaraan dilukis secara...",
+    "options": [
+      "Menegak",
+      "Melintang",
+      "Membulat",
+      "Serong"
+    ],
+    "answer": "Melintang",
+    "explanation": "Garisan utaraan ialah garisan grid melintang."
+  },
+  {
+    "id": "GB02-005",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Dalam rujukan grid, nilai yang dibaca dahulu ialah...",
+    "options": [
+      "Utaraan",
+      "Timuran",
+      "Ketinggian",
+      "Skala"
+    ],
+    "answer": "Timuran",
+    "explanation": "Rujukan grid dibaca timuran dahulu, kemudian utaraan."
+  },
+  {
+    "id": "GB02-006",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Rujukan grid 4 angka paling sesuai digunakan untuk menentukan...",
+    "options": [
+      "Sebuah sekolah",
+      "Sebuah masjid",
+      "Kawasan hutan",
+      "Sebuah jambatan"
+    ],
+    "answer": "Kawasan hutan",
+    "explanation": "Rujukan grid 4 angka sesuai untuk kawasan yang lebih luas dalam segi empat grid."
+  },
+  {
+    "id": "GB02-007",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Rujukan grid 6 angka digunakan untuk menentukan...",
+    "options": [
+      "Objek tertentu dengan lebih spesifik",
+      "Negeri dalam Malaysia",
+      "Benua di dunia",
+      "Arah mata angin"
+    ],
+    "answer": "Objek tertentu dengan lebih spesifik",
+    "explanation": "Rujukan grid 6 angka memberi kedudukan yang lebih tepat."
+  },
+  {
+    "id": "GB02-008",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Seorang murid menulis RG 5331 walaupun nilai timuran ialah 31 dan utaraan 53. Apakah kesalahannya?",
+    "options": [
+      "Tidak menggunakan skala",
+      "Membaca utaraan dahulu",
+      "Tidak menggunakan petunjuk",
+      "Tidak menulis unit km"
+    ],
+    "answer": "Membaca utaraan dahulu",
+    "explanation": "Urutan yang betul ialah timuran 31 diikuti utaraan 53, iaitu RG 3153."
+  },
+  {
+    "id": "GB02-009",
+    "chapter": 2,
+    "subtopic": "2.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Yang manakah ciri pandang darat fizikal?",
+    "options": [
+      "Sekolah",
+      "Jalan raya",
+      "Sungai",
+      "Masjid"
+    ],
+    "answer": "Sungai",
+    "explanation": "Sungai ialah ciri semula jadi."
+  },
+  {
+    "id": "GB02-010",
+    "chapter": 2,
+    "subtopic": "2.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tanah pamah lazimnya sesuai untuk...",
+    "options": [
+      "Petempatan, pengangkutan dan pertanian",
+      "Pembalakan sahaja",
+      "Perikanan laut dalam sahaja",
+      "Tiada kegiatan manusia"
+    ],
+    "answer": "Petempatan, pengangkutan dan pertanian",
+    "explanation": "Tanah pamah yang rata memudahkan pembangunan dan pertanian."
+  },
+  {
+    "id": "GB02-011",
+    "chapter": 2,
+    "subtopic": "2.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Petempatan yang tersusun sepanjang jalan raya dikenali sebagai pola...",
+    "options": [
+      "Berpusat",
+      "Berjajar",
+      "Berselerak",
+      "Bulatan"
+    ],
+    "answer": "Berjajar",
+    "explanation": "Petempatan berjajar berkembang sepanjang jalan atau sungai."
+  },
+  {
+    "id": "GB02-012",
+    "chapter": 2,
+    "subtopic": "2.5",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapakah kawasan tanah tinggi berhutan biasanya kurang padat petempatan?",
+    "options": [
+      "Sukar dibangunkan dan kurang mudah diakses",
+      "Terlalu banyak sekolah",
+      "Semua jalan terlalu lurus",
+      "Tiada hujan"
+    ],
+    "answer": "Sukar dibangunkan dan kurang mudah diakses",
+    "explanation": "Bentuk muka bumi yang curam dan hutan tebal meningkatkan kesukaran pembangunan."
+  },
+  {
+    "id": "GB03-001",
+    "chapter": 3,
+    "subtopic": "3.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Apakah dua cara pergerakan bumi?",
+    "options": [
+      "Putaran dan peredaran",
+      "Hakisan dan luluhawa",
+      "Pasang dan surut",
+      "Hujan dan angin"
+    ],
+    "answer": "Putaran dan peredaran",
+    "explanation": "Bumi berputar pada paksinya sambil beredar mengelilingi matahari."
+  },
+  {
+    "id": "GB03-002",
+    "chapter": 3,
+    "subtopic": "3.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Satu putaran lengkap bumi mengambil masa...",
+    "options": [
+      "12 jam",
+      "24 jam",
+      "30 hari",
+      "365¼ hari"
+    ],
+    "answer": "24 jam",
+    "explanation": "Satu putaran lengkap mengambil masa 24 jam atau satu hari."
+  },
+  {
+    "id": "GB03-003",
+    "chapter": 3,
+    "subtopic": "3.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Bumi berputar dari arah...",
+    "options": [
+      "Timur ke barat",
+      "Barat ke timur",
+      "Utara ke selatan",
+      "Selatan ke utara"
+    ],
+    "answer": "Barat ke timur",
+    "explanation": "Arah putaran bumi ialah dari barat ke timur."
+  },
+  {
+    "id": "GB03-004",
+    "chapter": 3,
+    "subtopic": "3.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Bumi berputar 360° dalam 24 jam. Berapa darjah bumi berputar dalam satu jam?",
+    "options": [
+      "5°",
+      "10°",
+      "15°",
+      "30°"
+    ],
+    "answer": "15°",
+    "explanation": "360° ÷ 24 = 15° sejam."
+  },
+  {
+    "id": "GB03-005",
+    "chapter": 3,
+    "subtopic": "3.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Bahagian bumi yang menghadap matahari mengalami...",
+    "options": [
+      "Malam",
+      "Siang",
+      "Musim sejuk",
+      "Gerhana bulan"
+    ],
+    "answer": "Siang",
+    "explanation": "Bahagian yang menerima cahaya matahari mengalami waktu siang."
+  },
+  {
+    "id": "GB03-006",
+    "chapter": 3,
+    "subtopic": "3.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapakah siaran langsung yang sama ditonton pada waktu berlainan di negara yang berbeza?",
+    "options": [
+      "Perbezaan waktu tempatan akibat putaran bumi",
+      "Perbezaan saiz negara",
+      "Perbezaan bahasa",
+      "Perbezaan musim sahaja"
+    ],
+    "answer": "Perbezaan waktu tempatan akibat putaran bumi",
+    "explanation": "Putaran bumi mewujudkan zon waktu yang berbeza."
+  },
+  {
+    "id": "GB03-007",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Satu peredaran lengkap bumi mengambil masa...",
+    "options": [
+      "24 jam",
+      "7 hari",
+      "30 hari",
+      "365¼ hari"
+    ],
+    "answer": "365¼ hari",
+    "explanation": "Satu peredaran lengkap mengambil masa 365¼ hari atau satu tahun."
+  },
+  {
+    "id": "GB03-008",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pada 21 Jun, matahari tengah hari tegak di...",
+    "options": [
+      "Garisan Khatulistiwa",
+      "Garisan Sartan",
+      "Garisan Jadi",
+      "Kutub Selatan"
+    ],
+    "answer": "Garisan Sartan",
+    "explanation": "21 Jun ialah solstis musim panas di hemisfera utara."
+  },
+  {
+    "id": "GB03-009",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Semasa ekuinoks, panjang siang dan malam adalah...",
+    "options": [
+      "Hampir sama",
+      "Siang 24 jam",
+      "Malam 24 jam",
+      "Tidak dapat ditentukan"
+    ],
+    "answer": "Hampir sama",
+    "explanation": "Semasa ekuinoks, hampir semua kawasan mengalami siang dan malam sama panjang."
+  },
+  {
+    "id": "GB03-010",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pada 22 Disember, hemisfera selatan mengalami...",
+    "options": [
+      "Musim panas",
+      "Musim sejuk",
+      "Musim luruh",
+      "Musim bunga sahaja"
+    ],
+    "answer": "Musim panas",
+    "explanation": "Pada solstis 22 Disember, hemisfera selatan condong ke arah matahari."
+  },
+  {
+    "id": "GB03-011",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Matahari–bumi–bulan berada dalam satu garisan lurus dengan bumi di tengah. Fenomena yang berlaku ialah...",
+    "options": [
+      "Gerhana bulan",
+      "Gerhana matahari",
+      "Ekuinoks",
+      "Pasang anak"
+    ],
+    "answer": "Gerhana bulan",
+    "explanation": "Bumi menghalang cahaya matahari daripada sampai ke bulan."
+  },
+  {
+    "id": "GB03-012",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapakah musim di Australia berbeza daripada musim di Eropah pada bulan Disember?",
+    "options": [
+      "Berada di hemisfera berbeza",
+      "Australia lebih kecil",
+      "Eropah lebih dekat dengan bulan",
+      "Bumi berhenti berputar"
+    ],
+    "answer": "Berada di hemisfera berbeza",
+    "explanation": "Kecondongan paksi bumi menyebabkan hemisfera utara dan selatan menerima jumlah cahaya yang berbeza pada masa yang sama."
+  },
+  {
+    "id": "GB04-001",
+    "chapter": 4,
+    "subtopic": "4.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Malaysia mengalami iklim...",
+    "options": [
+      "Tundra",
+      "Gurun Panas",
+      "Khatulistiwa",
+      "Mediterranean"
+    ],
+    "answer": "Khatulistiwa",
+    "explanation": "Malaysia terletak berhampiran Garisan Khatulistiwa dan mengalami iklim Khatulistiwa."
+  },
+  {
+    "id": "GB04-002",
+    "chapter": 4,
+    "subtopic": "4.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Min suhu tahunan Malaysia adalah kira-kira...",
+    "options": [
+      "9°C",
+      "18°C",
+      "27°C",
+      "40°C"
+    ],
+    "answer": "27°C",
+    "explanation": "Iklim Khatulistiwa Malaysia mempunyai min suhu tahunan sekitar 27°C."
+  },
+  {
+    "id": "GB04-003",
+    "chapter": 4,
+    "subtopic": "4.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Hujan yang lazim turun pada lewat petang akibat pemanasan permukaan bumi ialah...",
+    "options": [
+      "Hujan perolakan",
+      "Hujan salji",
+      "Hujan asid sahaja",
+      "Hujan frontal"
+    ],
+    "answer": "Hujan perolakan",
+    "explanation": "Pemanasan permukaan menyebabkan udara panas dan lembap naik lalu menghasilkan hujan perolakan."
+  },
+  {
+    "id": "GB04-004",
+    "chapter": 4,
+    "subtopic": "4.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Monsun Timur Laut membawa hujan lebat terutamanya ke...",
+    "options": [
+      "Pantai timur Semenanjung Malaysia",
+      "Pedalaman Perlis sahaja",
+      "Pantai barat Sumatera",
+      "Seluruh dunia"
+    ],
+    "answer": "Pantai timur Semenanjung Malaysia",
+    "explanation": "Angin Monsun Timur Laut merentasi Laut China Selatan dan membawa hujan lebat ke kawasan berkenaan."
+  },
+  {
+    "id": "GB04-005",
+    "chapter": 4,
+    "subtopic": "4.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Tanaman tanah tinggi yang sesuai di Cameron Highlands ialah...",
+    "options": [
+      "Teh dan sayur-sayuran hawa sederhana",
+      "Kurma",
+      "Gandum musim sejuk sahaja",
+      "Kaktus"
+    ],
+    "answer": "Teh dan sayur-sayuran hawa sederhana",
+    "explanation": "Suhu tanah tinggi yang lebih nyaman sesuai untuk tanaman tersebut."
+  },
+  {
+    "id": "GB04-006",
+    "chapter": 4,
+    "subtopic": "4.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Mengapakah nelayan pantai timur Semenanjung sukar turun ke laut semasa Monsun Timur Laut?",
+    "options": [
+      "Laut China Selatan bergelora",
+      "Suhu terlalu sejuk membeku",
+      "Tiada air laut",
+      "Semua bot rosak"
+    ],
+    "answer": "Laut China Selatan bergelora",
+    "explanation": "Angin kencang dan laut bergelora menjejaskan kegiatan perikanan."
+  },
+  {
+    "id": "GB04-007",
+    "chapter": 4,
+    "subtopic": "4.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Fenomena suhu kawasan tepu bina bandar lebih panas daripada sekitarnya dikenali sebagai...",
+    "options": [
+      "Pulau haba",
+      "Ekuinoks",
+      "Bayu laut",
+      "Pasang surut"
+    ],
+    "answer": "Pulau haba",
+    "explanation": "Permukaan konkrit dan kekurangan tumbuhan menyebabkan bandar menyimpan lebih banyak haba."
+  },
+  {
+    "id": "GB04-008",
+    "chapter": 4,
+    "subtopic": "4.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Hujan asid mempunyai nilai pH...",
+    "options": [
+      "Lebih daripada 8",
+      "Tepat 7",
+      "Kurang daripada 5.6",
+      "Tepat 10"
+    ],
+    "answer": "Kurang daripada 5.6",
+    "explanation": "Hujan asid mengandungi asid lemah dengan pH kurang daripada 5.6."
+  },
+  {
+    "id": "GB04-009",
+    "chapter": 4,
+    "subtopic": "4.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "El Niño boleh menyebabkan Malaysia mengalami...",
+    "options": [
+      "Kemarau berpanjangan",
+      "Salji sepanjang tahun",
+      "Gerhana matahari setiap hari",
+      "Air pasang kekal"
+    ],
+    "answer": "Kemarau berpanjangan",
+    "explanation": "El Niño mengubah pola angin dan hujan sehingga kawasan barat Pasifik termasuk Malaysia boleh menjadi lebih kering."
+  },
+  {
+    "id": "GB04-010",
+    "chapter": 4,
+    "subtopic": "4.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Semasa El Niño, angin Timuran biasanya menjadi...",
+    "options": [
+      "Lebih lemah",
+      "Lebih kuat tanpa perubahan lain",
+      "Beku",
+      "Tidak wujud atmosfera"
+    ],
+    "answer": "Lebih lemah",
+    "explanation": "Dalam penerangan buku teks, angin Timuran menjadi lemah semasa El Niño."
+  },
+  {
+    "id": "GB04-011",
+    "chapter": 4,
+    "subtopic": "4.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Apakah tindakan bandar yang paling membantu mengurangkan pulau haba?",
+    "options": [
+      "Menambah kawasan hijau",
+      "Menambah permukaan tar",
+      "Mengurangkan pokok",
+      "Menambah kesesakan kenderaan"
+    ],
+    "answer": "Menambah kawasan hijau",
+    "explanation": "Tumbuhan meningkatkan teduhan dan penyejatan serta membantu menyederhanakan suhu."
+  },
+  {
+    "id": "GB04-012",
+    "chapter": 4,
+    "subtopic": "4.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa kegiatan pertanian boleh dijalankan hampir sepanjang tahun di Malaysia?",
+    "options": [
+      "Suhu tinggi dan hujan yang banyak sepanjang tahun",
+      "Musim sejuk panjang",
+      "Hujan kurang 250 mm setahun",
+      "Tanah sentiasa bersalji"
+    ],
+    "answer": "Suhu tinggi dan hujan yang banyak sepanjang tahun",
+    "explanation": "Ciri iklim Khatulistiwa menyediakan haba dan kelembapan yang sesuai untuk banyak tanaman."
+  },
+  {
+    "id": "GB05-001",
+    "chapter": 5,
+    "subtopic": "5.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Lebuhraya yang menghubungkan Bukit Kayu Hitam hingga Johor Bahru ialah...",
+    "options": [
+      "Lebuhraya Utara-Selatan",
+      "Lebuhraya Pan Borneo",
+      "Lebuhraya Timur-Barat",
+      "Lebuhraya Persekutuan"
+    ],
+    "answer": "Lebuhraya Utara-Selatan",
+    "explanation": "Lebuhraya Utara-Selatan menganjur dari utara ke selatan Semenanjung Malaysia."
+  },
+  {
+    "id": "GB05-002",
+    "chapter": 5,
+    "subtopic": "5.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Stesen kereta api yang menjadi persimpangan antara pantai timur dan pantai barat Semenanjung ialah...",
+    "options": [
+      "Gemas",
+      "Ipoh",
+      "Tumpat",
+      "Padang Besar"
+    ],
+    "answer": "Gemas",
+    "explanation": "Gemas ialah stesen persimpangan penting bagi rangkaian kereta api Semenanjung."
+  },
+  {
+    "id": "GB05-003",
+    "chapter": 5,
+    "subtopic": "5.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Pelabuhan utama yang dikenali sebagai Pusat Muatan Negara untuk kontena tempatan dan serantau ialah...",
+    "options": [
+      "Pelabuhan Klang",
+      "Pelabuhan Bintulu",
+      "Pelabuhan Sandakan",
+      "Pelabuhan Tanjung Manis"
+    ],
+    "answer": "Pelabuhan Klang",
+    "explanation": "Pelabuhan Klang terdiri daripada Northport dan Westport dan menjadi pusat kontena utama."
+  },
+  {
+    "id": "GB05-004",
+    "chapter": 5,
+    "subtopic": "5.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pelabuhan Bintulu penting sebagai laluan eksport utama negara bagi...",
+    "options": [
+      "Gas asli cecair",
+      "Padi",
+      "Getah mentah sahaja",
+      "Air mineral"
+    ],
+    "answer": "Gas asli cecair",
+    "explanation": "Pelabuhan Bintulu menjadi laluan penting eksport LNG."
+  },
+  {
+    "id": "GB05-005",
+    "chapter": 5,
+    "subtopic": "5.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Yang manakah pengangkutan awam darat?",
+    "options": [
+      "MRT",
+      "Kapal kargo",
+      "Feri",
+      "Bot nelayan"
+    ],
+    "answer": "MRT",
+    "explanation": "MRT ialah sistem rel pengangkutan awam darat."
+  },
+  {
+    "id": "GB05-006",
+    "chapter": 5,
+    "subtopic": "5.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Mengapakah pembinaan jaringan pengangkutan di tanah tinggi lebih sukar?",
+    "options": [
+      "Kos tinggi dan bentuk muka bumi mencabar",
+      "Tiada penduduk di dunia",
+      "Tanah tinggi sentiasa banjir laut",
+      "Tiada teknologi"
+    ],
+    "answer": "Kos tinggi dan bentuk muka bumi mencabar",
+    "explanation": "Cerun dan bentuk muka bumi meningkatkan kos serta kesukaran pembinaan."
+  },
+  {
+    "id": "GB05-007",
+    "chapter": 5,
+    "subtopic": "5.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kawasan pinggir laut berteluk sesuai dijadikan pelabuhan kerana...",
+    "options": [
+      "Terlindung dan mempunyai perairan yang sesuai",
+      "Sentiasa bersalji",
+      "Tiada kapal boleh masuk",
+      "Jauh daripada perdagangan"
+    ],
+    "answer": "Terlindung dan mempunyai perairan yang sesuai",
+    "explanation": "Kawasan terlindung dan dalam lebih sesuai untuk operasi pelabuhan."
+  },
+  {
+    "id": "GB05-008",
+    "chapter": 5,
+    "subtopic": "5.5",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Satu kepentingan pengangkutan udara ialah...",
+    "options": [
+      "Menjimatkan masa perjalanan",
+      "Menghapuskan semua bandar",
+      "Mengurangkan ketersampaian",
+      "Menghalang integrasi nasional"
+    ],
+    "answer": "Menjimatkan masa perjalanan",
+    "explanation": "Pengangkutan udara menghubungkan kawasan jauh dengan lebih cepat."
+  },
+  {
+    "id": "GB05-009",
+    "chapter": 5,
+    "subtopic": "5.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Penggunaan pengangkutan awam membantu mengurangkan...",
+    "options": [
+      "Kesesakan lalu lintas",
+      "Darjah ketersampaian",
+      "Peluang pekerjaan",
+      "Mobiliti penduduk"
+    ],
+    "answer": "Kesesakan lalu lintas",
+    "explanation": "Lebih ramai penumpang dalam satu kenderaan mengurangkan jumlah kenderaan persendirian di jalan raya."
+  },
+  {
+    "id": "GB05-010",
+    "chapter": 5,
+    "subtopic": "5.7",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Contoh amalan pengangkutan lestari ialah...",
+    "options": [
+      "Berkongsi kereta",
+      "Memandu seorang diri setiap masa",
+      "Membakar bahan api lebih banyak",
+      "Menambah kesesakan"
+    ],
+    "answer": "Berkongsi kereta",
+    "explanation": "Perkongsian kereta mengurangkan jumlah kenderaan dan pelepasan pencemar."
+  },
+  {
+    "id": "GB05-011",
+    "chapter": 5,
+    "subtopic": "5.7",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Sebuah bandar mengalami kesesakan dan pencemaran udara tinggi. Tindakan paling sesuai ialah...",
+    "options": [
+      "Memperluas pengangkutan awam",
+      "Menutup semua laluan pejalan kaki",
+      "Menambah kereta persendirian",
+      "Mengurangkan rel bandar"
+    ],
+    "answer": "Memperluas pengangkutan awam",
+    "explanation": "Pengangkutan awam dapat mengurangkan jumlah kenderaan dan pelepasan asap."
+  },
+  {
+    "id": "GB05-012",
+    "chapter": 5,
+    "subtopic": "5.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa jaringan jalan raya Sabah dan Sarawak lebih tertumpu di sepanjang pantai menurut buku teks?",
+    "options": [
+      "Pedalaman bertanah tinggi dan berhutan tebal",
+      "Pantai sentiasa lebih sejuk",
+      "Tiada bandar di pedalaman sama sekali",
+      "Semua sungai menghalang setiap jalan"
+    ],
+    "answer": "Pedalaman bertanah tinggi dan berhutan tebal",
+    "explanation": "Bentuk muka bumi pedalaman menyukarkan dan meningkatkan kos pembinaan jalan."
+  },
+  {
+    "id": "GB06-001",
+    "chapter": 6,
+    "subtopic": "6.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Telekomunikasi merujuk kepada interaksi yang melibatkan...",
+    "options": [
+      "Jarak yang jauh antara penyampai dan penerima",
+      "Pertanian sahaja",
+      "Pergerakan bumi",
+      "Hakisan pantai"
+    ],
+    "answer": "Jarak yang jauh antara penyampai dan penerima",
+    "explanation": "Telekomunikasi membolehkan penyampaian maklumat merentasi jarak."
+  },
+  {
+    "id": "GB06-002",
+    "chapter": 6,
+    "subtopic": "6.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Telefon pintar biasanya mempunyai kemudahan seperti...",
+    "options": [
+      "Internet, kamera dan aplikasi",
+      "Bajak tanah",
+      "Kompas magnetik sahaja",
+      "Enjin diesel"
+    ],
+    "answer": "Internet, kamera dan aplikasi",
+    "explanation": "Telefon pintar menggabungkan pelbagai fungsi digital dan komunikasi."
+  },
+  {
+    "id": "GB06-003",
+    "chapter": 6,
+    "subtopic": "6.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "TiungSAT-1 dan RazakSAT ialah...",
+    "options": [
+      "Satelit mikro Malaysia",
+      "Kereta api laju",
+      "Pelabuhan",
+      "Lebuh raya"
+    ],
+    "answer": "Satelit mikro Malaysia",
+    "explanation": "Kedua-duanya ialah satelit mikro Malaysia."
+  },
+  {
+    "id": "GB06-004",
+    "chapter": 6,
+    "subtopic": "6.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kabel gentian optik digunakan untuk...",
+    "options": [
+      "Menyalur data berkapasiti tinggi",
+      "Mengukur hujan",
+      "Menanam padi",
+      "Mengawal pasang surut"
+    ],
+    "answer": "Menyalur data berkapasiti tinggi",
+    "explanation": "Serat halus dalam kabel gentian optik membolehkan penghantaran maklumat berkapasiti tinggi."
+  },
+  {
+    "id": "GB06-005",
+    "chapter": 6,
+    "subtopic": "6.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Satu kepentingan telekomunikasi ialah...",
+    "options": [
+      "Memudahkan komunikasi seluruh dunia",
+      "Mengurangkan akses maklumat",
+      "Melambatkan urusan",
+      "Menghapuskan pendidikan"
+    ],
+    "answer": "Memudahkan komunikasi seluruh dunia",
+    "explanation": "Telekomunikasi mempercepat perhubungan dan capaian maklumat."
+  },
+  {
+    "id": "GB06-006",
+    "chapter": 6,
+    "subtopic": "6.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "e-pembelajaran membantu kerana...",
+    "options": [
+      "Meluaskan peluang pendidikan dan menjimatkan kos",
+      "Menghapuskan semua guru",
+      "Tidak memerlukan maklumat",
+      "Hanya boleh digunakan di satu tempat"
+    ],
+    "answer": "Meluaskan peluang pendidikan dan menjimatkan kos",
+    "explanation": "Pembelajaran boleh berlaku melalui rangkaian digital tanpa terikat kepada satu lokasi."
+  },
+  {
+    "id": "GB06-007",
+    "chapter": 6,
+    "subtopic": "6.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Yang manakah kesan positif telekomunikasi?",
+    "options": [
+      "e-kerajaan",
+      "Pencerobohan data",
+      "Khabar angin",
+      "Maklumat palsu"
+    ],
+    "answer": "e-kerajaan",
+    "explanation": "e-kerajaan memudahkan urusan rakyat dengan agensi kerajaan."
+  },
+  {
+    "id": "GB06-008",
+    "chapter": 6,
+    "subtopic": "6.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Yang manakah kesan negatif telekomunikasi?",
+    "options": [
+      "Pencerobohan dan pencurian maklumat",
+      "Telekesihatan",
+      "e-perbankan",
+      "Telesidang"
+    ],
+    "answer": "Pencerobohan dan pencurian maklumat",
+    "explanation": "Sistem dalam talian boleh terdedah kepada risiko keselamatan maklumat."
+  },
+  {
+    "id": "GB06-009",
+    "chapter": 6,
+    "subtopic": "6.5",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Tindakan paling beretika sebelum berkongsi berita Internet ialah...",
+    "options": [
+      "Semak kesahihan berita",
+      "Terus sebarkan",
+      "Ubah tajuk supaya sensasi",
+      "Dedahkan kata laluan"
+    ],
+    "answer": "Semak kesahihan berita",
+    "explanation": "Pengguna perlu mengenal pasti kebenaran dan kesahihan maklumat."
+  },
+  {
+    "id": "GB06-010",
+    "chapter": 6,
+    "subtopic": "6.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Menyalin karya orang lain dan mengaku sebagai karya sendiri dikenali sebagai...",
+    "options": [
+      "Plagiat",
+      "Telesidang",
+      "Telekesihatan",
+      "Integrasi"
+    ],
+    "answer": "Plagiat",
+    "explanation": "Plagiat ialah menggunakan karya orang lain sebagai karya sendiri."
+  },
+  {
+    "id": "GB06-011",
+    "chapter": 6,
+    "subtopic": "6.5",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Rakan meminta kata laluan akaun anda untuk 'membantu'. Apakah tindakan paling selamat?",
+    "options": [
+      "Jangan dedahkan kata laluan",
+      "Berikan kepada semua rakan",
+      "Tulis di media sosial",
+      "Gunakan kata laluan yang sama untuk semua orang"
+    ],
+    "answer": "Jangan dedahkan kata laluan",
+    "explanation": "Maklumat peribadi dan kata laluan tidak sepatutnya didedahkan kepada umum."
+  },
+  {
+    "id": "GB06-012",
+    "chapter": 6,
+    "subtopic": "6.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa telekomunikasi boleh memberi kesan positif dan negatif serentak?",
+    "options": [
+      "Ia memudahkan komunikasi tetapi boleh disalahgunakan",
+      "Semua teknologi sentiasa negatif",
+      "Tiada maklumat bergerak melalui Internet",
+      "Kerana telefon tidak memerlukan pengguna"
+    ],
+    "answer": "Ia memudahkan komunikasi tetapi boleh disalahgunakan",
+    "explanation": "Manfaat capaian pantas datang bersama risiko seperti maklumat palsu dan pencerobohan data."
+  },
+  {
+    "id": "GB07-001",
+    "chapter": 7,
+    "subtopic": "7.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Benua Asia dibahagikan kepada berapa zon iklim utama dalam bab ini?",
+    "options": [
+      "Dua",
+      "Tiga",
+      "Empat",
+      "Lapan"
+    ],
+    "answer": "Empat",
+    "explanation": "Zonnya ialah sejuk, sejuk sederhana, panas sederhana dan panas."
+  },
+  {
+    "id": "GB07-002",
+    "chapter": 7,
+    "subtopic": "7.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Iklim Tundra termasuk dalam zon...",
+    "options": [
+      "Sejuk",
+      "Panas",
+      "Panas sederhana",
+      "Khatulistiwa"
+    ],
+    "answer": "Sejuk",
+    "explanation": "Iklim Tundra ialah iklim zon sejuk."
+  },
+  {
+    "id": "GB07-003",
+    "chapter": 7,
+    "subtopic": "7.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Negara yang mengalami iklim Khatulistiwa termasuk...",
+    "options": [
+      "Malaysia, Singapura dan Brunei",
+      "Rusia utara sahaja",
+      "Arab Saudi dan Oman",
+      "Turki dan Syria sahaja"
+    ],
+    "answer": "Malaysia, Singapura dan Brunei",
+    "explanation": "Negara tersebut berada dalam zon panas berhampiran Khatulistiwa."
+  },
+  {
+    "id": "GB07-004",
+    "chapter": 7,
+    "subtopic": "7.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Suhu musim panas Tundra biasanya...",
+    "options": [
+      "Tidak melebihi 10°C",
+      "Melebihi 40°C sepanjang tahun",
+      "Sekitar 30°C sepanjang musim",
+      "Tidak pernah bawah 25°C"
+    ],
+    "answer": "Tidak melebihi 10°C",
+    "explanation": "Musim panas Tundra pendek dan sederhana sejuk."
+  },
+  {
+    "id": "GB07-005",
+    "chapter": 7,
+    "subtopic": "7.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kegiatan tradisional yang sesuai di Siberia utara ialah...",
+    "options": [
+      "Perikanan dan pemburuan",
+      "Penanaman kelapa sawit",
+      "Penanaman padi sawah sepanjang tahun",
+      "Pelancongan pantai tropika"
+    ],
+    "answer": "Perikanan dan pemburuan",
+    "explanation": "Penduduk menyesuaikan kegiatan dengan iklim sejuk dan sumber setempat."
+  },
+  {
+    "id": "GB07-006",
+    "chapter": 7,
+    "subtopic": "7.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Iklim Laurentia terdapat antaranya di...",
+    "options": [
+      "Jepun utara dan Korea Utara",
+      "Arab Saudi",
+      "Malaysia",
+      "Indonesia"
+    ],
+    "answer": "Jepun utara dan Korea Utara",
+    "explanation": "Iklim Laurentia terdapat di kawasan sejuk sederhana pantai timur Asia."
+  },
+  {
+    "id": "GB07-007",
+    "chapter": 7,
+    "subtopic": "7.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapakah perairan Jepun kaya dengan ikan?",
+    "options": [
+      "Pertemuan arus panas dan arus sejuk menggalakkan plankton",
+      "Tiada arus laut",
+      "Air laut sentiasa beku",
+      "Hujan kurang 10 mm"
+    ],
+    "answer": "Pertemuan arus panas dan arus sejuk menggalakkan plankton",
+    "explanation": "Pertemuan arus Kurashio dan Oyashio mewujudkan perairan yang kaya nutrien dan plankton."
+  },
+  {
+    "id": "GB07-008",
+    "chapter": 7,
+    "subtopic": "7.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Iklim China mempunyai musim panas yang...",
+    "options": [
+      "Sederhana panas sekitar 28°C",
+      "Sentiasa bawah -20°C",
+      "Tidak pernah hujan",
+      "Sangat sejuk sepanjang tahun"
+    ],
+    "answer": "Sederhana panas sekitar 28°C",
+    "explanation": "Ciri ini sesuai untuk pelbagai kegiatan pertanian."
+  },
+  {
+    "id": "GB07-009",
+    "chapter": 7,
+    "subtopic": "7.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tanaman penting di kawasan iklim China ialah...",
+    "options": [
+      "Padi, gandum dan teh",
+      "Kurma sahaja",
+      "Kaktus sahaja",
+      "Lumut tundra sahaja"
+    ],
+    "answer": "Padi, gandum dan teh",
+    "explanation": "Suhu dan hujan menyokong penanaman padi, gandum dan teh."
+  },
+  {
+    "id": "GB07-010",
+    "chapter": 7,
+    "subtopic": "7.6",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Jumlah hujan tahunan di Gurun Panas biasanya...",
+    "options": [
+      "Kurang daripada 250 mm",
+      "Lebih 5 000 mm",
+      "2 600 mm tepat",
+      "Lebih 10 000 mm"
+    ],
+    "answer": "Kurang daripada 250 mm",
+    "explanation": "Gurun Panas mengalami keadaan gersang dengan hujan yang sangat sedikit."
+  },
+  {
+    "id": "GB07-011",
+    "chapter": 7,
+    "subtopic": "7.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tanaman yang sesuai di oasis Arab Saudi ialah...",
+    "options": [
+      "Pokok kurma",
+      "Padi sawah",
+      "Teh tanah tinggi",
+      "Getah"
+    ],
+    "answer": "Pokok kurma",
+    "explanation": "Pokok kurma boleh ditanam di kawasan oasis yang mempunyai bekalan air."
+  },
+  {
+    "id": "GB07-012",
+    "chapter": 7,
+    "subtopic": "7.6",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapakah pertanian amat terhad di kawasan Gurun Panas?",
+    "options": [
+      "Hujan sangat sedikit dan keadaan gersang",
+      "Hujan terlalu banyak",
+      "Tanah sentiasa bersalji",
+      "Suhu sentiasa 0°C"
+    ],
+    "answer": "Hujan sangat sedikit dan keadaan gersang",
+    "explanation": "Kekurangan air mengehadkan pertanian kepada kawasan tertentu seperti oasis."
+  },
+  {
+    "id": "GB08-001",
+    "chapter": 8,
+    "subtopic": "8.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Shinkansen ialah sistem kereta api berkelajuan tinggi di...",
+    "options": [
+      "Jepun",
+      "India",
+      "Malaysia",
+      "Arab Saudi"
+    ],
+    "answer": "Jepun",
+    "explanation": "Shinkansen merupakan kereta api berkelajuan tinggi Jepun."
+  },
+  {
+    "id": "GB08-002",
+    "chapter": 8,
+    "subtopic": "8.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Landasan Trans-Siberian menghubungkan Moscow dengan...",
+    "options": [
+      "Vladivostok",
+      "Tokyo",
+      "Dubai",
+      "Singapore"
+    ],
+    "answer": "Vladivostok",
+    "explanation": "Landasan ini merentasi Rusia dari Moscow hingga Vladivostok."
+  },
+  {
+    "id": "GB08-003",
+    "chapter": 8,
+    "subtopic": "8.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Lapangan Terbang Antarabangsa Dubai terletak di...",
+    "options": [
+      "Emiriah Arab Bersatu",
+      "China",
+      "Korea Selatan",
+      "India"
+    ],
+    "answer": "Emiriah Arab Bersatu",
+    "explanation": "Dubai ialah metropolis utama UAE."
+  },
+  {
+    "id": "GB08-004",
+    "chapter": 8,
+    "subtopic": "8.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Pelabuhan penting untuk urusan...",
+    "options": [
+      "Perdagangan",
+      "Gerhana",
+      "Putaran bumi",
+      "Hujan perolakan"
+    ],
+    "answer": "Perdagangan",
+    "explanation": "Pelabuhan mengendalikan pergerakan kargo dan perdagangan."
+  },
+  {
+    "id": "GB08-005",
+    "chapter": 8,
+    "subtopic": "8.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Antara keistimewaan Shinkansen ialah...",
+    "options": [
+      "Menepati masa dan tahap keselamatan tinggi",
+      "Tidak mempunyai stesen",
+      "Bergerak hanya sekali setahun",
+      "Tidak membawa penumpang"
+    ],
+    "answer": "Menepati masa dan tahap keselamatan tinggi",
+    "explanation": "Shinkansen terkenal dengan kecekapan, ketepatan masa dan keselamatan."
+  },
+  {
+    "id": "GB08-006",
+    "chapter": 8,
+    "subtopic": "8.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pelabuhan Hong Kong penting kerana...",
+    "options": [
+      "Terletak pada laluan perdagangan dunia",
+      "Terletak jauh dari semua laluan kapal",
+      "Tidak mengendalikan kontena",
+      "Tidak mempunyai perairan"
+    ],
+    "answer": "Terletak pada laluan perdagangan dunia",
+    "explanation": "Lokasinya yang strategik menyokong peranan sebagai hab perdagangan."
+  },
+  {
+    "id": "GB08-007",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Kesan positif pengangkutan terhadap masyarakat ialah...",
+    "options": [
+      "Memendekkan masa perjalanan",
+      "Meningkatkan pencemaran bunyi",
+      "Memusnahkan hutan",
+      "Mencemarkan air"
+    ],
+    "answer": "Memendekkan masa perjalanan",
+    "explanation": "Sistem pengangkutan moden meningkatkan mobiliti dan ketersampaian."
+  },
+  {
+    "id": "GB08-008",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tumpahan minyak daripada kapal boleh menyebabkan...",
+    "options": [
+      "Pencemaran air",
+      "Peningkatan hasil pertanian",
+      "Pengurangan bunyi",
+      "Pertambahan hutan"
+    ],
+    "answer": "Pencemaran air",
+    "explanation": "Tumpahan minyak menjejaskan kualiti air dan hidupan akuatik."
+  },
+  {
+    "id": "GB08-009",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pembinaan lapangan terbang berhampiran petempatan boleh meningkatkan...",
+    "options": [
+      "Pencemaran bunyi",
+      "Hujan salji",
+      "Pembentukan gunung",
+      "Gerhana"
+    ],
+    "answer": "Pencemaran bunyi",
+    "explanation": "Bunyi pesawat boleh mengganggu ketenteraman penduduk sekitar."
+  },
+  {
+    "id": "GB08-010",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kemajuan pengangkutan boleh merancakkan ekonomi melalui...",
+    "options": [
+      "Perdagangan, pelancongan dan pekerjaan",
+      "Mengurangkan semua mobiliti",
+      "Menutup bandar",
+      "Menghapuskan perkhidmatan"
+    ],
+    "answer": "Perdagangan, pelancongan dan pekerjaan",
+    "explanation": "Pengangkutan meningkatkan pergerakan manusia, barangan dan aktiviti ekonomi."
+  },
+  {
+    "id": "GB08-011",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Landasan baharu melalui hutan meningkatkan akses tetapi apakah risiko alam sekitar?",
+    "options": [
+      "Kemusnahan hutan dan kawasan tadahan air",
+      "Pertambahan hutan secara automatik",
+      "Tiada perubahan landskap",
+      "Air menjadi lebih bersih secara automatik"
+    ],
+    "answer": "Kemusnahan hutan dan kawasan tadahan air",
+    "explanation": "Pembinaan infrastruktur boleh menjejaskan habitat dan kawasan tadahan air."
+  },
+  {
+    "id": "GB08-012",
+    "chapter": 8,
+    "subtopic": "8.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa sistem pengangkutan berkelajuan tinggi membantu bandar besar?",
+    "options": [
+      "Mengurangkan masa perjalanan dan meningkatkan ketersampaian",
+      "Menambah jarak fizikal",
+      "Mengurangkan mobiliti",
+      "Menghalang perdagangan"
+    ],
+    "answer": "Mengurangkan masa perjalanan dan meningkatkan ketersampaian",
+    "explanation": "Perjalanan lebih pantas menghubungkan pusat ekonomi dan penduduk dengan lebih cekap."
+  },
+  {
+    "id": "GB09-001",
+    "chapter": 9,
+    "subtopic": "9.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Pemanasan global ialah...",
+    "options": [
+      "Peningkatan suhu atmosfera bumi secara berterusan",
+      "Penurunan suhu bumi secara kekal",
+      "Kejadian gerhana",
+      "Perubahan arah sungai"
+    ],
+    "answer": "Peningkatan suhu atmosfera bumi secara berterusan",
+    "explanation": "Pemanasan global berkait dengan peningkatan suhu akibat kesan rumah hijau."
+  },
+  {
+    "id": "GB09-002",
+    "chapter": 9,
+    "subtopic": "9.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Gas rumah hijau utama yang sering dikaitkan dengan pemanasan global ialah...",
+    "options": [
+      "Karbon dioksida",
+      "Oksigen sahaja",
+      "Helium",
+      "Hidrogen sahaja"
+    ],
+    "answer": "Karbon dioksida",
+    "explanation": "Pertambahan CO₂ membantu memerangkap lebih banyak haba dalam atmosfera."
+  },
+  {
+    "id": "GB09-003",
+    "chapter": 9,
+    "subtopic": "9.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Yang manakah faktor aktiviti manusia?",
+    "options": [
+      "Penyahhutanan",
+      "Letusan gunung berapi",
+      "Pancaran matahari berlebihan",
+      "Kebakaran hutan semula jadi sahaja"
+    ],
+    "answer": "Penyahhutanan",
+    "explanation": "Penyahhutanan berskala besar mengurangkan penyerapan CO₂ dan sering berkait dengan pembangunan manusia."
+  },
+  {
+    "id": "GB09-004",
+    "chapter": 9,
+    "subtopic": "9.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pertanian boleh membebaskan gas rumah hijau seperti...",
+    "options": [
+      "Metana dan nitrus oksida",
+      "Oksigen sahaja",
+      "Neon",
+      "Helium"
+    ],
+    "answer": "Metana dan nitrus oksida",
+    "explanation": "Aktiviti pertanian dan penternakan boleh menghasilkan CH₄ dan N₂O."
+  },
+  {
+    "id": "GB09-005",
+    "chapter": 9,
+    "subtopic": "9.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Yang manakah faktor semula jadi pemanasan global dalam buku teks?",
+    "options": [
+      "Letusan gunung berapi",
+      "e-pembelajaran",
+      "Pengangkutan awam",
+      "Kitar semula"
+    ],
+    "answer": "Letusan gunung berapi",
+    "explanation": "Letusan gunung berapi membebaskan asap dan gas ke atmosfera."
+  },
+  {
+    "id": "GB09-006",
+    "chapter": 9,
+    "subtopic": "9.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Pencairan ais kutub boleh menyebabkan...",
+    "options": [
+      "Peningkatan aras laut",
+      "Penurunan aras laut",
+      "Tiada perubahan",
+      "Pembentukan gurun serta-merta"
+    ],
+    "answer": "Peningkatan aras laut",
+    "explanation": "Air tambahan daripada pencairan ais menyumbang kepada kenaikan aras laut."
+  },
+  {
+    "id": "GB09-007",
+    "chapter": 9,
+    "subtopic": "9.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Gelombang haba meningkatkan risiko...",
+    "options": [
+      "Strok haba dan dehidrasi",
+      "Hipotermia kerana salji sahaja",
+      "Tiada kesan kesihatan",
+      "Gerhana"
+    ],
+    "answer": "Strok haba dan dehidrasi",
+    "explanation": "Suhu ekstrem boleh menjejaskan kesihatan manusia."
+  },
+  {
+    "id": "GB09-008",
+    "chapter": 9,
+    "subtopic": "9.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pemanasan global boleh menjejaskan sumber makanan melalui...",
+    "options": [
+      "Kemarau, banjir dan tanah menjadi tandus",
+      "Pertambahan hujan sempurna di semua tempat",
+      "Tiada perubahan pertanian",
+      "Semua tanaman tumbuh lebih cepat"
+    ],
+    "answer": "Kemarau, banjir dan tanah menjadi tandus",
+    "explanation": "Gangguan cuaca dan perubahan persekitaran boleh merosakkan kawasan pertanian."
+  },
+  {
+    "id": "GB09-009",
+    "chapter": 9,
+    "subtopic": "9.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Antara berikut, amalan yang membantu mengurangkan pemanasan global ialah...",
+    "options": [
+      "Menanam pokok",
+      "Pembakaran terbuka",
+      "Menambah penggunaan bahan api fosil",
+      "Membuang sisa tanpa kawalan"
+    ],
+    "answer": "Menanam pokok",
+    "explanation": "Pokok membantu menyerap karbon dioksida dan menyejukkan persekitaran."
+  },
+  {
+    "id": "GB09-010",
+    "chapter": 9,
+    "subtopic": "9.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Amalan 5R merangkumi...",
+    "options": [
+      "Rethink, repair, reuse, reduce, recycle",
+      "Run, rest, read, ride, race",
+      "Rain, river, road, rail, rock",
+      "Reduce sahaja"
+    ],
+    "answer": "Rethink, repair, reuse, reduce, recycle",
+    "explanation": "5R mengurangkan penggunaan sumber dan sisa."
+  },
+  {
+    "id": "GB09-011",
+    "chapter": 9,
+    "subtopic": "9.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Sekolah mahu mengurangkan jejak karbon. Gabungan terbaik ialah...",
+    "options": [
+      "5R, penjimatan tenaga, pengangkutan awam dan penanaman pokok",
+      "Pembakaran sampah dan lebih banyak kenderaan",
+      "Menutup semua pokok",
+      "Meningkatkan penggunaan bahan api fosil"
+    ],
+    "answer": "5R, penjimatan tenaga, pengangkutan awam dan penanaman pokok",
+    "explanation": "Gabungan ini mengurangkan penggunaan sumber, pelepasan dan menambah penyerapan karbon."
+  },
+  {
+    "id": "GB09-012",
+    "chapter": 9,
+    "subtopic": "9.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapakah penggunaan tenaga suria membantu?",
+    "options": [
+      "Mengurangkan kebergantungan pada bahan api fosil",
+      "Menghasilkan lebih banyak asap kenderaan",
+      "Memerlukan pembakaran terbuka",
+      "Meningkatkan pencemaran secara langsung"
+    ],
+    "answer": "Mengurangkan kebergantungan pada bahan api fosil",
+    "explanation": "Tenaga suria ialah alternatif yang lebih mesra alam berbanding pembakaran bahan api fosil."
+  },
+  {
+    "id": "GB10-001",
+    "chapter": 10,
+    "subtopic": "10.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Teknologi hijau merujuk pembangunan produk, peralatan dan sistem untuk...",
+    "options": [
+      "Memelihara alam sekitar dan sumber semula jadi",
+      "Meningkatkan pencemaran",
+      "Menghabiskan sumber",
+      "Menggalakkan pembaziran"
+    ],
+    "answer": "Memelihara alam sekitar dan sumber semula jadi",
+    "explanation": "Teknologi hijau menyokong pemeliharaan dan pemuliharaan alam sekitar."
+  },
+  {
+    "id": "GB10-002",
+    "chapter": 10,
+    "subtopic": "10.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pembangunan lestari memenuhi keperluan semasa tanpa...",
+    "options": [
+      "Menjejaskan keperluan generasi masa depan",
+      "Menggunakan teknologi",
+      "Mewujudkan ekonomi",
+      "Menggunakan tenaga"
+    ],
+    "answer": "Menjejaskan keperluan generasi masa depan",
+    "explanation": "Prinsip lestari menyeimbangkan keperluan hari ini dan masa depan."
+  },
+  {
+    "id": "GB10-003",
+    "chapter": 10,
+    "subtopic": "10.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Produk teknologi hijau sepatutnya mempunyai pembebasan gas rumah hijau yang...",
+    "options": [
+      "Rendah atau sifar",
+      "Sangat tinggi",
+      "Tidak terkawal",
+      "Sentiasa meningkat"
+    ],
+    "answer": "Rendah atau sifar",
+    "explanation": "Salah satu kriterianya ialah meminimumkan pelepasan gas rumah hijau."
+  },
+  {
+    "id": "GB10-004",
+    "chapter": 10,
+    "subtopic": "10.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Yang manakah ciri produk teknologi hijau?",
+    "options": [
+      "Boleh dikitar semula dan menjimatkan tenaga",
+      "Menggunakan sumber secara membazir",
+      "Sukar digunakan",
+      "Meningkatkan kemerosotan alam sekitar"
+    ],
+    "answer": "Boleh dikitar semula dan menjimatkan tenaga",
+    "explanation": "Produk hijau direka untuk menjimatkan sumber dan mengurangkan kesan alam sekitar."
+  },
+  {
+    "id": "GB10-005",
+    "chapter": 10,
+    "subtopic": "10.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Kereta hibrid merupakan contoh produk dalam teras...",
+    "options": [
+      "Tenaga",
+      "Gerhana",
+      "Iklim",
+      "Grid"
+    ],
+    "answer": "Tenaga",
+    "explanation": "Kereta hibrid membantu mengurangkan penggunaan bahan api fosil."
+  },
+  {
+    "id": "GB10-006",
+    "chapter": 10,
+    "subtopic": "10.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Produk biodegradasi dan baja kompos termasuk teras...",
+    "options": [
+      "Alam sekitar",
+      "Pengangkutan udara",
+      "Peta topografi",
+      "Cuaca"
+    ],
+    "answer": "Alam sekitar",
+    "explanation": "Produk ini membantu mengurangkan kesan terhadap alam sekitar."
+  },
+  {
+    "id": "GB10-007",
+    "chapter": 10,
+    "subtopic": "10.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Satu kepentingan teknologi hijau ialah...",
+    "options": [
+      "Meningkatkan kualiti hidup",
+      "Meningkatkan pencemaran",
+      "Meningkatkan pembaziran",
+      "Mengurangkan kesihatan"
+    ],
+    "answer": "Meningkatkan kualiti hidup",
+    "explanation": "Teknologi hijau boleh meningkatkan keselesaan, kesihatan dan kualiti persekitaran."
+  },
+  {
+    "id": "GB10-008",
+    "chapter": 10,
+    "subtopic": "10.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Fotovolta berfungsi menukar...",
+    "options": [
+      "Cahaya matahari kepada tenaga elektrik",
+      "Air laut kepada salji",
+      "Angin kepada hujan",
+      "Tanih kepada petroleum"
+    ],
+    "answer": "Cahaya matahari kepada tenaga elektrik",
+    "explanation": "Sel fotovolta menukar cahaya matahari kepada tenaga elektrik."
+  },
+  {
+    "id": "GB10-009",
+    "chapter": 10,
+    "subtopic": "10.5",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Suhu minimum penyaman udara yang disarankan dalam amalan penjimatan tenaga ialah...",
+    "options": [
+      "24°C",
+      "12°C",
+      "5°C",
+      "40°C"
+    ],
+    "answer": "24°C",
+    "explanation": "Buku teks mencadangkan menetapkan suhu penyaman udara minimum pada 24°C."
+  },
+  {
+    "id": "GB10-010",
+    "chapter": 10,
+    "subtopic": "10.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Menadah air hujan untuk mencuci halaman ialah contoh...",
+    "options": [
+      "Penjimatan air",
+      "Pembaziran air",
+      "Pencemaran bunyi",
+      "Pengangkutan"
+    ],
+    "answer": "Penjimatan air",
+    "explanation": "Air hujan boleh digunakan semula bagi mengurangkan penggunaan air terawat."
+  },
+  {
+    "id": "GB10-011",
+    "chapter": 10,
+    "subtopic": "10.5",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa membawa bekas makanan sendiri dianggap amalan hijau?",
+    "options": [
+      "Mengurangkan pembungkus dan sisa pakai buang",
+      "Menambah penggunaan plastik",
+      "Meningkatkan sampah",
+      "Menggunakan lebih banyak bahan api"
+    ],
+    "answer": "Mengurangkan pembungkus dan sisa pakai buang",
+    "explanation": "Pengurangan sisa ialah salah satu amalan teknologi hijau."
+  },
+  {
+    "id": "GB10-012",
+    "chapter": 10,
+    "subtopic": "10.5",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Sekolah mahu menjadi lebih hijau. Gabungan paling sesuai ialah...",
+    "options": [
+      "5R, jimat air/tenaga, pengangkutan lestari dan landskap hijau",
+      "Pembakaran sampah dan pembaziran air",
+      "Lebih banyak bahan pakai buang",
+      "Mengurangkan semua pokok"
+    ],
+    "answer": "5R, jimat air/tenaga, pengangkutan lestari dan landskap hijau",
+    "explanation": "Gabungan ini selari dengan amalan teknologi hijau yang digariskan dalam bab."
+  },
+  {
+    "id": "GB01-013",
+    "chapter": 1,
+    "subtopic": "1.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Skala yang berbentuk satu garisan lurus dan dibahagikan kepada beberapa bahagian sama jarak dikenali sebagai...",
+    "options": [
+      "Skala lurus",
+      "Skala penyata",
+      "Pecahan wakilan",
+      "Jarak relatif"
+    ],
+    "answer": "Skala lurus",
+    "explanation": "Skala lurus menggunakan garisan yang dibahagikan kepada bahagian sama untuk mewakili jarak sebenar."
+  },
+  {
+    "id": "GB01-014",
+    "chapter": 1,
+    "subtopic": "1.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Jika skala peta ialah 1 : 200 000, 1 cm pada peta mewakili...",
+    "options": [
+      "0.2 km",
+      "1 km",
+      "2 km",
+      "20 km"
+    ],
+    "answer": "2 km",
+    "explanation": "200 000 cm bersamaan 2 km."
+  },
+  {
+    "id": "GB01-015",
+    "chapter": 1,
+    "subtopic": "1.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Yang manakah pasangan jenis skala dan contoh yang betul?",
+    "options": [
+      "Skala penyata — 1 cm mewakili 5 km",
+      "Pecahan wakilan — 0—1—2 km",
+      "Skala lurus — 1 : 50 000",
+      "Jarak relatif — 1 cm mewakili 1 km"
+    ],
+    "answer": "Skala penyata — 1 cm mewakili 5 km",
+    "explanation": "Skala penyata dinyatakan dalam bentuk ayat atau pernyataan."
+  },
+  {
+    "id": "GB01-016",
+    "chapter": 1,
+    "subtopic": "1.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Tambang teksi RM18 dari rumah ke bandar ialah contoh jarak relatif berdasarkan...",
+    "options": [
+      "Kos",
+      "Masa",
+      "Meter",
+      "Kilometer"
+    ],
+    "answer": "Kos",
+    "explanation": "Jarak relatif boleh dinyatakan berdasarkan kos perjalanan."
+  },
+  {
+    "id": "GB01-017",
+    "chapter": 1,
+    "subtopic": "1.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Masa perjalanan 35 minit dari rumah ke sekolah ialah contoh jarak relatif berdasarkan...",
+    "options": [
+      "Masa",
+      "Kos",
+      "Skala",
+      "Bearing"
+    ],
+    "answer": "Masa",
+    "explanation": "Jarak relatif juga boleh dinyatakan berdasarkan tempoh perjalanan."
+  },
+  {
+    "id": "GB01-018",
+    "chapter": 1,
+    "subtopic": "1.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Dua murid tinggal 4 km dari sekolah tetapi seorang tiba lebih cepat. Apakah sebab paling munasabah?",
+    "options": [
+      "Jenis pengangkutan atau keadaan perjalanan berbeza",
+      "Jarak mutlak mereka berbeza",
+      "Unit kilometer berubah",
+      "Skala peta tidak sama"
+    ],
+    "answer": "Jenis pengangkutan atau keadaan perjalanan berbeza",
+    "explanation": "Jarak relatif boleh berubah walaupun jarak mutlak sama kerana masa perjalanan dipengaruhi cara dan keadaan pengangkutan."
+  },
+  {
+    "id": "GB01-019",
+    "chapter": 1,
+    "subtopic": "1.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Jarak pada peta ialah 4.5 cm dan skala 1 cm mewakili 3 km. Berapakah jarak sebenar?",
+    "options": [
+      "7.5 km",
+      "9 km",
+      "13.5 km",
+      "18 km"
+    ],
+    "answer": "13.5 km",
+    "explanation": "4.5 × 3 km = 13.5 km."
+  },
+  {
+    "id": "GB01-020",
+    "chapter": 1,
+    "subtopic": "1.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Skala 1 : 100 000. Jika jarak pada peta 6 cm, jarak sebenar ialah...",
+    "options": [
+      "600 m",
+      "3 km",
+      "6 km",
+      "60 km"
+    ],
+    "answer": "6 km",
+    "explanation": "Pada skala 1 : 100 000, 1 cm mewakili 1 km."
+  },
+  {
+    "id": "GB01-021",
+    "chapter": 1,
+    "subtopic": "1.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Skala 1 : 200 000. Jarak dua tempat pada peta ialah 3.5 cm. Berapakah jarak sebenar?",
+    "options": [
+      "1.75 km",
+      "3.5 km",
+      "7 km",
+      "70 km"
+    ],
+    "answer": "7 km",
+    "explanation": "1 cm mewakili 2 km, maka 3.5 cm mewakili 7 km."
+  },
+  {
+    "id": "GB01-022",
+    "chapter": 1,
+    "subtopic": "1.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Antara alat berikut, yang boleh digunakan untuk mengikuti lengkungan sungai pada peta ialah...",
+    "options": [
+      "Benang",
+      "Jangka suhu",
+      "Kompas magnet",
+      "Kalkulator"
+    ],
+    "answer": "Benang",
+    "explanation": "Benang boleh diletakkan mengikut lengkungan sungai sebelum panjangnya diukur dengan pembaris."
+  },
+  {
+    "id": "GB01-023",
+    "chapter": 1,
+    "subtopic": "1.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Apakah langkah yang sesuai selepas benang diletakkan mengikut lengkungan sungai dari titik mula ke titik akhir?",
+    "options": [
+      "Rentangkan benang pada pembaris dan ukur panjangnya",
+      "Padam semua tanda pada peta",
+      "Tukar arah utara peta",
+      "Ukur suhu air sungai"
+    ],
+    "answer": "Rentangkan benang pada pembaris dan ukur panjangnya",
+    "explanation": "Panjang benang kemudian ditukarkan kepada jarak sebenar berdasarkan skala."
+  },
+  {
+    "id": "GB01-024",
+    "chapter": 1,
+    "subtopic": "1.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Seorang murid memperoleh 8 cm pada peta berskala 1 : 100 000 tetapi menjawab 800 km. Apakah pembetulan yang betul?",
+    "options": [
+      "8 km",
+      "80 km",
+      "0.8 km",
+      "8000 km"
+    ],
+    "answer": "8 km",
+    "explanation": "1 cm pada skala 1 : 100 000 mewakili 1 km, jadi 8 cm ialah 8 km."
+  },
+  {
+    "id": "GB01-025",
+    "chapter": 1,
+    "subtopic": "1.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Pada sebuah peta, jarak Sekolah–Hospital ialah 3 cm. Jika skala 1 cm mewakili 2 km, jarak sebenar ialah...",
+    "options": [
+      "3 km",
+      "4 km",
+      "6 km",
+      "8 km"
+    ],
+    "answer": "6 km",
+    "explanation": "3 × 2 km = 6 km."
+  },
+  {
+    "id": "GB01-026",
+    "chapter": 1,
+    "subtopic": "1.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Jarak Balai Polis–Sekolah melalui jalan raya ialah 4 cm pada skala 1 cm mewakili 2 km. Jarak sebenar ialah...",
+    "options": [
+      "4 km",
+      "6 km",
+      "8 km",
+      "10 km"
+    ],
+    "answer": "8 km",
+    "explanation": "4 × 2 km = 8 km."
+  },
+  {
+    "id": "GB01-027",
+    "chapter": 1,
+    "subtopic": "1.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Sungai Murni dari P ke Q berukuran 6.5 cm pada skala 1 cm mewakili 2 km. Panjang sebenar sungai ialah...",
+    "options": [
+      "6.5 km",
+      "10 km",
+      "13 km",
+      "26 km"
+    ],
+    "answer": "13 km",
+    "explanation": "6.5 × 2 km = 13 km."
+  },
+  {
+    "id": "GB01-028",
+    "chapter": 1,
+    "subtopic": "1.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Jarak Kampung Aman ke sekolah ialah 10 km. Jika bas mengambil 5 minit bagi setiap kilometer, masa perjalanan ialah...",
+    "options": [
+      "20 minit",
+      "30 minit",
+      "50 minit",
+      "60 minit"
+    ],
+    "answer": "50 minit",
+    "explanation": "10 × 5 minit = 50 minit."
+  },
+  {
+    "id": "GB01-029",
+    "chapter": 1,
+    "subtopic": "1.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tambang van ialah RM0.80 bagi setiap kilometer. Jika jarak perjalanan 8 km, tambang sehala ialah...",
+    "options": [
+      "RM4.80",
+      "RM6.40",
+      "RM8.00",
+      "RM10.00"
+    ],
+    "answer": "RM6.40",
+    "explanation": "8 × RM0.80 = RM6.40."
+  },
+  {
+    "id": "GB01-030",
+    "chapter": 1,
+    "subtopic": "1.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Laluan A sejauh 8 km mengambil 20 minit, manakala Laluan B sejauh 6 km mengambil 30 minit. Laluan dengan jarak mutlak lebih pendek ialah...",
+    "options": [
+      "Laluan A",
+      "Laluan B",
+      "Kedua-duanya sama",
+      "Tidak dapat ditentukan"
+    ],
+    "answer": "Laluan B",
+    "explanation": "6 km lebih pendek daripada 8 km walaupun masa perjalanannya lebih lama."
+  },
+  {
+    "id": "GB01-031",
+    "chapter": 1,
+    "subtopic": "1.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Berdasarkan situasi Laluan A 8 km/20 minit dan Laluan B 6 km/30 minit, laluan dengan jarak relatif masa lebih singkat ialah...",
+    "options": [
+      "Laluan A",
+      "Laluan B",
+      "Kedua-duanya sama",
+      "Tidak dapat ditentukan"
+    ],
+    "answer": "Laluan A",
+    "explanation": "Jarak relatif berdasarkan masa menunjukkan Laluan A lebih cepat, iaitu 20 minit."
+  },
+  {
+    "id": "GB01-032",
+    "chapter": 1,
+    "subtopic": "1.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Farah memilih antara laluan 6 km yang sesak dan laluan 9 km yang lebih cepat. Apakah dua maklumat yang patut dipertimbangkan?",
+    "options": [
+      "Jarak mutlak dan jarak relatif masa",
+      "Skala dan arah utara sahaja",
+      "Latitud dan longitud",
+      "Suhu dan hujan"
+    ],
+    "answer": "Jarak mutlak dan jarak relatif masa",
+    "explanation": "Jarak mutlak menunjukkan panjang laluan, manakala jarak relatif masa menunjukkan tempoh perjalanan."
+  },
+  {
+    "id": "GB02-013",
+    "chapter": 2,
+    "subtopic": "2.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Peta topografi menunjukkan keadaan...",
+    "options": [
+      "Muka bumi sesebuah kawasan",
+      "Harga barangan harian",
+      "Ramalan cuaca sahaja",
+      "Sempadan negara sahaja"
+    ],
+    "answer": "Muka bumi sesebuah kawasan",
+    "explanation": "Peta topografi menggambarkan keadaan muka bumi serta ciri fizikal dan budaya."
+  },
+  {
+    "id": "GB02-014",
+    "chapter": 2,
+    "subtopic": "2.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Yang manakah membantu mentafsir simbol-simbol pada peta topografi?",
+    "options": [
+      "Petunjuk",
+      "Nama murid",
+      "Tarikh peperiksaan",
+      "Markah latihan"
+    ],
+    "answer": "Petunjuk",
+    "explanation": "Petunjuk menerangkan maksud simbol yang digunakan pada peta."
+  },
+  {
+    "id": "GB02-015",
+    "chapter": 2,
+    "subtopic": "2.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Peta topografi yang lengkap lazimnya menggunakan simbol bersama...",
+    "options": [
+      "Skala",
+      "Harga",
+      "Suhu badan",
+      "Jadual waktu kelas"
+    ],
+    "answer": "Skala",
+    "explanation": "Peta topografi dilukis menggunakan skala dan simbol tertentu."
+  },
+  {
+    "id": "GB02-016",
+    "chapter": 2,
+    "subtopic": "2.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Nilai garisan timuran semakin bertambah ke arah...",
+    "options": [
+      "Timur",
+      "Barat",
+      "Utara",
+      "Selatan"
+    ],
+    "answer": "Timur",
+    "explanation": "Garisan timuran menunjukkan kedudukan ke arah timur dan nilainya meningkat ke timur."
+  },
+  {
+    "id": "GB02-017",
+    "chapter": 2,
+    "subtopic": "2.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Nilai garisan utaraan semakin bertambah ke arah...",
+    "options": [
+      "Utara",
+      "Selatan",
+      "Timur",
+      "Barat"
+    ],
+    "answer": "Utara",
+    "explanation": "Garisan utaraan menunjukkan kedudukan ke arah utara dan nilainya meningkat ke utara."
+  },
+  {
+    "id": "GB02-018",
+    "chapter": 2,
+    "subtopic": "2.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Nombor 31, 32, 33 yang meningkat dari kiri ke kanan pada grid ialah nilai...",
+    "options": [
+      "Garisan timuran",
+      "Garisan utaraan",
+      "Kontur",
+      "Skala"
+    ],
+    "answer": "Garisan timuran",
+    "explanation": "Nombor pada garisan menegak meningkat ke arah timur."
+  },
+  {
+    "id": "GB02-019",
+    "chapter": 2,
+    "subtopic": "2.2",
+    "difficulty": "medium",
+    "type": "tf",
+    "prompt": "Garisan utaraan ialah garisan grid menegak.",
+    "options": [
+      "Betul",
+      "Salah"
+    ],
+    "answer": "Salah",
+    "explanation": "Garisan utaraan dilukis secara melintang; garisan timuran pula menegak."
+  },
+  {
+    "id": "GB02-020",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Rujukan grid merupakan gabungan nilai...",
+    "options": [
+      "Timuran dan utaraan",
+      "Suhu dan hujan",
+      "Kos dan masa",
+      "Latitud dan skala"
+    ],
+    "answer": "Timuran dan utaraan",
+    "explanation": "Rujukan grid dibentuk daripada nilai timuran diikuti nilai utaraan."
+  },
+  {
+    "id": "GB02-021",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Sebuah kawasan terletak dalam segi empat yang dibatasi timuran 31–32 dan utaraan 53–54. Rujukan grid 4 angka ialah...",
+    "options": [
+      "3153",
+      "5331",
+      "3254",
+      "314533"
+    ],
+    "answer": "3153",
+    "explanation": "Rujukan grid 4 angka menggunakan nilai penjuru barat daya: timuran 31 dan utaraan 53."
+  },
+  {
+    "id": "GB02-022",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Sebuah hutan berada dalam petak timuran 30–31 dan utaraan 54–55. Rujukan grid 4 angka ialah...",
+    "options": [
+      "3054",
+      "5430",
+      "3155",
+      "3055"
+    ],
+    "answer": "3054",
+    "explanation": "Baca timuran 30 dahulu, kemudian utaraan 54."
+  },
+  {
+    "id": "GB02-023",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Sebuah kawasan padi terletak dalam petak timuran 33–34 dan utaraan 52–53. Rujukan grid 4 angka ialah...",
+    "options": [
+      "3352",
+      "5233",
+      "3453",
+      "3253"
+    ],
+    "answer": "3352",
+    "explanation": "Baca nilai timuran 33 dan kemudian utaraan 52."
+  },
+  {
+    "id": "GB02-024",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Jika nilai timuran terperinci ialah 314 dan nilai utaraan terperinci ialah 533, rujukan grid 6 angka ialah...",
+    "options": [
+      "314533",
+      "533314",
+      "3153",
+      "31453"
+    ],
+    "answer": "314533",
+    "explanation": "Tiga angka timuran ditulis dahulu, diikuti tiga angka utaraan."
+  },
+  {
+    "id": "GB02-025",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Rujukan grid 6 angka lebih tepat kerana setiap segi empat grid dibahagikan kepada...",
+    "options": [
+      "10 bahagian sekata pada setiap arah",
+      "2 bahagian sahaja",
+      "1000 kilometer",
+      "4 zon iklim"
+    ],
+    "answer": "10 bahagian sekata pada setiap arah",
+    "explanation": "Pembahagian kepada sepuluh bahagian membolehkan kedudukan objek dinyatakan dengan lebih spesifik."
+  },
+  {
+    "id": "GB02-026",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Untuk mencari lokasi tepat sebuah sekolah kecil pada peta topografi, rujukan yang paling sesuai ialah...",
+    "options": [
+      "Rujukan grid 6 angka",
+      "Rujukan grid 4 angka",
+      "Skala penyata sahaja",
+      "Jarak relatif"
+    ],
+    "answer": "Rujukan grid 6 angka",
+    "explanation": "Objek kecil seperti sekolah lebih sesuai dinyatakan dengan rujukan grid 6 angka."
+  },
+  {
+    "id": "GB02-027",
+    "chapter": 2,
+    "subtopic": "2.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Untuk menyatakan kawasan ladang yang memenuhi satu segi empat grid, rujukan yang lebih sesuai ialah...",
+    "options": [
+      "Rujukan grid 4 angka",
+      "Rujukan grid 6 angka sahaja",
+      "Garisan kontur",
+      "Arah angin"
+    ],
+    "answer": "Rujukan grid 4 angka",
+    "explanation": "Rujukan grid 4 angka sesuai bagi kawasan yang luas dalam satu segi empat grid."
+  },
+  {
+    "id": "GB02-028",
+    "chapter": 2,
+    "subtopic": "2.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Yang manakah ciri pandang darat budaya?",
+    "options": [
+      "Jalan kereta api",
+      "Tasik",
+      "Bukit",
+      "Hutan"
+    ],
+    "answer": "Jalan kereta api",
+    "explanation": "Jalan kereta api ialah ciri buatan manusia."
+  },
+  {
+    "id": "GB02-029",
+    "chapter": 2,
+    "subtopic": "2.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Yang manakah kumpulan ciri fizikal?",
+    "options": [
+      "Sungai, bukit dan hutan",
+      "Sekolah, masjid dan jalan",
+      "Kilang, jambatan dan sawah",
+      "Pejabat pos, jalan dan klinik"
+    ],
+    "answer": "Sungai, bukit dan hutan",
+    "explanation": "Ciri fizikal ialah ciri semula jadi seperti saliran, bentuk muka bumi dan tumbuhan semula jadi."
+  },
+  {
+    "id": "GB02-030",
+    "chapter": 2,
+    "subtopic": "2.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tanah tinggi biasanya dikaitkan dengan kegiatan...",
+    "options": [
+      "Tanaman teh dan pelancongan",
+      "Padi sawah sahaja",
+      "Pelabuhan laut dalam sahaja",
+      "Perikanan laut dalam sahaja"
+    ],
+    "answer": "Tanaman teh dan pelancongan",
+    "explanation": "Tanah tinggi sesuai untuk tanaman hawa sederhana dan kegiatan pelancongan."
+  },
+  {
+    "id": "GB02-031",
+    "chapter": 2,
+    "subtopic": "2.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pinggir laut boleh menggalakkan kewujudan...",
+    "options": [
+      "Jeti dan petempatan nelayan",
+      "Ladang teh sahaja",
+      "Stesen trigonometri sahaja",
+      "Sawah padi di cerun curam"
+    ],
+    "answer": "Jeti dan petempatan nelayan",
+    "explanation": "Ciri fizikal pinggir laut mempengaruhi perikanan, pelabuhan dan pelancongan."
+  },
+  {
+    "id": "GB02-032",
+    "chapter": 2,
+    "subtopic": "2.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kawasan saliran boleh menyokong ciri budaya seperti...",
+    "options": [
+      "Jeti dan pangkalan bot",
+      "Lapangan terbang di puncak bukit",
+      "Ladang teh di laut",
+      "Tiada kegiatan manusia"
+    ],
+    "answer": "Jeti dan pangkalan bot",
+    "explanation": "Sungai dan saliran boleh digunakan untuk sumber air serta pengangkutan air."
+  },
+  {
+    "id": "GB02-033",
+    "chapter": 2,
+    "subtopic": "2.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapakah ciri pandang darat fizikal penting semasa mentafsir guna tanah manusia?",
+    "options": [
+      "Ciri fizikal mempengaruhi lokasi dan jenis kegiatan manusia",
+      "Ciri fizikal tidak berkaitan dengan kegiatan manusia",
+      "Semua kawasan sesuai untuk kegiatan yang sama",
+      "Hanya simbol budaya perlu dilihat"
+    ],
+    "answer": "Ciri fizikal mempengaruhi lokasi dan jenis kegiatan manusia",
+    "explanation": "Bentuk muka bumi, saliran dan tumbuh-tumbuhan mempengaruhi petempatan, pertanian dan pengangkutan."
+  },
+  {
+    "id": "GB02-034",
+    "chapter": 2,
+    "subtopic": "2.5",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Langkah awal mentafsir peta topografi ialah...",
+    "options": [
+      "Perhatikan peta secara keseluruhan",
+      "Terus menulis kesimpulan tanpa melihat peta",
+      "Abaikan petunjuk",
+      "Padam simbol peta"
+    ],
+    "answer": "Perhatikan peta secara keseluruhan",
+    "explanation": "Pemerhatian keseluruhan memberi gambaran umum kawasan kajian."
+  },
+  {
+    "id": "GB02-035",
+    "chapter": 2,
+    "subtopic": "2.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Selepas mengenal pasti ciri fizikal dan budaya, langkah seterusnya ialah...",
+    "options": [
+      "Menghubungkaitkan kedua-dua ciri",
+      "Menukar skala peta",
+      "Mengabaikan petempatan",
+      "Menambah simbol baharu sesuka hati"
+    ],
+    "answer": "Menghubungkaitkan kedua-dua ciri",
+    "explanation": "Pentafsiran memerlukan hubungan antara keadaan fizikal dengan kegiatan manusia."
+  },
+  {
+    "id": "GB02-036",
+    "chapter": 2,
+    "subtopic": "2.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pekan yang mempunyai sekolah, klinik, balai polis dan pejabat pos berkemungkinan menjadi...",
+    "options": [
+      "Tumpuan penduduk",
+      "Kawasan tanpa penduduk",
+      "Kawasan hutan tebal sahaja",
+      "Kawasan laut dalam"
+    ],
+    "answer": "Tumpuan penduduk",
+    "explanation": "Kemudahan sosial dan pengangkutan menarik serta menyokong penumpuan penduduk."
+  },
+  {
+    "id": "GB02-037",
+    "chapter": 2,
+    "subtopic": "2.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Rumah yang tersusun rapat di sekitar satu pusat kemudahan menunjukkan pola petempatan...",
+    "options": [
+      "Berpusat",
+      "Berjajar",
+      "Berselerak",
+      "Linear sungai sahaja"
+    ],
+    "answer": "Berpusat",
+    "explanation": "Petempatan berpusat tertumpu pada satu kawasan utama."
+  },
+  {
+    "id": "GB02-038",
+    "chapter": 2,
+    "subtopic": "2.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Padi sawah pada tanah pamah berhampiran sungai menunjukkan hubungan antara...",
+    "options": [
+      "Bentuk muka bumi, saliran dan pertanian",
+      "Suhu badan dan penduduk",
+      "Harga dan skala",
+      "Grid dan zon waktu"
+    ],
+    "answer": "Bentuk muka bumi, saliran dan pertanian",
+    "explanation": "Tanah pamah dan bekalan air menyokong kegiatan penanaman padi."
+  },
+  {
+    "id": "GB02-039",
+    "chapter": 2,
+    "subtopic": "2.5",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa kawasan timur laut yang curam dan berhutan tebal mungkin kurang petempatan?",
+    "options": [
+      "Akses dan pembangunan lebih sukar",
+      "Kerana terlalu banyak sekolah",
+      "Kerana semua jalan berturap",
+      "Kerana tiada tumbuhan"
+    ],
+    "answer": "Akses dan pembangunan lebih sukar",
+    "explanation": "Tanah tinggi dan hutan tebal meningkatkan kos serta kesukaran pembinaan."
+  },
+  {
+    "id": "GB02-040",
+    "chapter": 2,
+    "subtopic": "2.5",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Lokasi paling sesuai bagi petempatan baharu biasanya ialah...",
+    "options": [
+      "Tanah pamah berhampiran jaringan jalan tetapi selamat daripada banjir",
+      "Cerun paling curam",
+      "Tengah paya tanpa jalan",
+      "Puncak bukit tanpa akses"
+    ],
+    "answer": "Tanah pamah berhampiran jaringan jalan tetapi selamat daripada banjir",
+    "explanation": "Tanah pamah dan akses jalan memudahkan pembangunan, manakala risiko bencana perlu dielakkan."
+  },
+  {
+    "id": "GB02-041",
+    "chapter": 2,
+    "subtopic": "2.5",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Rumusan tafsiran peta yang baik perlu...",
+    "options": [
+      "Menggunakan bukti ciri fizikal dan budaya yang terdapat pada peta",
+      "Bergantung pada tekaan sahaja",
+      "Mengabaikan petunjuk",
+      "Menyenaraikan nama tempat tanpa hubungan"
+    ],
+    "answer": "Menggunakan bukti ciri fizikal dan budaya yang terdapat pada peta",
+    "explanation": "Tafsiran perlu disokong maklumat dan bukti yang benar-benar ditunjukkan pada peta."
+  },
+  {
+    "id": "GB03-013",
+    "chapter": 3,
+    "subtopic": "3.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Semua planet dalam sistem suria beredar mengelilingi...",
+    "options": [
+      "Matahari",
+      "Bumi",
+      "Bulan",
+      "Kutub Utara"
+    ],
+    "answer": "Matahari",
+    "explanation": "Planet beredar mengelilingi matahari mengikut orbit masing-masing."
+  },
+  {
+    "id": "GB03-014",
+    "chapter": 3,
+    "subtopic": "3.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Laluan yang diikuti planet ketika mengelilingi matahari dikenali sebagai...",
+    "options": [
+      "Orbit",
+      "Kontur",
+      "Grid",
+      "Skala"
+    ],
+    "answer": "Orbit",
+    "explanation": "Orbit ialah laluan peredaran sesuatu planet atau satelit."
+  },
+  {
+    "id": "GB03-015",
+    "chapter": 3,
+    "subtopic": "3.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Bumi berputar pada paksinya sambil...",
+    "options": [
+      "Beredar mengelilingi matahari",
+      "Berhenti bergerak",
+      "Mengelilingi bulan sahaja",
+      "Bergerak ke Kutub Utara"
+    ],
+    "answer": "Beredar mengelilingi matahari",
+    "explanation": "Putaran dan peredaran berlaku serentak."
+  },
+  {
+    "id": "GB03-016",
+    "chapter": 3,
+    "subtopic": "3.1",
+    "difficulty": "medium",
+    "type": "tf",
+    "prompt": "Bumi hanya mengalami satu jenis pergerakan dalam sistem suria.",
+    "options": [
+      "Betul",
+      "Salah"
+    ],
+    "answer": "Salah",
+    "explanation": "Bumi mengalami dua pergerakan utama, iaitu putaran dan peredaran."
+  },
+  {
+    "id": "GB03-017",
+    "chapter": 3,
+    "subtopic": "3.1",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Jika bumi tidak beredar mengelilingi matahari, kesan manakah yang paling berkait akan berubah?",
+    "options": [
+      "Kejadian empat musim",
+      "Rujukan grid peta",
+      "Skala penyata",
+      "Pola petempatan"
+    ],
+    "answer": "Kejadian empat musim",
+    "explanation": "Empat musim berkait dengan peredaran bumi dan kecondongan paksinya."
+  },
+  {
+    "id": "GB03-018",
+    "chapter": 3,
+    "subtopic": "3.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Kecondongan paksi bumi pada satah tegak ialah...",
+    "options": [
+      "23½°",
+      "15°",
+      "45°",
+      "90°"
+    ],
+    "answer": "23½°",
+    "explanation": "Paksi bumi condong 23½° pada satah tegak."
+  },
+  {
+    "id": "GB03-019",
+    "chapter": 3,
+    "subtopic": "3.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Bumi berputar 15° longitud dalam tempoh...",
+    "options": [
+      "1 jam",
+      "4 jam",
+      "12 jam",
+      "24 jam"
+    ],
+    "answer": "1 jam",
+    "explanation": "360° dibahagi 24 jam bersamaan 15° sejam."
+  },
+  {
+    "id": "GB03-020",
+    "chapter": 3,
+    "subtopic": "3.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Perbezaan 1° longitud bersamaan kira-kira...",
+    "options": [
+      "4 minit",
+      "15 minit",
+      "30 minit",
+      "60 minit"
+    ],
+    "answer": "4 minit",
+    "explanation": "Bumi mengambil kira-kira 4 minit untuk berputar 1° longitud."
+  },
+  {
+    "id": "GB03-021",
+    "chapter": 3,
+    "subtopic": "3.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Di hemisfera utara, daya Koriolis membiaskan arah angin ke...",
+    "options": [
+      "Kanan",
+      "Kiri",
+      "Atas",
+      "Bawah"
+    ],
+    "answer": "Kanan",
+    "explanation": "Di hemisfera utara, angin lazim terbias ke kanan daripada arah tiupannya."
+  },
+  {
+    "id": "GB03-022",
+    "chapter": 3,
+    "subtopic": "3.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Fenomena pasang surut terutama berkait dengan...",
+    "options": [
+      "Tarikan graviti antara bumi, bulan dan matahari",
+      "Perubahan skala peta",
+      "Garisan timuran",
+      "Jenis petempatan"
+    ],
+    "answer": "Tarikan graviti antara bumi, bulan dan matahari",
+    "explanation": "Tarikan graviti, khususnya bulan, menyebabkan perubahan paras air laut secara berkala."
+  },
+  {
+    "id": "GB03-023",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Peredaran bumi mengelilingi matahari berlaku mengikut arah...",
+    "options": [
+      "Lawan pusingan jam",
+      "Mengikut pusingan jam sahaja",
+      "Utara ke selatan",
+      "Timur ke barat lurus"
+    ],
+    "answer": "Lawan pusingan jam",
+    "explanation": "Bumi beredar mengelilingi matahari mengikut arah lawan jam."
+  },
+  {
+    "id": "GB03-024",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pada 21 Mac, hemisfera utara mengalami...",
+    "options": [
+      "Musim bunga",
+      "Musim panas",
+      "Musim luruh",
+      "Musim sejuk"
+    ],
+    "answer": "Musim bunga",
+    "explanation": "21 Mac ialah ekuinoks musim bunga di hemisfera utara."
+  },
+  {
+    "id": "GB03-025",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pada 23 September, hemisfera utara mengalami...",
+    "options": [
+      "Musim luruh",
+      "Musim bunga",
+      "Musim panas",
+      "Musim sejuk"
+    ],
+    "answer": "Musim luruh",
+    "explanation": "23 September ialah ekuinoks musim luruh di hemisfera utara."
+  },
+  {
+    "id": "GB03-026",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Semasa 21 Jun, hemisfera utara mempunyai waktu siang yang...",
+    "options": [
+      "Lebih panjang daripada malam",
+      "Lebih pendek daripada malam",
+      "Sama 24 jam di semua tempat",
+      "Tiada siang"
+    ],
+    "answer": "Lebih panjang daripada malam",
+    "explanation": "Solstis musim panas menyebabkan siang lebih panjang di hemisfera utara."
+  },
+  {
+    "id": "GB03-027",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Semasa 22 Disember, Kutub Selatan mengalami...",
+    "options": [
+      "24 jam siang",
+      "24 jam malam",
+      "12 jam siang sahaja",
+      "Tiada cahaya sepanjang tahun"
+    ],
+    "answer": "24 jam siang",
+    "explanation": "Dalam tempoh sekitar solstis Disember, Kutub Selatan mengalami siang berpanjangan."
+  },
+  {
+    "id": "GB03-028",
+    "chapter": 3,
+    "subtopic": "3.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Gerhana matahari berlaku apabila susunan jasad ialah...",
+    "options": [
+      "Matahari–Bulan–Bumi",
+      "Matahari–Bumi–Bulan",
+      "Bumi–Matahari–Bulan",
+      "Bulan–Bumi–Matahari dengan bumi di tengah"
+    ],
+    "answer": "Matahari–Bulan–Bumi",
+    "explanation": "Bulan berada di antara matahari dan bumi lalu menghalang cahaya matahari ke sebahagian bumi."
+  },
+  {
+    "id": "GB04-013",
+    "chapter": 4,
+    "subtopic": "4.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Malaysia terletak dalam lingkungan kira-kira...",
+    "options": [
+      "0° hingga 10°U dan 0° hingga 10°S",
+      "30°U hingga 50°U sahaja",
+      "Kutub Utara",
+      "60°S hingga 90°S"
+    ],
+    "answer": "0° hingga 10°U dan 0° hingga 10°S",
+    "explanation": "Iklim Khatulistiwa dialami kawasan berhampiran Garisan Khatulistiwa."
+  },
+  {
+    "id": "GB04-014",
+    "chapter": 4,
+    "subtopic": "4.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Julat suhu tahunan Malaysia yang kecil ialah kira-kira...",
+    "options": [
+      "1°C hingga 3°C",
+      "10°C hingga 20°C",
+      "25°C hingga 30°C",
+      "40°C hingga 50°C"
+    ],
+    "answer": "1°C hingga 3°C",
+    "explanation": "Suhu Malaysia tinggi dan hampir sekata sepanjang tahun."
+  },
+  {
+    "id": "GB04-015",
+    "chapter": 4,
+    "subtopic": "4.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Jumlah hujan tahunan Malaysia secara umum kira-kira...",
+    "options": [
+      "2 600 mm",
+      "250 mm",
+      "500 mm",
+      "10 000 mm"
+    ],
+    "answer": "2 600 mm",
+    "explanation": "Malaysia menerima hujan yang banyak sepanjang tahun."
+  },
+  {
+    "id": "GB04-016",
+    "chapter": 4,
+    "subtopic": "4.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Hujan maksimum lazim berlaku semasa...",
+    "options": [
+      "Peralihan monsun",
+      "Musim sejuk kutub",
+      "Tiada angin",
+      "Gerhana bulan"
+    ],
+    "answer": "Peralihan monsun",
+    "explanation": "Hujan maksimum banyak berlaku pada tempoh peralihan monsun."
+  },
+  {
+    "id": "GB04-017",
+    "chapter": 4,
+    "subtopic": "4.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Hujan lebat lewat petang bersama kilat dan petir biasanya ialah...",
+    "options": [
+      "Hujan perolakan",
+      "Hujan salji",
+      "Hujan batu sahaja",
+      "Hujan asid sahaja"
+    ],
+    "answer": "Hujan perolakan",
+    "explanation": "Pemanasan permukaan menyebabkan udara panas naik dan membentuk awan kumulonimbus."
+  },
+  {
+    "id": "GB04-018",
+    "chapter": 4,
+    "subtopic": "4.1",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa cerun lindungan hujan menerima hujan yang lebih sedikit?",
+    "options": [
+      "Udara lembap telah kehilangan banyak wap air di cerun hadap angin",
+      "Cerun itu lebih dekat dengan matahari",
+      "Tiada graviti",
+      "Skala peta berbeza"
+    ],
+    "answer": "Udara lembap telah kehilangan banyak wap air di cerun hadap angin",
+    "explanation": "Udara lembap naik dan menurunkan hujan di cerun hadap angin sebelum turun lebih kering di cerun terlindung."
+  },
+  {
+    "id": "GB04-019",
+    "chapter": 4,
+    "subtopic": "4.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Tanaman yang sesuai di tanah tinggi bersuhu sederhana termasuk...",
+    "options": [
+      "Teh dan sayur-sayuran",
+      "Kelapa di gurun",
+      "Kurma di tundra",
+      "Padi di puncak curam sahaja"
+    ],
+    "answer": "Teh dan sayur-sayuran",
+    "explanation": "Kawasan seperti Cameron Highlands sesuai untuk tanaman hawa sederhana."
+  },
+  {
+    "id": "GB04-020",
+    "chapter": 4,
+    "subtopic": "4.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Mengapakah pembalakan sukar dilakukan semasa musim tengkujuh?",
+    "options": [
+      "Jalan licin dan risiko tanah runtuh meningkat",
+      "Pokok tidak wujud",
+      "Tiada hujan langsung",
+      "Semua sungai kering"
+    ],
+    "answer": "Jalan licin dan risiko tanah runtuh meningkat",
+    "explanation": "Hujan lebat menjejaskan keselamatan dan akses ke kawasan pembalakan."
+  },
+  {
+    "id": "GB04-021",
+    "chapter": 4,
+    "subtopic": "4.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Nelayan pantai timur Semenanjung sukar turun ke laut semasa...",
+    "options": [
+      "Monsun Timur Laut",
+      "Monsun Barat Daya sahaja",
+      "Ekuinoks tanpa angin",
+      "Musim panas Eropah"
+    ],
+    "answer": "Monsun Timur Laut",
+    "explanation": "Monsun Timur Laut menyebabkan Laut China Selatan bergelora."
+  },
+  {
+    "id": "GB04-022",
+    "chapter": 4,
+    "subtopic": "4.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Semasa tidak dapat turun ke laut, nelayan boleh melakukan aktiviti seperti...",
+    "options": [
+      "Membaiki jala dan pukat",
+      "Membina iglu",
+      "Menanam gandum di tundra",
+      "Mengukur grid peta"
+    ],
+    "answer": "Membaiki jala dan pukat",
+    "explanation": "Buku teks menyatakan nelayan melakukan kerja darat seperti membaiki peralatan menangkap ikan."
+  },
+  {
+    "id": "GB04-023",
+    "chapter": 4,
+    "subtopic": "4.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Cuaca panas sesuai untuk kegiatan...",
+    "options": [
+      "Menjemur ikan",
+      "Memburu walrus",
+      "Membina salji",
+      "Menghasilkan ribut salji"
+    ],
+    "answer": "Menjemur ikan",
+    "explanation": "Cuaca panas membantu proses pengeringan ikan."
+  },
+  {
+    "id": "GB04-024",
+    "chapter": 4,
+    "subtopic": "4.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kawasan tanah tinggi menarik pelancong kerana...",
+    "options": [
+      "Suhu sederhana dan udara nyaman",
+      "Sentiasa mengalami gurun",
+      "Tiada hujan sepanjang tahun",
+      "Berada di kutub"
+    ],
+    "answer": "Suhu sederhana dan udara nyaman",
+    "explanation": "Cuaca yang lebih sejuk dan nyaman menjadi tarikan pelancongan."
+  },
+  {
+    "id": "GB04-025",
+    "chapter": 4,
+    "subtopic": "4.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa kegiatan pertanian boleh dijalankan hampir sepanjang tahun di banyak kawasan Malaysia?",
+    "options": [
+      "Iklim panas dan lembap menyediakan haba serta hujan yang mencukupi",
+      "Malaysia mengalami musim sejuk panjang",
+      "Malaysia menerima salji tebal",
+      "Semua kawasan mempunyai suhu bawah sifar"
+    ],
+    "answer": "Iklim panas dan lembap menyediakan haba serta hujan yang mencukupi",
+    "explanation": "Iklim Khatulistiwa menyokong pertumbuhan tanaman dalam tempoh yang panjang."
+  },
+  {
+    "id": "GB04-026",
+    "chapter": 4,
+    "subtopic": "4.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Pulau haba merujuk keadaan...",
+    "options": [
+      "Kawasan bandar lebih panas daripada kawasan sekitarnya",
+      "Pulau di laut sentiasa sejuk",
+      "Bandar sentiasa hujan salji",
+      "Suhu semua kawasan sama"
+    ],
+    "answer": "Kawasan bandar lebih panas daripada kawasan sekitarnya",
+    "explanation": "Permukaan tepu bina, kenderaan dan kekurangan tumbuhan menyebabkan bandar menyimpan lebih banyak haba."
+  },
+  {
+    "id": "GB04-027",
+    "chapter": 4,
+    "subtopic": "4.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Bahan seperti konkrit dan batu bata menyumbang kepada pulau haba kerana...",
+    "options": [
+      "Menyerap dan menyimpan haba",
+      "Menghasilkan hujan salji",
+      "Memantulkan semua haba",
+      "Tidak menerima cahaya matahari"
+    ],
+    "answer": "Menyerap dan menyimpan haba",
+    "explanation": "Bahan binaan bandar mempunyai keupayaan menyerap haba yang tinggi."
+  },
+  {
+    "id": "GB04-028",
+    "chapter": 4,
+    "subtopic": "4.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Hujan asid biasanya mempunyai nilai pH...",
+    "options": [
+      "Kurang daripada 5.6",
+      "Tepat 7.0",
+      "Lebih daripada 12",
+      "Sentiasa 14"
+    ],
+    "answer": "Kurang daripada 5.6",
+    "explanation": "Hujan asid mengandungi asid lemah dan pH di bawah 5.6."
+  },
+  {
+    "id": "GB04-029",
+    "chapter": 4,
+    "subtopic": "4.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Gas daripada pembakaran bahan api fosil boleh bertindak balas dengan wap air lalu membentuk...",
+    "options": [
+      "Asid sulfurik dan asid nitrik",
+      "Oksigen tulen sahaja",
+      "Air suling sahaja",
+      "Garam dapur"
+    ],
+    "answer": "Asid sulfurik dan asid nitrik",
+    "explanation": "Gas berasid terlarut dalam wap air dan membentuk asid sebelum turun bersama hujan."
+  },
+  {
+    "id": "GB04-030",
+    "chapter": 4,
+    "subtopic": "4.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Satu kesan hujan asid ialah...",
+    "options": [
+      "Menghakis bangunan dan menjejaskan tumbuhan",
+      "Meningkatkan kesuburan semua tasik",
+      "Mengurangkan semua pencemaran",
+      "Meningkatkan jarak penglihatan"
+    ],
+    "answer": "Menghakis bangunan dan menjejaskan tumbuhan",
+    "explanation": "Hujan asid boleh merosakkan tumbuhan, bangunan dan kualiti air."
+  },
+  {
+    "id": "GB04-031",
+    "chapter": 4,
+    "subtopic": "4.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Jerebu boleh menjejaskan pengangkutan kerana...",
+    "options": [
+      "Jarak penglihatan berkurang",
+      "Jalan bertambah luas",
+      "Semua kenderaan menjadi elektrik",
+      "Hujan turun tanpa henti"
+    ],
+    "answer": "Jarak penglihatan berkurang",
+    "explanation": "Zarah halus yang banyak di udara mengurangkan kejelasan penglihatan."
+  },
+  {
+    "id": "GB04-032",
+    "chapter": 4,
+    "subtopic": "4.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Langkah bandar yang paling langsung membantu mengurangkan pulau haba ialah...",
+    "options": [
+      "Menambah kawasan hijau dan pokok teduhan",
+      "Menambah permukaan konkrit gelap",
+      "Mengurangkan semua taman",
+      "Meningkatkan kesesakan trafik"
+    ],
+    "answer": "Menambah kawasan hijau dan pokok teduhan",
+    "explanation": "Tumbuhan meningkatkan teduhan dan proses penyejatan yang membantu menyederhanakan suhu."
+  },
+  {
+    "id": "GB04-033",
+    "chapter": 4,
+    "subtopic": "4.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "El Niño dikaitkan dengan pemanasan luar biasa di...",
+    "options": [
+      "Lautan Pasifik",
+      "Lautan Artik sahaja",
+      "Sungai Rajang",
+      "Tasik buatan"
+    ],
+    "answer": "Lautan Pasifik",
+    "explanation": "El Niño berlaku apabila suhu permukaan Lautan Pasifik berubah secara luar biasa."
+  },
+  {
+    "id": "GB04-034",
+    "chapter": 4,
+    "subtopic": "4.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Semasa keadaan normal, angin Timuran membantu membawa hujan lebat ke...",
+    "options": [
+      "Asia Tenggara dan Australia",
+      "Eropah Utara sahaja",
+      "Kutub Selatan sahaja",
+      "Gurun Sahara sahaja"
+    ],
+    "answer": "Asia Tenggara dan Australia",
+    "explanation": "Angin Timuran membawa udara lembap ke bahagian barat Pasifik."
+  },
+  {
+    "id": "GB04-035",
+    "chapter": 4,
+    "subtopic": "4.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Semasa El Niño, angin Timuran menjadi...",
+    "options": [
+      "Lemah",
+      "Lebih kuat sepanjang masa",
+      "Berhenti bumi berputar",
+      "Bertukar menjadi salji"
+    ],
+    "answer": "Lemah",
+    "explanation": "Perubahan tekanan udara menyebabkan angin Timuran melemah."
+  },
+  {
+    "id": "GB04-036",
+    "chapter": 4,
+    "subtopic": "4.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Antara kesan El Niño di Malaysia ialah...",
+    "options": [
+      "Kemarau dan suhu lebih tinggi",
+      "Salji tebal",
+      "Musim sejuk lapan bulan",
+      "Air pasang besar setiap hari"
+    ],
+    "answer": "Kemarau dan suhu lebih tinggi",
+    "explanation": "El Niño boleh mengurangkan hujan di bahagian barat Pasifik termasuk Malaysia."
+  },
+  {
+    "id": "GB04-037",
+    "chapter": 4,
+    "subtopic": "4.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tempoh El Niño menurut buku teks boleh berlaku sekitar...",
+    "options": [
+      "6 hingga 18 bulan",
+      "1 hingga 2 hari",
+      "100 tahun tanpa henti",
+      "24 jam sahaja"
+    ],
+    "answer": "6 hingga 18 bulan",
+    "explanation": "El Niño boleh bertahan beberapa bulan hingga lebih setahun."
+  },
+  {
+    "id": "GB04-038",
+    "chapter": 4,
+    "subtopic": "4.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa perubahan pola angin semasa El Niño boleh mengubah taburan hujan?",
+    "options": [
+      "Arah pemindahan udara lembap berubah",
+      "Skala peta berubah",
+      "Bumi berhenti beredar",
+      "Semua sungai mengering serentak tanpa sebab"
+    ],
+    "answer": "Arah pemindahan udara lembap berubah",
+    "explanation": "Angin mengangkut wap air; perubahan arah dan kekuatannya mengubah kawasan yang menerima hujan."
+  },
+  {
+    "id": "GB05-013",
+    "chapter": 5,
+    "subtopic": "5.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Lebuh raya yang menganjur dari Bukit Kayu Hitam ke Johor Bahru ialah...",
+    "options": [
+      "Lebuhraya Utara-Selatan",
+      "Lebuhraya Pantai Timur",
+      "Lebuhraya Pan Borneo",
+      "Lebuhraya Timur-Barat"
+    ],
+    "answer": "Lebuhraya Utara-Selatan",
+    "explanation": "Lebuhraya Utara-Selatan menghubungkan utara dan selatan Semenanjung Malaysia."
+  },
+  {
+    "id": "GB05-014",
+    "chapter": 5,
+    "subtopic": "5.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Lebuhraya Pan Borneo terutama menghubungkan bandar dan kawasan pedalaman di...",
+    "options": [
+      "Sabah dan Sarawak",
+      "Perlis sahaja",
+      "Selangor sahaja",
+      "Melaka sahaja"
+    ],
+    "answer": "Sabah dan Sarawak",
+    "explanation": "Pan Borneo merupakan projek utama jaringan darat di Sabah dan Sarawak."
+  },
+  {
+    "id": "GB05-015",
+    "chapter": 5,
+    "subtopic": "5.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Landasan kereta api utama Semenanjung Malaysia menganjur dari Padang Besar ke...",
+    "options": [
+      "Johor Bahru",
+      "Kuching",
+      "Kota Kinabalu",
+      "Kuantan sahaja"
+    ],
+    "answer": "Johor Bahru",
+    "explanation": "Jaringan utama menghubungkan Padang Besar di utara dengan Johor Bahru di selatan."
+  },
+  {
+    "id": "GB05-016",
+    "chapter": 5,
+    "subtopic": "5.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Stesen Gemas penting kerana merupakan...",
+    "options": [
+      "Persimpangan landasan pantai timur dan pantai barat",
+      "Pelabuhan utama negara",
+      "Lapangan terbang antarabangsa",
+      "Stesen feri"
+    ],
+    "answer": "Persimpangan landasan pantai timur dan pantai barat",
+    "explanation": "Gemas ialah stesen persimpangan utama rangkaian kereta api Semenanjung."
+  },
+  {
+    "id": "GB05-017",
+    "chapter": 5,
+    "subtopic": "5.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Landasan kereta api di Sabah menghubungkan Tanjung Aru, Papar, Beaufort dan...",
+    "options": [
+      "Tenom",
+      "Bintulu",
+      "Miri",
+      "Sematan"
+    ],
+    "answer": "Tenom",
+    "explanation": "Rangkaian kereta api Sabah bergerak melalui Tanjung Aru, Papar, Beaufort dan Tenom."
+  },
+  {
+    "id": "GB05-018",
+    "chapter": 5,
+    "subtopic": "5.1",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa jaringan jalan raya Semenanjung lebih padat di pantai barat?",
+    "options": [
+      "Kawasan lebih maju, ramai penduduk dan bentuk muka bumi lebih sesuai",
+      "Pantai barat tiada bandar",
+      "Semua kawasan pantai timur bergurun",
+      "Tiada kegiatan ekonomi di pantai barat"
+    ],
+    "answer": "Kawasan lebih maju, ramai penduduk dan bentuk muka bumi lebih sesuai",
+    "explanation": "Kepadatan penduduk, kegiatan ekonomi dan tanah pamah menyokong pembinaan jaringan yang lebih padat."
+  },
+  {
+    "id": "GB05-019",
+    "chapter": 5,
+    "subtopic": "5.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Antara berikut, yang manakah lapangan terbang antarabangsa di Sarawak?",
+    "options": [
+      "Kuching",
+      "Tenom",
+      "Gemas",
+      "Bintulu Port"
+    ],
+    "answer": "Kuching",
+    "explanation": "Lapangan Terbang Antarabangsa Kuching ialah salah satu lapangan terbang antarabangsa Malaysia."
+  },
+  {
+    "id": "GB05-020",
+    "chapter": 5,
+    "subtopic": "5.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Pelabuhan utama yang dikenali sebagai Pusat Muatan Negara bagi kontena ialah...",
+    "options": [
+      "Pelabuhan Klang",
+      "Pelabuhan Bintulu",
+      "Pelabuhan Kuantan",
+      "Pelabuhan Pulau Pinang"
+    ],
+    "answer": "Pelabuhan Klang",
+    "explanation": "Pelabuhan Klang ialah pusat muatan utama kontena tempatan dan serantau."
+  },
+  {
+    "id": "GB05-021",
+    "chapter": 5,
+    "subtopic": "5.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pelabuhan Bintulu terkenal sebagai laluan eksport utama bagi...",
+    "options": [
+      "Gas asli cecair",
+      "Teh",
+      "Gandum",
+      "Salji"
+    ],
+    "answer": "Gas asli cecair",
+    "explanation": "Pelabuhan Bintulu memainkan peranan penting dalam eksport LNG negara."
+  },
+  {
+    "id": "GB05-022",
+    "chapter": 5,
+    "subtopic": "5.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pelabuhan Tanjung Pelepas terkenal sebagai...",
+    "options": [
+      "Terminal kontena yang sangat canggih",
+      "Pelabuhan perikanan kecil sahaja",
+      "Lapangan terbang domestik",
+      "Stesen kereta api"
+    ],
+    "answer": "Terminal kontena yang sangat canggih",
+    "explanation": "Pelabuhan Tanjung Pelepas ialah antara terminal kontena termaju di Malaysia."
+  },
+  {
+    "id": "GB05-023",
+    "chapter": 5,
+    "subtopic": "5.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pelabuhan yang baik lazimnya terletak di perairan...",
+    "options": [
+      "Terlindung dan dalam",
+      "Cetak dan cetek sahaja",
+      "Tanpa jaringan darat",
+      "Jauh daripada semua kegiatan ekonomi"
+    ],
+    "answer": "Terlindung dan dalam",
+    "explanation": "Perairan terlindung dan sesuai untuk kapal membantu operasi pelabuhan."
+  },
+  {
+    "id": "GB05-024",
+    "chapter": 5,
+    "subtopic": "5.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa pelabuhan perlu mempunyai hubungan dengan jalan raya atau rel?",
+    "options": [
+      "Memudahkan pergerakan barangan dari pelabuhan ke kawasan lain",
+      "Supaya kapal boleh berjalan di jalan raya",
+      "Untuk mengubah cuaca",
+      "Untuk menghapuskan perdagangan"
+    ],
+    "answer": "Memudahkan pergerakan barangan dari pelabuhan ke kawasan lain",
+    "explanation": "Jaringan pengangkutan bersepadu mempercepat pemindahan kargo ke pusat pengeluaran dan pasaran."
+  },
+  {
+    "id": "GB05-025",
+    "chapter": 5,
+    "subtopic": "5.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "KTM Komuter termasuk pengangkutan awam jenis...",
+    "options": [
+      "Rel",
+      "Air",
+      "Udara",
+      "Laut dalam"
+    ],
+    "answer": "Rel",
+    "explanation": "KTM Komuter menggunakan landasan kereta api."
+  },
+  {
+    "id": "GB05-026",
+    "chapter": 5,
+    "subtopic": "5.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "LRT dan MRT termasuk dalam kategori...",
+    "options": [
+      "Rel bersepadu",
+      "Pengangkutan air",
+      "Pengangkutan udara",
+      "Jalan tidak berturap"
+    ],
+    "answer": "Rel bersepadu",
+    "explanation": "Kedua-duanya ialah sistem rel bandar berkapasiti tinggi."
+  },
+  {
+    "id": "GB05-027",
+    "chapter": 5,
+    "subtopic": "5.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Perkhidmatan e-hailing ditempah menggunakan...",
+    "options": [
+      "Peranti atau aplikasi digital",
+      "Peta topografi sahaja",
+      "Mesin telegraf sahaja",
+      "Kompas magnet"
+    ],
+    "answer": "Peranti atau aplikasi digital",
+    "explanation": "E-hailing menggunakan komputer atau peranti bergerak untuk menempah kenderaan."
+  },
+  {
+    "id": "GB05-028",
+    "chapter": 5,
+    "subtopic": "5.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Feri dikategorikan sebagai pengangkutan awam...",
+    "options": [
+      "Air",
+      "Udara",
+      "Rel",
+      "Kabel"
+    ],
+    "answer": "Air",
+    "explanation": "Feri bergerak melalui laluan air."
+  },
+  {
+    "id": "GB05-029",
+    "chapter": 5,
+    "subtopic": "5.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Kapal terbang dikategorikan sebagai pengangkutan awam...",
+    "options": [
+      "Udara",
+      "Air",
+      "Rel",
+      "Jalan kaki"
+    ],
+    "answer": "Udara",
+    "explanation": "Kapal terbang ialah pengangkutan udara."
+  },
+  {
+    "id": "GB05-030",
+    "chapter": 5,
+    "subtopic": "5.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "ETS ialah singkatan bagi perkhidmatan...",
+    "options": [
+      "Tren Elektrik",
+      "Transit Sungai",
+      "Teksi Elektrik Sahaja",
+      "Terminal Ekspres"
+    ],
+    "answer": "Tren Elektrik",
+    "explanation": "ETS ialah Perkhidmatan Tren Elektrik."
+  },
+  {
+    "id": "GB05-031",
+    "chapter": 5,
+    "subtopic": "5.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Antara bas, MRT dan kereta persendirian, pilihan yang paling jelas termasuk pengangkutan awam ialah...",
+    "options": [
+      "Bas dan MRT",
+      "Kereta persendirian sahaja",
+      "Motosikal persendirian sahaja",
+      "Basikal persendirian sahaja"
+    ],
+    "answer": "Bas dan MRT",
+    "explanation": "Bas dan MRT digunakan oleh orang ramai secara bersama."
+  },
+  {
+    "id": "GB05-032",
+    "chapter": 5,
+    "subtopic": "5.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Antara faktor utama yang mempengaruhi jaringan pengangkutan ialah...",
+    "options": [
+      "Bentuk muka bumi",
+      "Warna bendera",
+      "Jenis tulisan",
+      "Bilangan musim di Eropah"
+    ],
+    "answer": "Bentuk muka bumi",
+    "explanation": "Bentuk muka bumi mempengaruhi kos dan kesukaran pembinaan."
+  },
+  {
+    "id": "GB05-033",
+    "chapter": 5,
+    "subtopic": "5.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tanah pamah sesuai untuk pembinaan jaringan pengangkutan kerana...",
+    "options": [
+      "Permukaannya lebih rata",
+      "Sentiasa bersalji",
+      "Tiada penduduk",
+      "Semua sungai hilang"
+    ],
+    "answer": "Permukaannya lebih rata",
+    "explanation": "Tanah rata memudahkan pembinaan jalan, rel dan lapangan terbang."
+  },
+  {
+    "id": "GB05-034",
+    "chapter": 5,
+    "subtopic": "5.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pembinaan jalan di kawasan berpaya lebih mahal kerana...",
+    "options": [
+      "Perlu kerja penambakan dan jambatan",
+      "Tiada tanah langsung",
+      "Tidak boleh menggunakan teknologi",
+      "Tiada kegiatan manusia"
+    ],
+    "answer": "Perlu kerja penambakan dan jambatan",
+    "explanation": "Kawasan lembangan dan paya memerlukan struktur tambahan untuk kestabilan dan laluan."
+  },
+  {
+    "id": "GB05-035",
+    "chapter": 5,
+    "subtopic": "5.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "SMART di Kuala Lumpur ialah contoh pengaruh faktor...",
+    "options": [
+      "Kemajuan teknologi",
+      "Iklim Tundra",
+      "Gerhana bulan",
+      "Rujukan grid"
+    ],
+    "answer": "Kemajuan teknologi",
+    "explanation": "Terowong SMART menggunakan teknologi kejuruteraan untuk saliran air dan laluan kenderaan."
+  },
+  {
+    "id": "GB05-036",
+    "chapter": 5,
+    "subtopic": "5.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pembinaan pengangkutan di Kerteh dan Bintulu berkait rapat dengan faktor...",
+    "options": [
+      "Kegiatan ekonomi",
+      "Musim sejuk",
+      "Ekuinoks",
+      "Peta kontur sahaja"
+    ],
+    "answer": "Kegiatan ekonomi",
+    "explanation": "Jaringan dibina bagi menyokong pengeluaran, penghantaran dan pemasaran petroleum."
+  },
+  {
+    "id": "GB05-037",
+    "chapter": 5,
+    "subtopic": "5.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Projek pengangkutan yang dirancang atau dibiayai kerajaan menunjukkan pengaruh faktor...",
+    "options": [
+      "Dasar kerajaan",
+      "Angin monsun",
+      "Pasang surut",
+      "Iklim Siberia"
+    ],
+    "answer": "Dasar kerajaan",
+    "explanation": "Dasar dan pelaburan kerajaan boleh mempercepat pembangunan jaringan pengangkutan."
+  },
+  {
+    "id": "GB05-038",
+    "chapter": 5,
+    "subtopic": "5.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Kawasan pedalaman bergunung dan berhutan tebal memerlukan kos jalan raya lebih tinggi kerana...",
+    "options": [
+      "Kerja kejuruteraan lebih kompleks",
+      "Tanah sentiasa rata",
+      "Tidak memerlukan jambatan",
+      "Semua bahan binaan percuma"
+    ],
+    "answer": "Kerja kejuruteraan lebih kompleks",
+    "explanation": "Cerun, sungai dan hutan meningkatkan cabaran teknikal serta kos pembinaan."
+  },
+  {
+    "id": "GB05-039",
+    "chapter": 5,
+    "subtopic": "5.5",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Pengangkutan darat penting kerana dapat...",
+    "options": [
+      "Membawa penumpang dan barangan",
+      "Menghentikan semua perdagangan",
+      "Mengurangkan semua bandar",
+      "Menghapuskan kegiatan ekonomi"
+    ],
+    "answer": "Membawa penumpang dan barangan",
+    "explanation": "Jalan dan rel memudahkan mobiliti manusia serta barangan."
+  },
+  {
+    "id": "GB05-040",
+    "chapter": 5,
+    "subtopic": "5.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Bandar satelit seperti Petaling Jaya mempunyai hubungan dengan bandar utama melalui...",
+    "options": [
+      "Bas, LRT dan Komuter",
+      "Kapal selam sahaja",
+      "Jalan hutan sahaja",
+      "Tiada pengangkutan"
+    ],
+    "answer": "Bas, LRT dan Komuter",
+    "explanation": "Jaringan pengangkutan menghubungkan bandar satelit dengan bandar raya berhampiran."
+  },
+  {
+    "id": "GB05-041",
+    "chapter": 5,
+    "subtopic": "5.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pengangkutan udara penting untuk menghubungkan Semenanjung dengan...",
+    "options": [
+      "Sabah dan Sarawak",
+      "Eropah sahaja",
+      "Kutub Utara sahaja",
+      "Sungai sahaja"
+    ],
+    "answer": "Sabah dan Sarawak",
+    "explanation": "Pengangkutan udara mempercepat integrasi dan pergerakan antara wilayah yang dipisahkan laut."
+  },
+  {
+    "id": "GB05-042",
+    "chapter": 5,
+    "subtopic": "5.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pengangkutan air sesuai mengangkut barangan pukal kerana...",
+    "options": [
+      "Ruang kargo luas dan kos relatif lebih murah",
+      "Kapal tidak memerlukan pelabuhan",
+      "Ia paling cepat bagi semua perjalanan",
+      "Tiada risiko cuaca"
+    ],
+    "answer": "Ruang kargo luas dan kos relatif lebih murah",
+    "explanation": "Kapal sesuai mengangkut barangan dalam kuantiti besar."
+  },
+  {
+    "id": "GB05-043",
+    "chapter": 5,
+    "subtopic": "5.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Sungai Rajang dan Sungai Kinabatangan penting sebagai laluan untuk...",
+    "options": [
+      "Menghubungkan kawasan pedalaman",
+      "Kereta api bawah tanah",
+      "Lapangan terbang",
+      "Iklim empat musim"
+    ],
+    "answer": "Menghubungkan kawasan pedalaman",
+    "explanation": "Pengangkutan air membantu pergerakan penduduk dan barang di kawasan pedalaman Sabah dan Sarawak."
+  },
+  {
+    "id": "GB05-044",
+    "chapter": 5,
+    "subtopic": "5.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Jaringan pengangkutan boleh menarik pelaburan kerana...",
+    "options": [
+      "Meningkatkan akses pasaran dan pergerakan bahan",
+      "Mengurangkan semua akses",
+      "Menutup bandar",
+      "Menghalang penghantaran"
+    ],
+    "answer": "Meningkatkan akses pasaran dan pergerakan bahan",
+    "explanation": "Ketersampaian yang baik menyokong kegiatan ekonomi dan pelaburan."
+  },
+  {
+    "id": "GB05-045",
+    "chapter": 5,
+    "subtopic": "5.5",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Pembinaan lebuh raya baharu di kawasan kurang membangun boleh merangsang ekonomi melalui...",
+    "options": [
+      "Peningkatan ketersampaian, petempatan dan kegiatan perniagaan",
+      "Pengurangan semua perjalanan",
+      "Penghapusan pasaran",
+      "Tiada perubahan guna tanah"
+    ],
+    "answer": "Peningkatan ketersampaian, petempatan dan kegiatan perniagaan",
+    "explanation": "Jaringan pengangkutan membuka akses dan boleh mencetuskan pembangunan kawasan sekitar."
+  },
+  {
+    "id": "GB05-046",
+    "chapter": 5,
+    "subtopic": "5.6",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Salah satu kepentingan pengangkutan awam ialah mengurangkan...",
+    "options": [
+      "Kesesakan lalu lintas",
+      "Bilangan sekolah",
+      "Hujan tahunan",
+      "Saiz negara"
+    ],
+    "answer": "Kesesakan lalu lintas",
+    "explanation": "Lebih ramai penumpang berkongsi kenderaan yang sama, lalu mengurangkan jumlah kenderaan di jalan."
+  },
+  {
+    "id": "GB05-047",
+    "chapter": 5,
+    "subtopic": "5.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pengangkutan awam boleh mengurangkan pencemaran udara apabila...",
+    "options": [
+      "Mengurangkan penggunaan kenderaan persendirian",
+      "Menambah kenderaan persendirian",
+      "Semua bas berhenti",
+      "Semua rel ditutup"
+    ],
+    "answer": "Mengurangkan penggunaan kenderaan persendirian",
+    "explanation": "Penggunaan bersama mengurangkan pelepasan per penumpang."
+  },
+  {
+    "id": "GB05-048",
+    "chapter": 5,
+    "subtopic": "5.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Penggunaan pengangkutan awam lazimnya membantu pengguna mengurangkan...",
+    "options": [
+      "Kos perjalanan",
+      "Hujan",
+      "Suhu",
+      "Paksi bumi"
+    ],
+    "answer": "Kos perjalanan",
+    "explanation": "Tambang pengangkutan awam boleh lebih murah berbanding penggunaan kenderaan sendiri."
+  },
+  {
+    "id": "GB05-049",
+    "chapter": 5,
+    "subtopic": "5.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Teksi, bas dan rel bersepadu menyokong industri pelancongan kerana...",
+    "options": [
+      "Memudahkan pergerakan pelancong",
+      "Menutup destinasi",
+      "Mengurangkan semua akses",
+      "Tidak mempunyai laluan"
+    ],
+    "answer": "Memudahkan pergerakan pelancong",
+    "explanation": "Akses mudah meningkatkan mobiliti pelawat antara destinasi."
+  },
+  {
+    "id": "GB05-050",
+    "chapter": 5,
+    "subtopic": "5.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Sektor pengangkutan awam mewujudkan peluang pekerjaan seperti...",
+    "options": [
+      "Pemandu dan petugas operasi",
+      "Nelayan sahaja",
+      "Pemburu walrus",
+      "Petani gandum Siberia"
+    ],
+    "answer": "Pemandu dan petugas operasi",
+    "explanation": "Perkhidmatan pengangkutan memerlukan tenaga kerja operasi, penyelenggaraan dan perkhidmatan."
+  },
+  {
+    "id": "GB05-051",
+    "chapter": 5,
+    "subtopic": "5.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Darjah ketersampaian meningkat apabila...",
+    "options": [
+      "Destinasi dapat dicapai dengan lebih mudah dan cepat",
+      "Semua jalan ditutup",
+      "Tiada pengangkutan",
+      "Kos menjadi tidak terhingga"
+    ],
+    "answer": "Destinasi dapat dicapai dengan lebih mudah dan cepat",
+    "explanation": "Pengangkutan awam yang baik memudahkan orang sampai ke tempat yang dituju."
+  },
+  {
+    "id": "GB05-052",
+    "chapter": 5,
+    "subtopic": "5.6",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Untuk bandar sesak, dasar tambang awam berpatutan dan rangkaian rel yang baik berpotensi...",
+    "options": [
+      "Menggalakkan orang beralih daripada kereta persendirian",
+      "Meningkatkan semua orang memandu sendiri",
+      "Menutup pusat bandar",
+      "Menghapuskan semua perjalanan"
+    ],
+    "answer": "Menggalakkan orang beralih daripada kereta persendirian",
+    "explanation": "Perkhidmatan awam yang mudah dan mampu milik meningkatkan daya tarikan penggunaan transit."
+  },
+  {
+    "id": "GB05-053",
+    "chapter": 5,
+    "subtopic": "5.7",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Berkongsi kereta dapat mengurangkan...",
+    "options": [
+      "Bilangan kenderaan di jalan raya",
+      "Jumlah sekolah",
+      "Hujan tahunan",
+      "Saiz bandar"
+    ],
+    "answer": "Bilangan kenderaan di jalan raya",
+    "explanation": "Carpool membolehkan beberapa orang berkongsi satu kenderaan."
+  },
+  {
+    "id": "GB05-054",
+    "chapter": 5,
+    "subtopic": "5.7",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Kereta elektrik dan hibrid membantu mengurangkan penggunaan...",
+    "options": [
+      "Bahan api fosil",
+      "Air hujan",
+      "Kertas",
+      "Peta"
+    ],
+    "answer": "Bahan api fosil",
+    "explanation": "Kenderaan tersebut mengurangkan kebergantungan kepada petrol atau diesel."
+  },
+  {
+    "id": "GB05-055",
+    "chapter": 5,
+    "subtopic": "5.7",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pengangkutan lestari bertujuan memberi kesan yang...",
+    "options": [
+      "Minimum kepada alam sekitar",
+      "Maksimum kepada pencemaran",
+      "Tiada manfaat sosial",
+      "Lebih tinggi kepada karbon"
+    ],
+    "answer": "Minimum kepada alam sekitar",
+    "explanation": "Konsep lestari menekankan kecekapan serta pengurangan kesan alam sekitar."
+  },
+  {
+    "id": "GB05-056",
+    "chapter": 5,
+    "subtopic": "5.7",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Penggunaan pengangkutan awam membantu mengurangkan pelepasan kerana...",
+    "options": [
+      "Lebih ramai orang berkongsi satu perkhidmatan",
+      "Setiap orang menggunakan dua kereta",
+      "Bas tidak membawa penumpang",
+      "Rel menggunakan lebih banyak jalan raya"
+    ],
+    "answer": "Lebih ramai orang berkongsi satu perkhidmatan",
+    "explanation": "Penggunaan bersama mengurangkan bilangan kenderaan persendirian."
+  },
+  {
+    "id": "GB05-057",
+    "chapter": 5,
+    "subtopic": "5.7",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Satu manfaat pengangkutan lestari terhadap alam ialah...",
+    "options": [
+      "Meminimumkan kemusnahan flora dan fauna",
+      "Meningkatkan penebangan hutan",
+      "Meningkatkan asap",
+      "Meningkatkan tumpahan minyak"
+    ],
+    "answer": "Meminimumkan kemusnahan flora dan fauna",
+    "explanation": "Perancangan lestari cuba mengurangkan kerosakan ekosistem."
+  },
+  {
+    "id": "GB05-058",
+    "chapter": 5,
+    "subtopic": "5.7",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Sistem pengangkutan lestari juga boleh meningkatkan...",
+    "options": [
+      "Keselamatan pengangkutan awam",
+      "Pencemaran bunyi sahaja",
+      "Hakisan tanah",
+      "Pembakaran terbuka"
+    ],
+    "answer": "Keselamatan pengangkutan awam",
+    "explanation": "Salah satu matlamat pengangkutan lestari ialah sistem yang selamat dan efisien."
+  },
+  {
+    "id": "GB05-059",
+    "chapter": 5,
+    "subtopic": "5.7",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Sekolah mempunyai 200 guru dan murid yang datang dengan kereta berasingan. Langkah paling praktikal untuk mengurangkan kenderaan ialah...",
+    "options": [
+      "Galakkan carpool dan bas sekolah",
+      "Tambah parkir sahaja",
+      "Larangkan semua perjalanan",
+      "Tambah penggunaan kereta seorang satu"
+    ],
+    "answer": "Galakkan carpool dan bas sekolah",
+    "explanation": "Perkongsian perjalanan mengurangkan jumlah kenderaan dan pelepasan."
+  },
+  {
+    "id": "GB05-060",
+    "chapter": 5,
+    "subtopic": "5.7",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Sebuah bandar ingin mengurangkan karbon dan kesesakan serentak. Pelaburan paling sesuai ialah...",
+    "options": [
+      "Transit awam berkualiti tinggi serta laluan berjalan dan berbasikal",
+      "Lebih banyak ruang parkir di pusat bandar sahaja",
+      "Menutup semua bas",
+      "Menggalakkan semua orang memandu sendiri"
+    ],
+    "answer": "Transit awam berkualiti tinggi serta laluan berjalan dan berbasikal",
+    "explanation": "Pilihan perjalanan rendah karbon mengurangkan pergantungan pada kenderaan persendirian."
+  },
+  {
+    "id": "GB06-013",
+    "chapter": 6,
+    "subtopic": "6.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Alat telekomunikasi yang diperkenalkan British pada tahun 1876 untuk pentadbiran ialah...",
+    "options": [
+      "Telegraf",
+      "Telefon pintar",
+      "Satelit mikro",
+      "Kabel fiber optik"
+    ],
+    "answer": "Telegraf",
+    "explanation": "Telegraf digunakan untuk menghantar maklumat jarak jauh pada era awal telekomunikasi."
+  },
+  {
+    "id": "GB06-014",
+    "chapter": 6,
+    "subtopic": "6.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Mesin yang memindahkan salinan dokumen melalui rangkaian telefon ialah...",
+    "options": [
+      "Mesin faks",
+      "Teleks",
+      "Kompas",
+      "Projektor"
+    ],
+    "answer": "Mesin faks",
+    "explanation": "Mesin faks menghantar salinan dokumen melalui talian telefon."
+  },
+  {
+    "id": "GB06-015",
+    "chapter": 6,
+    "subtopic": "6.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Telefon bimbit mula diperkenalkan di Malaysia pada sekitar...",
+    "options": [
+      "1980-an",
+      "1880-an",
+      "1920-an",
+      "2020-an sahaja"
+    ],
+    "answer": "1980-an",
+    "explanation": "Telefon bimbit mula digunakan di Malaysia pada dekad 1980-an."
+  },
+  {
+    "id": "GB06-016",
+    "chapter": 6,
+    "subtopic": "6.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Telefon pintar berbeza daripada telefon bimbit asas kerana mempunyai...",
+    "options": [
+      "Ciri pengkomputeran, Internet dan aplikasi",
+      "Tiada skrin",
+      "Hanya talian tetap",
+      "Tidak boleh menyimpan data"
+    ],
+    "answer": "Ciri pengkomputeran, Internet dan aplikasi",
+    "explanation": "Telefon pintar menggabungkan komunikasi dengan aplikasi, kamera, Internet dan fungsi digital lain."
+  },
+  {
+    "id": "GB06-017",
+    "chapter": 6,
+    "subtopic": "6.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Stesen satelit bumi pertama Malaysia dibina di...",
+    "options": [
+      "Kuantan",
+      "Gemas",
+      "Tenom",
+      "Kundasang"
+    ],
+    "answer": "Kuantan",
+    "explanation": "Stesen satelit bumi pertama dibina di Kuantan pada tahun 1970."
+  },
+  {
+    "id": "GB06-018",
+    "chapter": 6,
+    "subtopic": "6.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "TiungSAT-1 dan RazakSAT ialah contoh...",
+    "options": [
+      "Satelit mikro",
+      "Kereta api",
+      "Pelabuhan",
+      "Alat cuaca manual"
+    ],
+    "answer": "Satelit mikro",
+    "explanation": "Kedua-duanya ialah satelit mikro Malaysia."
+  },
+  {
+    "id": "GB06-019",
+    "chapter": 6,
+    "subtopic": "6.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kabel fiber optik berkapasiti tinggi kerana menggunakan...",
+    "options": [
+      "Serat kaca atau plastik yang sangat halus",
+      "Kayu tebal",
+      "Besi pejal sahaja",
+      "Air laut"
+    ],
+    "answer": "Serat kaca atau plastik yang sangat halus",
+    "explanation": "Fiber optik menyalurkan data melalui serat halus berkapasiti tinggi."
+  },
+  {
+    "id": "GB06-020",
+    "chapter": 6,
+    "subtopic": "6.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Koridor Raya Multimedia berpusat di...",
+    "options": [
+      "Cyberjaya",
+      "Kuala Pilah",
+      "Gemas",
+      "Hakodate"
+    ],
+    "answer": "Cyberjaya",
+    "explanation": "MSC dibangunkan untuk menarik syarikat teknologi tinggi dan memajukan industri ICT."
+  },
+  {
+    "id": "GB06-021",
+    "chapter": 6,
+    "subtopic": "6.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Rangkaian jalur lebar berkelajuan tinggi bertujuan memperluas...",
+    "options": [
+      "Capaian Internet",
+      "Kawasan hutan",
+      "Perkhidmatan feri",
+      "Ladang padi"
+    ],
+    "answer": "Capaian Internet",
+    "explanation": "Jalur lebar meningkatkan akses kepada komunikasi data dan Internet."
+  },
+  {
+    "id": "GB06-022",
+    "chapter": 6,
+    "subtopic": "6.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa fiber optik penting dalam rangkaian moden?",
+    "options": [
+      "Mampu memindahkan data berkapasiti tinggi dengan cepat",
+      "Hanya boleh membawa suara analog",
+      "Tidak boleh digunakan untuk Internet",
+      "Digunakan sebagai jalan raya"
+    ],
+    "answer": "Mampu memindahkan data berkapasiti tinggi dengan cepat",
+    "explanation": "Fiber optik sesuai untuk penghantaran data dalam jumlah besar dan rangkaian berkelajuan tinggi."
+  },
+  {
+    "id": "GB06-023",
+    "chapter": 6,
+    "subtopic": "6.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Telekomunikasi membolehkan orang berhubung dengan sesiapa di seluruh dunia dengan...",
+    "options": [
+      "Mudah dan cepat",
+      "Hanya melalui surat fizikal",
+      "Hanya dalam satu kampung",
+      "Tanpa sebarang alat"
+    ],
+    "answer": "Mudah dan cepat",
+    "explanation": "Rangkaian digital mengatasi batas jarak."
+  },
+  {
+    "id": "GB06-024",
+    "chapter": 6,
+    "subtopic": "6.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "E-pembelajaran membantu pendidikan kerana...",
+    "options": [
+      "Meluaskan peluang belajar dan boleh menjimatkan kos",
+      "Menutup semua sumber digital",
+      "Menghalang akses ilmu",
+      "Menghapuskan pembelajaran jarak jauh"
+    ],
+    "answer": "Meluaskan peluang belajar dan boleh menjimatkan kos",
+    "explanation": "Pembelajaran boleh diakses melalui rangkaian tanpa terikat lokasi fizikal."
+  },
+  {
+    "id": "GB06-025",
+    "chapter": 6,
+    "subtopic": "6.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "E-perbankan membolehkan pengguna...",
+    "options": [
+      "Mengurus urusan kewangan secara atas talian",
+      "Mengawal cuaca",
+      "Mengukur kontur",
+      "Menghasilkan hujan"
+    ],
+    "answer": "Mengurus urusan kewangan secara atas talian",
+    "explanation": "Perkhidmatan perbankan digital membolehkan transaksi dilakukan dari pelbagai lokasi."
+  },
+  {
+    "id": "GB06-026",
+    "chapter": 6,
+    "subtopic": "6.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Satelit cuaca membantu dengan memberikan...",
+    "options": [
+      "Data ramalan cuaca dan fenomena alam",
+      "Rujukan grid 4 angka sahaja",
+      "Harga barang sahaja",
+      "Jenis tanah sahaja"
+    ],
+    "answer": "Data ramalan cuaca dan fenomena alam",
+    "explanation": "Data satelit meningkatkan pemantauan dan ramalan cuaca."
+  },
+  {
+    "id": "GB06-027",
+    "chapter": 6,
+    "subtopic": "6.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Telekomunikasi boleh meningkatkan perpaduan melalui...",
+    "options": [
+      "Perhubungan dan komunikasi yang lebih luas",
+      "Pengasingan masyarakat",
+      "Tiada interaksi",
+      "Pengurangan akses maklumat"
+    ],
+    "answer": "Perhubungan dan komunikasi yang lebih luas",
+    "explanation": "Komunikasi memudahkan interaksi antara masyarakat di lokasi berbeza."
+  },
+  {
+    "id": "GB06-028",
+    "chapter": 6,
+    "subtopic": "6.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pentadbiran menjadi lebih sistematik apabila...",
+    "options": [
+      "Maklumat dan urusan dapat diproses dengan lebih cepat",
+      "Semua rekod perlu manual",
+      "Data tidak boleh disimpan",
+      "Komunikasi mesti dihentikan"
+    ],
+    "answer": "Maklumat dan urusan dapat diproses dengan lebih cepat",
+    "explanation": "ICT mempercepat aliran data dan urusan organisasi."
+  },
+  {
+    "id": "GB06-029",
+    "chapter": 6,
+    "subtopic": "6.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "e-dagang merujuk kepada...",
+    "options": [
+      "Urus niaga perniagaan melalui rangkaian komputer atau Internet",
+      "Pengangkutan air",
+      "Peta grid",
+      "Pertanian sahaja"
+    ],
+    "answer": "Urus niaga perniagaan melalui rangkaian komputer atau Internet",
+    "explanation": "e-dagang membolehkan jual beli dan perkhidmatan dijalankan secara digital."
+  },
+  {
+    "id": "GB06-030",
+    "chapter": 6,
+    "subtopic": "6.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Telekesihatan membolehkan...",
+    "options": [
+      "Pesakit mendapat khidmat pakar dari jarak jauh",
+      "Semua pesakit mesti ke luar negara",
+      "Tiada penggunaan teknologi",
+      "Doktor mengukur grid topografi"
+    ],
+    "answer": "Pesakit mendapat khidmat pakar dari jarak jauh",
+    "explanation": "Teknologi komunikasi membolehkan konsultasi kesihatan jarak jauh."
+  },
+  {
+    "id": "GB06-031",
+    "chapter": 6,
+    "subtopic": "6.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Satu kesan negatif telekomunikasi ialah...",
+    "options": [
+      "Pencerobohan dan pencurian maklumat",
+      "Peluang pendidikan lebih luas",
+      "Urusan lebih cepat",
+      "Ramalan cuaca lebih tepat"
+    ],
+    "answer": "Pencerobohan dan pencurian maklumat",
+    "explanation": "Sistem dalam talian boleh terdedah kepada risiko keselamatan data."
+  },
+  {
+    "id": "GB06-032",
+    "chapter": 6,
+    "subtopic": "6.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Maklumat tidak tepat yang tersebar dalam talian boleh menyebabkan...",
+    "options": [
+      "Kekeliruan dan salah faham",
+      "Semua data menjadi benar",
+      "Tiada kesan kepada masyarakat",
+      "Internet menjadi lebih laju"
+    ],
+    "answer": "Kekeliruan dan salah faham",
+    "explanation": "Penyebaran maklumat palsu menjejaskan ketepatan pengetahuan dan keputusan pengguna."
+  },
+  {
+    "id": "GB06-033",
+    "chapter": 6,
+    "subtopic": "6.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa kemajuan telekomunikasi perlu disertai literasi digital?",
+    "options": [
+      "Supaya pengguna boleh menilai maklumat dan melindungi keselamatan data",
+      "Supaya semua kata laluan dikongsi",
+      "Supaya berita tidak perlu disemak",
+      "Supaya privasi diabaikan"
+    ],
+    "answer": "Supaya pengguna boleh menilai maklumat dan melindungi keselamatan data",
+    "explanation": "Kemudahan digital membawa manfaat tetapi juga risiko maklumat palsu dan keselamatan."
+  },
+  {
+    "id": "GB06-034",
+    "chapter": 6,
+    "subtopic": "6.5",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Sebelum berkongsi berita dalam Internet, pengguna perlu...",
+    "options": [
+      "Menyemak kebenaran dan kesahihannya",
+      "Terus sebarkan tanpa membaca",
+      "Padam semua sumber",
+      "Kongsi kata laluan sekali"
+    ],
+    "answer": "Menyemak kebenaran dan kesahihannya",
+    "explanation": "Etika digital menuntut semakan fakta sebelum penyebaran."
+  },
+  {
+    "id": "GB06-035",
+    "chapter": 6,
+    "subtopic": "6.5",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Maklumat seperti kata laluan hendaklah...",
+    "options": [
+      "Tidak didedahkan kepada umum",
+      "Dikongsi dengan semua orang",
+      "Ditampal di media sosial",
+      "Dihantar kepada orang tidak dikenali"
+    ],
+    "answer": "Tidak didedahkan kepada umum",
+    "explanation": "Maklumat peribadi perlu dilindungi demi keselamatan."
+  },
+  {
+    "id": "GB06-036",
+    "chapter": 6,
+    "subtopic": "6.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Mengambil karya orang lain dan menerbitkannya sebagai karya sendiri dikenali sebagai...",
+    "options": [
+      "Plagiat",
+      "Telekesihatan",
+      "E-dagang",
+      "Jalur lebar"
+    ],
+    "answer": "Plagiat",
+    "explanation": "Plagiat ialah menggunakan hasil karya orang lain tanpa pengiktirafan yang wajar."
+  },
+  {
+    "id": "GB06-037",
+    "chapter": 6,
+    "subtopic": "6.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Komunikasi beretika dalam talian termasuk...",
+    "options": [
+      "Bersopan santun dan berhemah",
+      "Menghina pengguna lain",
+      "Menyebar khabar angin",
+      "Mengganggu sistem orang lain"
+    ],
+    "answer": "Bersopan santun dan berhemah",
+    "explanation": "Adab komunikasi tetap penting walaupun menggunakan medium digital."
+  },
+  {
+    "id": "GB06-038",
+    "chapter": 6,
+    "subtopic": "6.5",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Rakan menghantar pautan mencurigakan dan meminta kata laluan anda. Tindakan terbaik ialah...",
+    "options": [
+      "Jangan beri kata laluan dan semak kesahihan pautan",
+      "Berikan semua maklumat segera",
+      "Sebarkan pautan kepada semua rakan",
+      "Gunakan kata laluan yang sama untuk semua akaun dan kongsi"
+    ],
+    "answer": "Jangan beri kata laluan dan semak kesahihan pautan",
+    "explanation": "Perlindungan maklumat peribadi dan semakan kesahihan ialah amalan telekomunikasi beretika."
+  },
+  {
+    "id": "GB07-013",
+    "chapter": 7,
+    "subtopic": "7.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Benua Asia boleh dibahagikan kepada berapa zon iklim utama?",
+    "options": [
+      "Empat",
+      "Dua",
+      "Enam",
+      "Sepuluh"
+    ],
+    "answer": "Empat",
+    "explanation": "Asia dibahagikan kepada zon sejuk, sejuk sederhana, panas sederhana dan panas."
+  },
+  {
+    "id": "GB07-014",
+    "chapter": 7,
+    "subtopic": "7.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Antara berikut, yang manakah zon iklim Asia?",
+    "options": [
+      "Sejuk sederhana",
+      "Kutub mutlak sahaja",
+      "Monsun Malaysia sahaja",
+      "Zon bandar"
+    ],
+    "answer": "Sejuk sederhana",
+    "explanation": "Sejuk sederhana ialah salah satu daripada empat zon iklim utama Asia."
+  },
+  {
+    "id": "GB07-015",
+    "chapter": 7,
+    "subtopic": "7.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Iklim Tundra tergolong dalam zon...",
+    "options": [
+      "Sejuk",
+      "Panas",
+      "Panas sederhana",
+      "Sejuk sederhana"
+    ],
+    "answer": "Sejuk",
+    "explanation": "Tundra berada di kawasan paling utara Asia."
+  },
+  {
+    "id": "GB07-016",
+    "chapter": 7,
+    "subtopic": "7.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Iklim China tergolong dalam zon...",
+    "options": [
+      "Panas sederhana",
+      "Sejuk",
+      "Panas sahaja",
+      "Kutub"
+    ],
+    "answer": "Panas sederhana",
+    "explanation": "Iklim China ialah iklim panas sederhana pantai timur."
+  },
+  {
+    "id": "GB07-017",
+    "chapter": 7,
+    "subtopic": "7.1",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapakah Asia mempunyai kepelbagaian iklim yang besar?",
+    "options": [
+      "Benua sangat luas dan merentasi banyak latitud serta keadaan fizikal",
+      "Asia hanya berada pada satu latitud",
+      "Semua kawasan Asia sama tinggi",
+      "Asia tidak dipengaruhi laut"
+    ],
+    "answer": "Benua sangat luas dan merentasi banyak latitud serta keadaan fizikal",
+    "explanation": "Kedudukan latitud dan variasi fizikal menghasilkan zon iklim yang berbeza."
+  },
+  {
+    "id": "GB07-018",
+    "chapter": 7,
+    "subtopic": "7.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Iklim Khatulistiwa mempunyai min suhu tahunan sekitar...",
+    "options": [
+      "27°C",
+      "-28°C",
+      "5°C",
+      "0°C"
+    ],
+    "answer": "27°C",
+    "explanation": "Iklim Khatulistiwa panas dan lembap sepanjang tahun."
+  },
+  {
+    "id": "GB07-019",
+    "chapter": 7,
+    "subtopic": "7.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Iklim Gurun Panas menerima hujan tahunan...",
+    "options": [
+      "Kurang daripada 250 mm",
+      "Melebihi 2 600 mm",
+      "5 000 mm",
+      "Tepat 2 000 mm"
+    ],
+    "answer": "Kurang daripada 250 mm",
+    "explanation": "Gurun Panas sangat kering dan menerima hujan yang sedikit."
+  },
+  {
+    "id": "GB07-020",
+    "chapter": 7,
+    "subtopic": "7.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Iklim Monsun Tropika mengalami...",
+    "options": [
+      "Musim kering dan musim lembap yang nyata",
+      "Salji sepanjang tahun",
+      "Tiada hujan",
+      "Musim sejuk lapan bulan"
+    ],
+    "answer": "Musim kering dan musim lembap yang nyata",
+    "explanation": "Monsun Tropika mempunyai perbezaan jelas antara musim hujan dan kering."
+  },
+  {
+    "id": "GB07-021",
+    "chapter": 7,
+    "subtopic": "7.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Iklim Siberia mempunyai kerpasan musim sejuk dalam bentuk...",
+    "options": [
+      "Salji",
+      "Hujan perolakan lebat sahaja",
+      "Embun sahaja",
+      "Tiada kerpasan"
+    ],
+    "answer": "Salji",
+    "explanation": "Suhu musim sejuk yang rendah menyebabkan kerpasan dalam bentuk salji."
+  },
+  {
+    "id": "GB07-022",
+    "chapter": 7,
+    "subtopic": "7.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Iklim Laurentia terdapat di kawasan seperti...",
+    "options": [
+      "China utara, Korea Utara dan Jepun utara",
+      "Arab Saudi",
+      "Malaysia",
+      "Singapura"
+    ],
+    "answer": "China utara, Korea Utara dan Jepun utara",
+    "explanation": "Laurentia ialah iklim sejuk sederhana pantai timur di Asia Timur."
+  },
+  {
+    "id": "GB07-023",
+    "chapter": 7,
+    "subtopic": "7.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Graf iklim menunjukkan musim panas sederhana panas, musim sejuk bersalji dan hujan sepanjang tahun. Iklim yang paling sepadan ialah...",
+    "options": [
+      "Laurentia",
+      "Gurun Panas",
+      "Khatulistiwa",
+      "Tundra panas"
+    ],
+    "answer": "Laurentia",
+    "explanation": "Laurentia menerima hujan sepanjang tahun, salji pada musim sejuk dan empat musim."
+  },
+  {
+    "id": "GB07-024",
+    "chapter": 7,
+    "subtopic": "7.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Iklim Tundra banyak terdapat di...",
+    "options": [
+      "Pantai utara Siberia",
+      "Malaysia",
+      "Arab Saudi",
+      "India selatan"
+    ],
+    "answer": "Pantai utara Siberia",
+    "explanation": "Tundra Asia terdapat di kawasan sekitar Garisan Artik di utara Siberia."
+  },
+  {
+    "id": "GB07-025",
+    "chapter": 7,
+    "subtopic": "7.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Musim sejuk Tundra berlangsung kira-kira...",
+    "options": [
+      "Lapan bulan",
+      "Dua minggu",
+      "Satu bulan",
+      "Dua bulan"
+    ],
+    "answer": "Lapan bulan",
+    "explanation": "Iklim Tundra mempunyai musim sejuk yang panjang dan melampau."
+  },
+  {
+    "id": "GB07-026",
+    "chapter": 7,
+    "subtopic": "7.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Jumlah kerpasan tahunan Tundra sekitar...",
+    "options": [
+      "250–300 mm",
+      "2 600–3 000 mm",
+      "5 000 mm",
+      "1 500–2 000 mm"
+    ],
+    "answer": "250–300 mm",
+    "explanation": "Kawasan Tundra menerima kerpasan tahunan yang rendah."
+  },
+  {
+    "id": "GB07-027",
+    "chapter": 7,
+    "subtopic": "7.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pada musim panas, penduduk Tundra menjalankan kegiatan...",
+    "options": [
+      "Menangkap ikan seperti kod dan salmon",
+      "Menanam padi sawah",
+      "Menanam kelapa sawit",
+      "Menanam teh di tanah tinggi tropika"
+    ],
+    "answer": "Menangkap ikan seperti kod dan salmon",
+    "explanation": "Musim panas yang singkat membolehkan kegiatan perikanan dijalankan."
+  },
+  {
+    "id": "GB07-028",
+    "chapter": 7,
+    "subtopic": "7.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pada musim sejuk, pemburuan di Tundra melibatkan haiwan seperti...",
+    "options": [
+      "Walrus dan karibu",
+      "Gajah dan harimau tropika",
+      "Unta sahaja",
+      "Ikan tuna sahaja"
+    ],
+    "answer": "Walrus dan karibu",
+    "explanation": "Penduduk menyesuaikan kegiatan pemburuan dengan musim sejuk."
+  },
+  {
+    "id": "GB07-029",
+    "chapter": 7,
+    "subtopic": "7.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa kegiatan manusia di Tundra sangat dipengaruhi musim?",
+    "options": [
+      "Suhu ekstrem menentukan masa perikanan dan pemburuan boleh dilakukan",
+      "Suhu sentiasa 30°C",
+      "Hujan sangat lebat sepanjang tahun",
+      "Tiada perubahan cuaca"
+    ],
+    "answer": "Suhu ekstrem menentukan masa perikanan dan pemburuan boleh dilakukan",
+    "explanation": "Musim sejuk panjang dan musim panas singkat mengehadkan jenis serta tempoh kegiatan ekonomi."
+  },
+  {
+    "id": "GB07-030",
+    "chapter": 7,
+    "subtopic": "7.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Iklim Laurentia turut dikenali sebagai iklim...",
+    "options": [
+      "Sejuk sederhana pantai timur",
+      "Gurun panas",
+      "Khatulistiwa",
+      "Mediterranean tropika"
+    ],
+    "answer": "Sejuk sederhana pantai timur",
+    "explanation": "Laurentia ialah iklim sejuk sederhana pantai timur atau monsun sejuk sederhana."
+  },
+  {
+    "id": "GB07-031",
+    "chapter": 7,
+    "subtopic": "7.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Hujan tahunan kawasan Laurentia sekitar...",
+    "options": [
+      "500 hingga 1 000 mm",
+      "Kurang 100 mm",
+      "Melebihi 5 000 mm",
+      "0 mm"
+    ],
+    "answer": "500 hingga 1 000 mm",
+    "explanation": "Laurentia menerima hujan sederhana sepanjang tahun."
+  },
+  {
+    "id": "GB07-032",
+    "chapter": 7,
+    "subtopic": "7.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Hujan Laurentia lebih banyak pada...",
+    "options": [
+      "Musim panas",
+      "Musim sejuk sahaja",
+      "Tiada musim",
+      "Musim kering gurun"
+    ],
+    "answer": "Musim panas",
+    "explanation": "Monsun Tenggara membawa lebih banyak hujan pada musim panas."
+  },
+  {
+    "id": "GB07-033",
+    "chapter": 7,
+    "subtopic": "7.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tanaman yang sesuai di kawasan Laurentia termasuk...",
+    "options": [
+      "Gandum dan kentang",
+      "Kurma sahaja",
+      "Kelapa sawit sahaja",
+      "Padi paya tropika sahaja"
+    ],
+    "answer": "Gandum dan kentang",
+    "explanation": "Musim panas sederhana dan hujan mencukupi menyokong tanaman sederhana."
+  },
+  {
+    "id": "GB07-034",
+    "chapter": 7,
+    "subtopic": "7.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Perairan Jepun kaya dengan ikan kerana pertemuan arus...",
+    "options": [
+      "Kurashio dan Oyashio",
+      "Monsun Timur Laut dan Sumatera",
+      "Gulf Stream dan Benguela",
+      "Tiada arus laut"
+    ],
+    "answer": "Kurashio dan Oyashio",
+    "explanation": "Pertemuan arus panas dan sejuk menggalakkan pertumbuhan plankton."
+  },
+  {
+    "id": "GB07-035",
+    "chapter": 7,
+    "subtopic": "7.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Musim yang paling sesuai bagi banyak kegiatan pertanian Laurentia ialah...",
+    "options": [
+      "Musim panas kerana suhu lebih sederhana dan tanaman boleh tumbuh",
+      "Musim sejuk kerana tanah beku",
+      "Sepanjang tahun tanpa beza",
+      "Ketika ribut salji"
+    ],
+    "answer": "Musim panas kerana suhu lebih sederhana dan tanaman boleh tumbuh",
+    "explanation": "Musim panas yang lebih panas dan lembap menyediakan keadaan lebih sesuai untuk pertumbuhan tanaman."
+  },
+  {
+    "id": "GB07-036",
+    "chapter": 7,
+    "subtopic": "7.5",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Iklim China juga dikenali sebagai iklim...",
+    "options": [
+      "Monsun panas sederhana",
+      "Tundra",
+      "Gurun kering",
+      "Khatulistiwa lembap"
+    ],
+    "answer": "Monsun panas sederhana",
+    "explanation": "Iklim China ialah iklim panas sederhana pantai timur."
+  },
+  {
+    "id": "GB07-037",
+    "chapter": 7,
+    "subtopic": "7.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Suhu musim panas Iklim China sekitar...",
+    "options": [
+      "28°C",
+      "-28°C",
+      "5°C sahaja",
+      "0°C sepanjang tahun"
+    ],
+    "answer": "28°C",
+    "explanation": "Musim panas Iklim China sederhana panas sekitar 28°C."
+  },
+  {
+    "id": "GB07-038",
+    "chapter": 7,
+    "subtopic": "7.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Angin Monsun Tenggara pada musim panas membawa...",
+    "options": [
+      "Hujan lebat",
+      "Salji sepanjang tahun",
+      "Udara sangat kering sahaja",
+      "Tiada perubahan"
+    ],
+    "answer": "Hujan lebat",
+    "explanation": "Monsun Tenggara bertiup ke kawasan tekanan rendah dan membawa kelembapan."
+  },
+  {
+    "id": "GB07-039",
+    "chapter": 7,
+    "subtopic": "7.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tanaman padi di Iklim China banyak diusahakan ketika...",
+    "options": [
+      "Musim hujan",
+      "Musim salji tebal",
+      "Musim kering paling sejuk",
+      "Tiada hujan"
+    ],
+    "answer": "Musim hujan",
+    "explanation": "Padi memerlukan bekalan air yang banyak dan suhu hangat."
+  },
+  {
+    "id": "GB07-040",
+    "chapter": 7,
+    "subtopic": "7.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Gandum dan teh sesuai pada suhu sederhana panas sekitar...",
+    "options": [
+      "16°C hingga 18°C",
+      "-20°C hingga -10°C",
+      "35°C hingga 45°C",
+      "0°C sahaja"
+    ],
+    "answer": "16°C hingga 18°C",
+    "explanation": "Buku teks mengaitkan gandum dan teh dengan suhu sederhana panas tersebut."
+  },
+  {
+    "id": "GB07-041",
+    "chapter": 7,
+    "subtopic": "7.5",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa penternakan sesuai di kaki bukit kawasan Iklim China?",
+    "options": [
+      "Suhu lebih sejuk dan rumput boleh tumbuh untuk makanan ternakan",
+      "Tiada tumbuhan langsung",
+      "Semua kaki bukit bersalji tebal sepanjang tahun",
+      "Tidak terdapat air"
+    ],
+    "answer": "Suhu lebih sejuk dan rumput boleh tumbuh untuk makanan ternakan",
+    "explanation": "Keadaan lebih sejuk menggalakkan padang ragut dan sesuai untuk ternakan."
+  },
+  {
+    "id": "GB07-042",
+    "chapter": 7,
+    "subtopic": "7.6",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Iklim Gurun Panas bersifat...",
+    "options": [
+      "Panas dan kering sepanjang tahun",
+      "Sejuk dan lembap sepanjang tahun",
+      "Bersalji sepanjang tahun",
+      "Hujan lebat setiap hari"
+    ],
+    "answer": "Panas dan kering sepanjang tahun",
+    "explanation": "Kawasan Gurun Arab menerima suhu tinggi dan hujan yang sangat sedikit."
+  },
+  {
+    "id": "GB07-043",
+    "chapter": 7,
+    "subtopic": "7.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Min suhu tahunan Gurun Panas sekitar...",
+    "options": [
+      "25°C",
+      "-14°C",
+      "9°C",
+      "5°C"
+    ],
+    "answer": "25°C",
+    "explanation": "Gurun Panas mempunyai min suhu tahunan yang tinggi."
+  },
+  {
+    "id": "GB07-044",
+    "chapter": 7,
+    "subtopic": "7.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Hujan tahunan Gurun Panas biasanya...",
+    "options": [
+      "Kurang daripada 250 mm",
+      "Melebihi 2 600 mm",
+      "5000 mm",
+      "2000 mm"
+    ],
+    "answer": "Kurang daripada 250 mm",
+    "explanation": "Kawasan gurun bersifat gersang kerana hujan yang sedikit."
+  },
+  {
+    "id": "GB07-045",
+    "chapter": 7,
+    "subtopic": "7.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kawasan subur yang mempunyai air di padang pasir dikenali sebagai...",
+    "options": [
+      "Oasis",
+      "Delta",
+      "Kontur",
+      "Grid"
+    ],
+    "answer": "Oasis",
+    "explanation": "Oasis menyediakan sumber air untuk penempatan dan pertanian di gurun."
+  },
+  {
+    "id": "GB07-046",
+    "chapter": 7,
+    "subtopic": "7.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tanaman utama yang sesuai di oasis Arab Saudi ialah...",
+    "options": [
+      "Pokok kurma",
+      "Padi sawah",
+      "Teh",
+      "Getah"
+    ],
+    "answer": "Pokok kurma",
+    "explanation": "Kurma tahan suhu tinggi dan ditanam di kawasan oasis."
+  },
+  {
+    "id": "GB07-047",
+    "chapter": 7,
+    "subtopic": "7.6",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Haiwan yang sesuai diternak di gurun termasuk...",
+    "options": [
+      "Unta, kambing dan biri-biri",
+      "Karibu sahaja",
+      "Panda sahaja",
+      "Walrus sahaja"
+    ],
+    "answer": "Unta, kambing dan biri-biri",
+    "explanation": "Haiwan tersebut mampu menyesuaikan diri dengan keadaan kering dan tumbuhan renek."
+  },
+  {
+    "id": "GB07-048",
+    "chapter": 7,
+    "subtopic": "7.6",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa pertanian Gurun Panas tertumpu di oasis?",
+    "options": [
+      "Oasis mempunyai bekalan air yang sangat terhad di kawasan sekeliling",
+      "Oasis sentiasa bersalji",
+      "Oasis mempunyai hujan 5 000 mm",
+      "Oasis tiada sumber air"
+    ],
+    "answer": "Oasis mempunyai bekalan air yang sangat terhad di kawasan sekeliling",
+    "explanation": "Air ialah faktor kritikal untuk tanaman di kawasan gurun yang sangat kering."
+  },
+  {
+    "id": "GB08-013",
+    "chapter": 8,
+    "subtopic": "8.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Landasan kereta api berkelajuan tinggi Jepun dikenali sebagai...",
+    "options": [
+      "Shinkansen",
+      "Trans-Siberian",
+      "ETS Malaysia",
+      "MRT Kuala Lumpur"
+    ],
+    "answer": "Shinkansen",
+    "explanation": "Shinkansen ialah rangkaian kereta api berkelajuan tinggi Jepun."
+  },
+  {
+    "id": "GB08-014",
+    "chapter": 8,
+    "subtopic": "8.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Landasan Trans-Siberian menganjur dari Moscow ke...",
+    "options": [
+      "Vladivostok",
+      "Tokyo",
+      "Dubai",
+      "Mumbai"
+    ],
+    "answer": "Vladivostok",
+    "explanation": "Trans-Siberian menghubungkan bahagian barat Rusia dengan pantai timurnya."
+  },
+  {
+    "id": "GB08-015",
+    "chapter": 8,
+    "subtopic": "8.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Landasan berkelajuan tinggi Beijing–Shanghai terletak di...",
+    "options": [
+      "China",
+      "Jepun",
+      "India",
+      "Singapura"
+    ],
+    "answer": "China",
+    "explanation": "Rangkaian ini menghubungkan dua bandar utama China."
+  },
+  {
+    "id": "GB08-016",
+    "chapter": 8,
+    "subtopic": "8.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Lapangan Terbang Antarabangsa Changi terletak di...",
+    "options": [
+      "Singapura",
+      "Jepun",
+      "India",
+      "Rusia"
+    ],
+    "answer": "Singapura",
+    "explanation": "Changi ialah lapangan terbang antarabangsa utama Singapura."
+  },
+  {
+    "id": "GB08-017",
+    "chapter": 8,
+    "subtopic": "8.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Pelabuhan Jawaharlal merupakan pelabuhan utama di...",
+    "options": [
+      "India",
+      "Jepun",
+      "Rusia",
+      "Korea Utara"
+    ],
+    "answer": "India",
+    "explanation": "Pelabuhan Jawaharlal ialah pelabuhan kontena penting India."
+  },
+  {
+    "id": "GB08-018",
+    "chapter": 8,
+    "subtopic": "8.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pelabuhan memainkan peranan utama dalam...",
+    "options": [
+      "Perdagangan dan pengangkutan air",
+      "Peredaran bumi",
+      "Pembentukan hujan perolakan",
+      "Rujukan grid"
+    ],
+    "answer": "Perdagangan dan pengangkutan air",
+    "explanation": "Pelabuhan ialah pintu pemindahan barangan melalui laut dan penting dalam perdagangan."
+  },
+  {
+    "id": "GB08-019",
+    "chapter": 8,
+    "subtopic": "8.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Shinkansen terkenal kerana...",
+    "options": [
+      "Kelajuan tinggi dan kecekapan",
+      "Bergerak menggunakan sungai",
+      "Hanya membawa kargo laut",
+      "Tidak mempunyai stesen"
+    ],
+    "answer": "Kelajuan tinggi dan kecekapan",
+    "explanation": "Shinkansen dibangunkan sebagai sistem rel pantas dan sangat efisien."
+  },
+  {
+    "id": "GB08-020",
+    "chapter": 8,
+    "subtopic": "8.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Laluan Shinkansen menghubungkan bandar seperti Tokyo, Nagoya, Kyoto dan...",
+    "options": [
+      "Osaka",
+      "Dubai",
+      "Moscow",
+      "Kuala Lumpur"
+    ],
+    "answer": "Osaka",
+    "explanation": "Bandar metropolitan Jepun dihubungkan melalui rangkaian Shinkansen."
+  },
+  {
+    "id": "GB08-021",
+    "chapter": 8,
+    "subtopic": "8.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Sistem Maglev menggunakan daya...",
+    "options": [
+      "Elektromagnet",
+      "Graviti bulan sahaja",
+      "Angin monsun",
+      "Pasang surut"
+    ],
+    "answer": "Elektromagnet",
+    "explanation": "Maglev menggunakan pengapungan dan pemanduan berasaskan elektromagnet."
+  },
+  {
+    "id": "GB08-022",
+    "chapter": 8,
+    "subtopic": "8.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Lapangan Terbang Antarabangsa Dubai mempunyai...",
+    "options": [
+      "Tiga terminal dan kapasiti besar",
+      "Satu landasan kecil sahaja",
+      "Tiada penerbangan antarabangsa",
+      "Hanya feri"
+    ],
+    "answer": "Tiga terminal dan kapasiti besar",
+    "explanation": "Dubai dibangunkan sebagai hab penerbangan antarabangsa berkapasiti tinggi."
+  },
+  {
+    "id": "GB08-023",
+    "chapter": 8,
+    "subtopic": "8.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Lapangan terbang Dubai penting kepada ekonomi kerana...",
+    "options": [
+      "Mewujudkan pekerjaan dan menyokong sektor perkhidmatan",
+      "Mengurangkan semua pelancong",
+      "Menutup hubungan antarabangsa",
+      "Tiada kesan ekonomi"
+    ],
+    "answer": "Mewujudkan pekerjaan dan menyokong sektor perkhidmatan",
+    "explanation": "Hab penerbangan besar menyokong pekerjaan, pelancongan dan aktiviti perniagaan."
+  },
+  {
+    "id": "GB08-024",
+    "chapter": 8,
+    "subtopic": "8.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pelabuhan Hong Kong berada pada kedudukan strategik di...",
+    "options": [
+      "Laut China Selatan",
+      "Laut Artik",
+      "Laut Mediterranean sahaja",
+      "Sungai Amazon"
+    ],
+    "answer": "Laut China Selatan",
+    "explanation": "Lokasi strategik dan perairan terlindung menyokong kepentingannya dalam perdagangan."
+  },
+  {
+    "id": "GB08-025",
+    "chapter": 8,
+    "subtopic": "8.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Salah satu keistimewaan Pelabuhan Hong Kong ialah...",
+    "options": [
+      "Proses pemunggahan kargo yang cekap",
+      "Tiada operasi kontena",
+      "Duti paling tinggi di dunia semestinya",
+      "Tidak beroperasi di laut"
+    ],
+    "answer": "Proses pemunggahan kargo yang cekap",
+    "explanation": "Kecekapan operasi meningkatkan daya saing pelabuhan."
+  },
+  {
+    "id": "GB08-026",
+    "chapter": 8,
+    "subtopic": "8.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa pengangkutan berkelajuan tinggi sesuai di bandar padat Asia?",
+    "options": [
+      "Memendekkan masa perjalanan dan mengurangkan tekanan jaringan jalan raya",
+      "Menambah masa perjalanan",
+      "Menghapuskan semua mobiliti",
+      "Hanya sesuai untuk kawasan tanpa penduduk"
+    ],
+    "answer": "Memendekkan masa perjalanan dan mengurangkan tekanan jaringan jalan raya",
+    "explanation": "Sistem rel pantas mengangkut ramai penumpang secara efisien antara pusat bandar."
+  },
+  {
+    "id": "GB08-027",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Satu kesan positif pengangkutan kepada masyarakat ialah...",
+    "options": [
+      "Meningkatkan darjah ketersampaian",
+      "Mengurangkan semua akses",
+      "Menutup bandar",
+      "Menghapuskan pekerjaan"
+    ],
+    "answer": "Meningkatkan darjah ketersampaian",
+    "explanation": "Pengangkutan maju memudahkan orang sampai ke destinasi."
+  },
+  {
+    "id": "GB08-028",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kemajuan pengangkutan boleh menggalakkan ekonomi melalui...",
+    "options": [
+      "Perdagangan, pelancongan dan peluang pekerjaan",
+      "Pengurangan semua urus niaga",
+      "Tiada pergerakan barangan",
+      "Penghapusan bandar"
+    ],
+    "answer": "Perdagangan, pelancongan dan peluang pekerjaan",
+    "explanation": "Jaringan pengangkutan menyokong aliran manusia, barangan dan perkhidmatan."
+  },
+  {
+    "id": "GB08-029",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kawasan sekitar lapangan terbang boleh mengalami pencemaran...",
+    "options": [
+      "Bunyi",
+      "Salji",
+      "Kontur",
+      "Grid"
+    ],
+    "answer": "Bunyi",
+    "explanation": "Bunyi pesawat boleh mengganggu ketenteraman penduduk berhampiran."
+  },
+  {
+    "id": "GB08-030",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Apakah kesan utama tumpahan minyak terhadap ekosistem laut?",
+    "options": [
+      "Pencemaran air dan kematian hidupan akuatik",
+      "Peningkatan kualiti air",
+      "Pembentukan salji",
+      "Peningkatan plankton secara automatik"
+    ],
+    "answer": "Pencemaran air dan kematian hidupan akuatik",
+    "explanation": "Minyak mencemarkan ekosistem laut dan menjejaskan hidupan air."
+  },
+  {
+    "id": "GB08-031",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pembinaan lebuh raya dan lapangan terbang boleh memusnahkan...",
+    "options": [
+      "Hutan dan kawasan tadahan air",
+      "Semua lautan",
+      "Orbit bumi",
+      "Garisan Khatulistiwa"
+    ],
+    "answer": "Hutan dan kawasan tadahan air",
+    "explanation": "Pembangunan prasarana boleh melibatkan penebangan dan perubahan guna tanah."
+  },
+  {
+    "id": "GB08-032",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Bandar bercadang membina sistem rel elektrik untuk menggantikan sebahagian perjalanan kereta. Kesan alam sekitar yang mungkin positif ialah...",
+    "options": [
+      "Pengurangan pencemaran udara per penumpang",
+      "Peningkatan semua pelepasan",
+      "Lebih banyak tumpahan minyak kapal",
+      "Kemusnahan hutan tanpa kawalan"
+    ],
+    "answer": "Pengurangan pencemaran udara per penumpang",
+    "explanation": "Transit elektrik berkapasiti tinggi boleh mengurangkan penggunaan kereta persendirian."
+  },
+  {
+    "id": "GB08-033",
+    "chapter": 8,
+    "subtopic": "8.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Perancangan pengangkutan yang baik perlu menyeimbangkan...",
+    "options": [
+      "Ketersampaian dan ekonomi dengan perlindungan alam sekitar",
+      "Ekonomi sahaja tanpa pertimbangan lain",
+      "Pencemaran sahaja",
+      "Tiada keperluan masyarakat"
+    ],
+    "answer": "Ketersampaian dan ekonomi dengan perlindungan alam sekitar",
+    "explanation": "Kemajuan pengangkutan membawa manfaat sosial ekonomi tetapi juga boleh memberi kesan kepada alam sekitar."
+  },
+  {
+    "id": "GB09-013",
+    "chapter": 9,
+    "subtopic": "9.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Pemanasan global ialah peningkatan suhu...",
+    "options": [
+      "Atmosfera bumi secara berterusan",
+      "Sebuah bilik sahaja",
+      "Air sungai semata-mata",
+      "Satu bandar untuk sehari"
+    ],
+    "answer": "Atmosfera bumi secara berterusan",
+    "explanation": "Pemanasan global merujuk kenaikan suhu atmosfera bumi dalam jangka panjang."
+  },
+  {
+    "id": "GB09-014",
+    "chapter": 9,
+    "subtopic": "9.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Gas rumah hijau menyumbang kepada pemanasan apabila...",
+    "options": [
+      "Memerangkap sebahagian haba dalam atmosfera",
+      "Menghapuskan semua haba",
+      "Menghentikan cahaya matahari sepenuhnya",
+      "Mengurangkan semua suhu ke bawah sifar"
+    ],
+    "answer": "Memerangkap sebahagian haba dalam atmosfera",
+    "explanation": "Peningkatan gas rumah hijau meningkatkan jumlah haba yang kekal dalam sistem atmosfera."
+  },
+  {
+    "id": "GB09-015",
+    "chapter": 9,
+    "subtopic": "9.1",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa kawasan perindustrian dan bandar sering dikaitkan dengan pemanasan lebih ketara?",
+    "options": [
+      "Pelepasan gas dan permukaan binaan lebih tinggi",
+      "Tiada manusia di bandar",
+      "Bandar sentiasa bersalji",
+      "Industri tidak menggunakan tenaga"
+    ],
+    "answer": "Pelepasan gas dan permukaan binaan lebih tinggi",
+    "explanation": "Pembakaran bahan api fosil dan aktiviti bandar meningkatkan pelepasan serta penyimpanan haba."
+  },
+  {
+    "id": "GB09-016",
+    "chapter": 9,
+    "subtopic": "9.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Penyahhutanan bermaksud...",
+    "options": [
+      "Pemusnahan hutan secara kekal",
+      "Menanam semula semua hutan",
+      "Membina taman bandar",
+      "Mengurangkan penggunaan air"
+    ],
+    "answer": "Pemusnahan hutan secara kekal",
+    "explanation": "Penyahhutanan mengurangkan litupan hutan dan keupayaan menyerap karbon."
+  },
+  {
+    "id": "GB09-017",
+    "chapter": 9,
+    "subtopic": "9.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pengangkutan bermotor membebaskan gas seperti...",
+    "options": [
+      "Karbon dioksida dan karbon monoksida",
+      "Oksigen sahaja",
+      "Wap air sahaja",
+      "Nitrogen tulen sahaja"
+    ],
+    "answer": "Karbon dioksida dan karbon monoksida",
+    "explanation": "Pembakaran bahan api fosil dalam kenderaan menghasilkan gas pencemar."
+  },
+  {
+    "id": "GB09-018",
+    "chapter": 9,
+    "subtopic": "9.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pertanian dan penternakan boleh menghasilkan gas rumah hijau seperti...",
+    "options": [
+      "Metana dan nitrus oksida",
+      "Helium dan neon",
+      "Oksigen dan hidrogen sahaja",
+      "Tiada gas"
+    ],
+    "answer": "Metana dan nitrus oksida",
+    "explanation": "Aktiviti pertanian dikaitkan dengan CH4 dan N2O."
+  },
+  {
+    "id": "GB09-019",
+    "chapter": 9,
+    "subtopic": "9.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Penjanaan elektrik terma banyak menggunakan...",
+    "options": [
+      "Bahan api fosil",
+      "Tenaga ombak sahaja",
+      "Cahaya bulan",
+      "Air hujan sahaja"
+    ],
+    "answer": "Bahan api fosil",
+    "explanation": "Pembakaran bahan api fosil untuk tenaga membebaskan karbon dioksida."
+  },
+  {
+    "id": "GB09-020",
+    "chapter": 9,
+    "subtopic": "9.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Antara faktor semula jadi pemanasan global ialah...",
+    "options": [
+      "Letusan gunung berapi",
+      "E-dagang",
+      "MRT",
+      "Telefon pintar"
+    ],
+    "answer": "Letusan gunung berapi",
+    "explanation": "Letusan gunung berapi boleh membebaskan asap dan gas ke atmosfera."
+  },
+  {
+    "id": "GB09-021",
+    "chapter": 9,
+    "subtopic": "9.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kebakaran hutan secara semula jadi dikategorikan sebagai...",
+    "options": [
+      "Faktor semula jadi",
+      "Teknologi hijau",
+      "Pengangkutan awam",
+      "Jarak relatif"
+    ],
+    "answer": "Faktor semula jadi",
+    "explanation": "Kebakaran yang berlaku secara semula jadi merupakan faktor semula jadi dalam senarai buku teks."
+  },
+  {
+    "id": "GB09-022",
+    "chapter": 9,
+    "subtopic": "9.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa penyahhutanan boleh meningkatkan pemanasan global?",
+    "options": [
+      "Kurang pokok menyerap CO₂ dan pembakaran/kemusnahan hutan boleh melepaskan karbon",
+      "Hutan tidak berkait karbon",
+      "Pokok menghasilkan bahan api fosil",
+      "Penyahhutanan menambah hujan salji"
+    ],
+    "answer": "Kurang pokok menyerap CO₂ dan pembakaran/kemusnahan hutan boleh melepaskan karbon",
+    "explanation": "Hutan menyerap karbon; kehilangan hutan melemahkan fungsi tersebut."
+  },
+  {
+    "id": "GB09-023",
+    "chapter": 9,
+    "subtopic": "9.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Pencairan ais di kutub menyumbang kepada...",
+    "options": [
+      "Peningkatan aras laut",
+      "Pengurangan semua laut",
+      "Pembentukan gunung",
+      "Penurunan graviti"
+    ],
+    "answer": "Peningkatan aras laut",
+    "explanation": "Pencairan ais menambah jumlah air laut dan meningkatkan risiko banjir pesisir."
+  },
+  {
+    "id": "GB09-024",
+    "chapter": 9,
+    "subtopic": "9.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Peningkatan aras laut boleh...",
+    "options": [
+      "Menenggelamkan kawasan daratan rendah",
+      "Menambah tanah daratan secara automatik",
+      "Menghapuskan semua ombak",
+      "Menjadikan semua sungai kering"
+    ],
+    "answer": "Menenggelamkan kawasan daratan rendah",
+    "explanation": "Kawasan pesisir rendah berisiko banjir dan kehilangan tanah."
+  },
+  {
+    "id": "GB09-025",
+    "chapter": 9,
+    "subtopic": "9.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Suhu air laut yang meningkat boleh...",
+    "options": [
+      "Mengganggu ekosistem marin",
+      "Menyejukkan semua terumbu",
+      "Tiada kesan pada hidupan air",
+      "Menukar laut menjadi air tawar"
+    ],
+    "answer": "Mengganggu ekosistem marin",
+    "explanation": "Perubahan suhu laut memberi tekanan kepada organisma dan rantaian makanan."
+  },
+  {
+    "id": "GB09-026",
+    "chapter": 9,
+    "subtopic": "9.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tanah yang menjadi tandus akibat kemarau menjejaskan...",
+    "options": [
+      "Pengeluaran makanan",
+      "Kelajuan Internet",
+      "Rujukan grid",
+      "Telekomunikasi satelit"
+    ],
+    "answer": "Pengeluaran makanan",
+    "explanation": "Tanah kering dan kurang subur mengurangkan hasil pertanian."
+  },
+  {
+    "id": "GB09-027",
+    "chapter": 9,
+    "subtopic": "9.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Apakah dua masalah kesihatan yang boleh berlaku semasa gelombang haba?",
+    "options": [
+      "Strok haba dan dehidrasi",
+      "Hipotermia kerana salji",
+      "Tiada masalah kesihatan",
+      "Peningkatan oksigen darah automatik"
+    ],
+    "answer": "Strok haba dan dehidrasi",
+    "explanation": "Suhu sangat tinggi membahayakan sistem badan dan keseimbangan air."
+  },
+  {
+    "id": "GB09-028",
+    "chapter": 9,
+    "subtopic": "9.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Gangguan cuaca akibat pemanasan global boleh melibatkan...",
+    "options": [
+      "Kemarau, banjir, ribut dan taufan",
+      "Satu jenis cuaca sahaja",
+      "Tiada hujan di seluruh dunia",
+      "Musim yang sentiasa sama"
+    ],
+    "answer": "Kemarau, banjir, ribut dan taufan",
+    "explanation": "Perubahan iklim boleh meningkatkan ketidakstabilan dan kejadian ekstrem tertentu."
+  },
+  {
+    "id": "GB09-029",
+    "chapter": 9,
+    "subtopic": "9.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa pemanasan global boleh menjejaskan keselamatan makanan?",
+    "options": [
+      "Cuaca ekstrem, kemarau dan banjir boleh merosakkan tanaman serta bekalan air",
+      "Semua tanaman tumbuh lebih baik",
+      "Tiada hubungan dengan pertanian",
+      "Suhu tinggi sentiasa meningkatkan hasil"
+    ],
+    "answer": "Cuaca ekstrem, kemarau dan banjir boleh merosakkan tanaman serta bekalan air",
+    "explanation": "Pertanian bergantung pada suhu, hujan dan sumber air yang stabil."
+  },
+  {
+    "id": "GB09-030",
+    "chapter": 9,
+    "subtopic": "9.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Menggunakan pengangkutan awam membantu mengurangkan pemanasan global kerana...",
+    "options": [
+      "Mengurangkan bilangan kenderaan persendirian dan pelepasan",
+      "Menambah semua kenderaan",
+      "Meningkatkan pembakaran terbuka",
+      "Menambah penggunaan bahan api fosil per orang"
+    ],
+    "answer": "Mengurangkan bilangan kenderaan persendirian dan pelepasan",
+    "explanation": "Perjalanan berkongsi boleh mengurangkan pelepasan per penumpang."
+  },
+  {
+    "id": "GB09-031",
+    "chapter": 9,
+    "subtopic": "9.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Tenaga mesra alam seperti suria, angin dan ombak boleh menggantikan sebahagian penggunaan...",
+    "options": [
+      "Petroleum, gas asli dan arang batu",
+      "Air hujan",
+      "Kertas",
+      "Tanah pamah"
+    ],
+    "answer": "Petroleum, gas asli dan arang batu",
+    "explanation": "Tenaga boleh baharu mengurangkan kebergantungan pada bahan api fosil."
+  },
+  {
+    "id": "GB09-032",
+    "chapter": 9,
+    "subtopic": "9.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Pendidikan alam sekitar penting kerana...",
+    "options": [
+      "Meningkatkan pengetahuan dan amalan masyarakat",
+      "Meningkatkan pembakaran terbuka",
+      "Mengurangkan kesedaran",
+      "Menggalakkan pembaziran"
+    ],
+    "answer": "Meningkatkan pengetahuan dan amalan masyarakat",
+    "explanation": "Kesedaran membantu perubahan tingkah laku pada peringkat sekolah dan komuniti."
+  },
+  {
+    "id": "GB09-033",
+    "chapter": 9,
+    "subtopic": "9.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Penguatkuasaan undang-undang membantu dengan...",
+    "options": [
+      "Mengawal aktiviti yang mencemarkan alam sekitar",
+      "Menggalakkan semua pencemaran",
+      "Mansuhkan semua peraturan",
+      "Menghalang pendidikan"
+    ],
+    "answer": "Mengawal aktiviti yang mencemarkan alam sekitar",
+    "explanation": "Peraturan dan penguatkuasaan boleh mengehadkan pelepasan dan kerosakan alam."
+  },
+  {
+    "id": "GB09-034",
+    "chapter": 9,
+    "subtopic": "9.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Kerjasama antarabangsa diperlukan kerana perubahan iklim...",
+    "options": [
+      "Melibatkan seluruh dunia dan pelepasan merentas sempadan",
+      "Hanya berlaku dalam satu rumah",
+      "Tidak berkait atmosfera global",
+      "Tidak melibatkan negara lain"
+    ],
+    "answer": "Melibatkan seluruh dunia dan pelepasan merentas sempadan",
+    "explanation": "Masalah global memerlukan tindakan bersama antara negara."
+  },
+  {
+    "id": "GB09-035",
+    "chapter": 9,
+    "subtopic": "9.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Antara pelan sekolah berikut, yang paling menyeluruh ialah...",
+    "options": [
+      "5R, jimat tenaga, tanam pokok dan galakkan pengangkutan berkongsi",
+      "Bakar semua sisa",
+      "Gunakan penyaman udara maksimum setiap masa",
+      "Ganti pokok dengan parkir"
+    ],
+    "answer": "5R, jimat tenaga, tanam pokok dan galakkan pengangkutan berkongsi",
+    "explanation": "Gabungan ini mengurangkan sisa, tenaga dan pelepasan sambil meningkatkan litupan hijau."
+  },
+  {
+    "id": "GB10-013",
+    "chapter": 10,
+    "subtopic": "10.1",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Salah satu matlamat teknologi hijau ialah...",
+    "options": [
+      "Mengurangkan impak negatif aktiviti manusia",
+      "Meningkatkan pencemaran",
+      "Menghabiskan sumber semula jadi",
+      "Mengurangkan kesihatan"
+    ],
+    "answer": "Mengurangkan impak negatif aktiviti manusia",
+    "explanation": "Teknologi hijau direka untuk mengurangkan tekanan manusia terhadap alam sekitar."
+  },
+  {
+    "id": "GB10-014",
+    "chapter": 10,
+    "subtopic": "10.1",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Teknologi hijau selaras dengan konsep...",
+    "options": [
+      "Pembangunan lestari",
+      "Pembangunan tanpa had sumber",
+      "Pembaziran tenaga",
+      "Pencemaran maksimum"
+    ],
+    "answer": "Pembangunan lestari",
+    "explanation": "Pembangunan lestari memenuhi keperluan semasa tanpa menjejaskan generasi akan datang."
+  },
+  {
+    "id": "GB10-015",
+    "chapter": 10,
+    "subtopic": "10.1",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa teknologi hijau penting untuk generasi masa depan?",
+    "options": [
+      "Membantu mengekalkan sumber dan kualiti alam sekitar",
+      "Menghabiskan sumber lebih cepat",
+      "Menggalakkan pencemaran",
+      "Mengurangkan semua inovasi"
+    ],
+    "answer": "Membantu mengekalkan sumber dan kualiti alam sekitar",
+    "explanation": "Pendekatan lestari melindungi sumber agar masih boleh digunakan pada masa depan."
+  },
+  {
+    "id": "GB10-016",
+    "chapter": 10,
+    "subtopic": "10.2",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Produk teknologi hijau seharusnya...",
+    "options": [
+      "Menjimatkan tenaga dan sumber",
+      "Meningkatkan pembaziran",
+      "Sukar digunakan",
+      "Menghasilkan pencemaran tinggi"
+    ],
+    "answer": "Menjimatkan tenaga dan sumber",
+    "explanation": "Kecekapan penggunaan tenaga dan bahan ialah antara kriteria utama."
+  },
+  {
+    "id": "GB10-017",
+    "chapter": 10,
+    "subtopic": "10.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Produk hijau menggalakkan penggunaan sumber yang...",
+    "options": [
+      "Boleh diperbaharui",
+      "Tidak boleh diperbaharui sahaja",
+      "Semakin berkurang",
+      "Mencemarkan air"
+    ],
+    "answer": "Boleh diperbaharui",
+    "explanation": "Penggunaan sumber boleh diperbaharui mengurangkan tekanan terhadap sumber terhad."
+  },
+  {
+    "id": "GB10-018",
+    "chapter": 10,
+    "subtopic": "10.2",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Satu kriteria sosial produk hijau ialah...",
+    "options": [
+      "Selamat digunakan dan menyediakan persekitaran lebih sihat",
+      "Menghasilkan bunyi maksimum",
+      "Tidak mesra pengguna",
+      "Membahayakan kesihatan"
+    ],
+    "answer": "Selamat digunakan dan menyediakan persekitaran lebih sihat",
+    "explanation": "Teknologi hijau perlu memberi manfaat kepada pengguna dan persekitaran hidup."
+  },
+  {
+    "id": "GB10-019",
+    "chapter": 10,
+    "subtopic": "10.2",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Sebuah produk menggunakan banyak tenaga tetapi boleh dikitar semula. Mengapa ia belum tentu benar-benar hijau?",
+    "options": [
+      "Kriteria hijau juga menilai kecekapan tenaga dan pelepasan",
+      "Kitar semula sahaja sudah mencukupi untuk semua produk",
+      "Penggunaan tenaga tidak relevan",
+      "Semua produk automatik hijau"
+    ],
+    "answer": "Kriteria hijau juga menilai kecekapan tenaga dan pelepasan",
+    "explanation": "Penilaian teknologi hijau melibatkan pelbagai kriteria, bukan satu ciri sahaja."
+  },
+  {
+    "id": "GB10-020",
+    "chapter": 10,
+    "subtopic": "10.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Bas elektrik ialah contoh produk dalam teras...",
+    "options": [
+      "Tenaga",
+      "Grid",
+      "Cuaca",
+      "Gerhana"
+    ],
+    "answer": "Tenaga",
+    "explanation": "Kenderaan elektrik membantu mengurangkan penggunaan bahan api fosil."
+  },
+  {
+    "id": "GB10-021",
+    "chapter": 10,
+    "subtopic": "10.3",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Beg plastik biodegradasi termasuk teras...",
+    "options": [
+      "Alam sekitar",
+      "Pengangkutan udara",
+      "Peta topografi",
+      "Iklim sejuk"
+    ],
+    "answer": "Alam sekitar",
+    "explanation": "Produk biodegradasi direka untuk mengurangkan kesan sisa kepada alam."
+  },
+  {
+    "id": "GB10-022",
+    "chapter": 10,
+    "subtopic": "10.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Industri fotovolta termasuk teras...",
+    "options": [
+      "Ekonomi",
+      "Saliran",
+      "Perikanan",
+      "Rujukan grid"
+    ],
+    "answer": "Ekonomi",
+    "explanation": "Industri teknologi hijau boleh mewujudkan aktiviti ekonomi berasaskan teknologi canggih."
+  },
+  {
+    "id": "GB10-023",
+    "chapter": 10,
+    "subtopic": "10.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Penggunaan pengangkutan awam sebagai contoh teknologi hijau turut berkait dengan teras...",
+    "options": [
+      "Sosial",
+      "Tundra",
+      "Gerhana",
+      "Skala"
+    ],
+    "answer": "Sosial",
+    "explanation": "Pengangkutan awam boleh meningkatkan kualiti hidup dan kemudahan masyarakat."
+  },
+  {
+    "id": "GB10-024",
+    "chapter": 10,
+    "subtopic": "10.3",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Biodiesel ialah contoh produk teknologi hijau dalam teras...",
+    "options": [
+      "Tenaga",
+      "Alam sekitar sahaja",
+      "Peta",
+      "Cuaca"
+    ],
+    "answer": "Tenaga",
+    "explanation": "Biodiesel ialah alternatif bahan api yang membantu mengurangkan penggunaan bahan api fosil konvensional."
+  },
+  {
+    "id": "GB10-025",
+    "chapter": 10,
+    "subtopic": "10.3",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Sistem panel suria pada sekolah menyokong sekurang-kurangnya dua matlamat, iaitu...",
+    "options": [
+      "Menjana tenaga dan mengurangkan pelepasan daripada bahan api fosil",
+      "Meningkatkan pembakaran terbuka dan sisa",
+      "Mengurangkan semua pencahayaan semula jadi",
+      "Menambah pencemaran bunyi"
+    ],
+    "answer": "Menjana tenaga dan mengurangkan pelepasan daripada bahan api fosil",
+    "explanation": "Solar ialah sumber tenaga boleh baharu yang boleh menggantikan sebahagian tenaga berasaskan fosil."
+  },
+  {
+    "id": "GB10-026",
+    "chapter": 10,
+    "subtopic": "10.4",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Teknologi hijau boleh meningkatkan kualiti udara dengan...",
+    "options": [
+      "Mengurangkan pelepasan pencemar",
+      "Menambah pembakaran terbuka",
+      "Meningkatkan asap kenderaan",
+      "Mengurangkan semua pokok"
+    ],
+    "answer": "Mengurangkan pelepasan pencemar",
+    "explanation": "Teknologi yang lebih bersih membantu mengurangkan pencemar udara."
+  },
+  {
+    "id": "GB10-027",
+    "chapter": 10,
+    "subtopic": "10.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Dalam aspek ekonomi, teknologi hijau boleh...",
+    "options": [
+      "Mengurangkan kos operasi dan membuka peluang produk hijau",
+      "Menghentikan semua inovasi",
+      "Meningkatkan pembaziran sahaja",
+      "Menghapuskan semua pekerjaan"
+    ],
+    "answer": "Mengurangkan kos operasi dan membuka peluang produk hijau",
+    "explanation": "Kecekapan dan industri hijau boleh meningkatkan nilai ekonomi."
+  },
+  {
+    "id": "GB10-028",
+    "chapter": 10,
+    "subtopic": "10.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Dalam aspek sosial, teknologi hijau membantu...",
+    "options": [
+      "Meningkatkan keselesaan dan kesihatan masyarakat",
+      "Meningkatkan pencemaran bunyi",
+      "Mengurangkan kualiti hidup",
+      "Menambah risiko kesihatan"
+    ],
+    "answer": "Meningkatkan keselesaan dan kesihatan masyarakat",
+    "explanation": "Persekitaran yang lebih bersih dan selesa meningkatkan kesejahteraan."
+  },
+  {
+    "id": "GB10-029",
+    "chapter": 10,
+    "subtopic": "10.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Sumber tenaga seperti angin, air, solar dan ombak ialah...",
+    "options": [
+      "Sumber semula jadi yang boleh diperbaharui",
+      "Bahan api fosil",
+      "Sumber tidak boleh diperbaharui semata-mata",
+      "Gas rumah hijau"
+    ],
+    "answer": "Sumber semula jadi yang boleh diperbaharui",
+    "explanation": "Sumber tersebut boleh digunakan semula secara berterusan jika diurus secara lestari."
+  },
+  {
+    "id": "GB10-030",
+    "chapter": 10,
+    "subtopic": "10.4",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Teknologi hijau membantu melindungi ekosistem melalui...",
+    "options": [
+      "Pengurangan pencemaran dan penggunaan sumber yang lebih cekap",
+      "Pembakaran hutan",
+      "Pembuangan sisa ke sungai",
+      "Peningkatan karbon"
+    ],
+    "answer": "Pengurangan pencemaran dan penggunaan sumber yang lebih cekap",
+    "explanation": "Kurang pencemaran dan tekanan sumber membantu melindungi biodiversiti."
+  },
+  {
+    "id": "GB10-031",
+    "chapter": 10,
+    "subtopic": "10.4",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Mengapa kecekapan tenaga memberi manfaat ekonomi dan alam sekitar serentak?",
+    "options": [
+      "Mengurangkan kos penggunaan tenaga dan pelepasan daripada penjanaan",
+      "Meningkatkan pembaziran dan pelepasan",
+      "Tidak memberi sebarang kesan",
+      "Menghapuskan semua peralatan"
+    ],
+    "answer": "Mengurangkan kos penggunaan tenaga dan pelepasan daripada penjanaan",
+    "explanation": "Menggunakan kurang tenaga menurunkan bil dan mengurangkan permintaan terhadap sumber tenaga pencemar."
+  },
+  {
+    "id": "GB10-032",
+    "chapter": 10,
+    "subtopic": "10.5",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Menutup suis dan mencabut plag peralatan yang tidak digunakan ialah amalan...",
+    "options": [
+      "Penjimatan tenaga",
+      "Pembaziran tenaga",
+      "Pengangkutan",
+      "Pencemaran bunyi"
+    ],
+    "answer": "Penjimatan tenaga",
+    "explanation": "Mengelakkan penggunaan elektrik yang tidak perlu mengurangkan penggunaan tenaga."
+  },
+  {
+    "id": "GB10-033",
+    "chapter": 10,
+    "subtopic": "10.5",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Menadah air hujan untuk menyiram tumbuhan ialah amalan...",
+    "options": [
+      "Penjimatan air",
+      "Pembaziran air",
+      "Pencemaran udara",
+      "Telekomunikasi"
+    ],
+    "answer": "Penjimatan air",
+    "explanation": "Air hujan boleh digunakan semula untuk mengurangkan penggunaan air terawat."
+  },
+  {
+    "id": "GB10-034",
+    "chapter": 10,
+    "subtopic": "10.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Menggunakan kertas kitar semula ialah contoh...",
+    "options": [
+      "Perolehan produk hijau",
+      "Pembakaran terbuka",
+      "Penggunaan bahan sekali guna sahaja",
+      "Peningkatan sisa"
+    ],
+    "answer": "Perolehan produk hijau",
+    "explanation": "Pemilihan bahan mesra alam menyokong pasaran dan penggunaan produk hijau."
+  },
+  {
+    "id": "GB10-035",
+    "chapter": 10,
+    "subtopic": "10.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Mengasingkan sisa pepejal isi rumah membantu...",
+    "options": [
+      "Pengurangan sisa dan kitar semula",
+      "Meningkatkan semua sisa ke tapak pelupusan",
+      "Menambah pencemaran",
+      "Menghapuskan amalan 5R"
+    ],
+    "answer": "Pengurangan sisa dan kitar semula",
+    "explanation": "Pengasingan memudahkan bahan yang sesuai dikitar atau diguna semula."
+  },
+  {
+    "id": "GB10-036",
+    "chapter": 10,
+    "subtopic": "10.5",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Berjalan kaki atau berbasikal ke sekolah jika sesuai termasuk amalan...",
+    "options": [
+      "Pengangkutan hijau",
+      "Pembaziran air",
+      "Pencemaran bunyi",
+      "Penyahhutanan"
+    ],
+    "answer": "Pengangkutan hijau",
+    "explanation": "Kaedah aktif tidak menghasilkan pelepasan bahan api semasa perjalanan."
+  },
+  {
+    "id": "GB10-037",
+    "chapter": 10,
+    "subtopic": "10.5",
+    "difficulty": "kbat",
+    "type": "mcq",
+    "prompt": "Kantin sekolah mahu mengurangkan sisa. Langkah paling sesuai ialah...",
+    "options": [
+      "Galakkan bekas guna semula dan pembungkus mesra alam",
+      "Tambah bekas pakai buang",
+      "Larangkan kitar semula",
+      "Gunakan lebih banyak plastik sekali guna"
+    ],
+    "answer": "Galakkan bekas guna semula dan pembungkus mesra alam",
+    "explanation": "Mengurangkan bahan pakai buang selari dengan amalan pengurangan sisa dan perkhidmatan makanan hijau."
+  }
+]
