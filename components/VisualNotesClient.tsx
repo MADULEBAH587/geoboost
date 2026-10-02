@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type TouchEvent } from "react";
 import { GeoStimulus } from "@/components/GeoStimulus";
 import { getStudentSession } from "@/lib/session";
 import type { VisualNoteChapter, VisualNoteTab } from "@/lib/visualNotes";
@@ -80,8 +80,8 @@ export function VisualNotesClient({note}:{note:VisualNoteChapter}){
     if(dataUrl)setViewer({item,dataUrl});
   }
 
-  function onTouchStart(e:React.TouchEvent){touchStart.current=e.changedTouches[0]?.clientX??null}
-  function onTouchEnd(e:React.TouchEvent){
+  function onTouchStart(e:TouchEvent){touchStart.current=e.changedTouches[0]?.clientX??null}
+  function onTouchEnd(e:TouchEvent){
     if(touchStart.current===null)return;
     const end=e.changedTouches[0]?.clientX??touchStart.current;
     const dx=end-touchStart.current;
