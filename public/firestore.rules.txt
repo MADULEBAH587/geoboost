@@ -1,0 +1,220 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function teacherDoc() {
+      return get(/databases/$(database)/documents/teachers/$(request.auth.uid));
+    }
+    function isTeacher() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/teachers/$(request.auth.uid))
+        && teacherDoc().data.active != false;
+    }
+    function teacherRole() {
+      return !isTeacher()
+        ? "none"
+        : (teacherDoc().data.role in ["admin","guru","viewer"] ? teacherDoc().data.role : "admin");
+    }
+    function canEdit() {
+      return isTeacher() && (teacherRole() == "admin" || teacherRole() == "guru");
+    }
+    function isAdmin() {
+      return isTeacher() && teacherRole() == "admin";
+    }
+    function classExists(classCode) {
+      return exists(/databases/$(database)/documents/classes/$(classCode));
+    }
+    function classDoc(classCode) {
+      return get(/databases/$(database)/documents/classes/$(classCode));
+    }
+    function canManageClass(classCode) {
+      return canEdit()
+        && classExists(classCode)
+        && (isAdmin() || classDoc(classCode).data.ownerTeacherId == request.auth.uid);
+    }
+    function isStudent(studentId) {
+      return signedIn() && request.auth.uid == studentId;
+    }
+    function studentDoc() {
+      return get(/databases/$(database)/documents/students/$(request.auth.uid));
+    }
+    function currentStudentLocalId() {
+      return studentDoc().data.localStudentId;
+    }
+    function currentStudentClassCode() {
+      return studentDoc().data.classCode;
+    }
+    function currentStudentName() {
+      return studentDoc().data.name;
+    }
+    function hasStudentProfile() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/students/$(request.auth.uid));
+    }
+    function hasMatchingClaim(localStudentId, classCode) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/studentClaims/$(request.auth.uid))
+        && get(/databases/$(database)/documents/studentClaims/$(request.auth.uid)).data.studentId == localStudentId
+        && get(/databases/$(database)/documents/studentClaims/$(request.auth.uid)).data.classCode == classCode;
+    }
+    function validStudentProfile() {
+      return request.resource.data.keys().hasOnly([
+        'name', 'className', 'classCode', 'localStudentId', 'updatedAt'
+      ])
+      && request.resource.data.name is string
+      && request.resource.data.className is string
+      && request.resource.data.classCode is string
+      && request.resource.data.localStudentId is string
+      && hasMatchingClaim(request.resource.data.localStudentId, request.resource.data.classCode)
+      && exists(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.localStudentId))
+      && get(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.localStudentId)).data.active == true
+      && get(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.localStudentId)).data.name == request.resource.data.name;
+    }
+    function validAttempt() {
+      return hasStudentProfile()
+      && request.resource.data.keys().hasOnly([
+        'id', 'studentId', 'localStudentId', 'studentName', 'className', 'classCode',
+        'chapter', 'label', 'mode', 'score', 'total', 'percentage', 'durationSeconds',
+        'wrongSubtopics', 'responses', 'completedAt'
+      ])
+      && request.resource.data.studentId == request.auth.uid
+      && request.resource.data.localStudentId == currentStudentLocalId()
+      && request.resource.data.classCode == currentStudentClassCode()
+      && request.resource.data.studentName == currentStudentName()
+      && request.resource.data.localStudentId is string
+      && request.resource.data.studentName is string
+      && request.resource.data.className is string
+      && request.resource.data.chapter is int
+      && request.resource.data.score is int
+      && request.resource.data.total is int
+      && request.resource.data.percentage is int
+      && request.resource.data.durationSeconds is int
+      && request.resource.data.wrongSubtopics is list
+      && request.resource.data.responses is list
+      && request.resource.data.score >= 0
+      && request.resource.data.total > 0
+      && request.resource.data.score <= request.resource.data.total
+      && request.resource.data.percentage >= 0
+      && request.resource.data.percentage <= 100;
+    }
+    function validProgress() {
+      return hasStudentProfile()
+        && request.resource.data.localStudentId == currentStudentLocalId()
+        && request.resource.data.classCode == currentStudentClassCode()
+        && request.resource.data.studentName == currentStudentName();
+    }
+
+    match /chapters/{chapterId} {
+      allow read: if true;
+      allow write: if canEdit();
+    }
+
+    match /questions/{questionId} {
+      allow read: if true;
+      allow create, update, delete: if canEdit();
+    }
+
+    match /classes/{classId} {
+      allow get: if signedIn();
+      allow list: if isAdmin()
+        || (isTeacher() && resource.data.ownerTeacherId == request.auth.uid);
+      allow create: if canEdit()
+        && request.resource.data.ownerTeacherId == request.auth.uid;
+      allow update: if canEdit()
+        && (
+          isAdmin()
+          || (
+            resource.data.ownerTeacherId == request.auth.uid
+            && request.resource.data.ownerTeacherId == resource.data.ownerTeacherId
+          )
+        );
+      allow delete: if canEdit()
+        && (isAdmin() || resource.data.ownerTeacherId == request.auth.uid);
+    }
+
+    match /studentAccess/{accessId} {
+      allow read: if isTeacher()
+        && (isAdmin() || canManageClass(resource.data.classCode));
+      allow create: if canEdit()
+        && canManageClass(request.resource.data.classCode);
+      allow update: if canEdit()
+        && canManageClass(resource.data.classCode)
+        && request.resource.data.classCode == resource.data.classCode
+        && request.resource.data.studentId == resource.data.studentId;
+      allow delete: if canEdit()
+        && canManageClass(resource.data.classCode);
+    }
+
+    match /studentClaims/{studentUid} {
+      allow read: if isTeacher();
+      allow create, update: if isStudent(studentUid)
+        && request.resource.data.keys().hasOnly(['classCode','studentId','pin','createdAt'])
+        && request.resource.data.classCode is string
+        && request.resource.data.studentId is string
+        && request.resource.data.pin is string
+        && request.resource.data.pin.size() == 6
+        && exists(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.studentId))
+        && get(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.studentId)).data.active == true
+        && get(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.studentId)).data.pin == request.resource.data.pin;
+      allow delete: if isStudent(studentUid) || isAdmin();
+    }
+
+    match /students/{studentId} {
+      allow read: if isTeacher() || isStudent(studentId);
+      allow create, update: if isStudent(studentId) && validStudentProfile();
+      allow delete: if canEdit();
+    }
+
+    match /attempts/{attemptId} {
+      allow create: if signedIn() && validAttempt();
+      allow read: if isTeacher()
+        || (signedIn() && resource.data.studentId == request.auth.uid)
+        || (hasStudentProfile() && resource.data.localStudentId == currentStudentLocalId());
+      allow update: if signedIn()
+        && resource.data.studentId == request.auth.uid
+        && validAttempt();
+      allow delete: if canEdit();
+    }
+
+    match /responses/{responseId} {
+      allow create: if hasStudentProfile()
+        && request.resource.data.studentId == request.auth.uid
+        && request.resource.data.localStudentId == currentStudentLocalId();
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow update: if false;
+      allow delete: if canEdit();
+    }
+
+    match /progress/{studentId} {
+      allow read: if isTeacher() || isStudent(studentId);
+      allow create, update: if isStudent(studentId) && validProgress();
+      allow delete: if canEdit();
+    }
+
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if canEdit();
+    }
+
+    match /teachers/{teacherId} {
+      allow read: if isTeacher() || (signedIn() && request.auth.uid == teacherId);
+      allow create: if isAdmin();
+      allow update: if isAdmin()
+        || (
+          signedIn()
+          && request.auth.uid == teacherId
+          && isTeacher()
+          && !(resource.data.role in ["admin","guru","viewer"])
+          && request.resource.data.role == "admin"
+          && request.resource.data.active == true
+        );
+      allow delete: if isAdmin();
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if isTeacher();
+      allow create: if canEdit();
+      allow update, delete: if isAdmin();
+    }
+  }
+}
