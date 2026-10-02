@@ -149,7 +149,7 @@ export function StudentPortal({ section }: { section: Section }) {
 
   const badges=[
     own.length>=1?["🎯","Langkah Pertama"]:null,
-    own.length>=5?["🔥","Konsisten 5 Sesi"]:null,
+    own.length>=5?["🔥","5 Latihan Selesai"]:null,
     own.some(a=>a.percentage===100)?["🏆","Skor Sempurna"]:null,
     xp>=500?["⭐","500 Mata Ilmu"]:null,
     completedChapters>=5?["🗺️","5 Bab Dikuasai"]:null,
@@ -180,11 +180,11 @@ export function StudentPortal({ section }: { section: Section }) {
       <section className="student-app-content">
         {section==="utama"?<>
           <div className="student-welcome">
-            <div><span className="eyebrow dark">DASHBOARD MURID</span><h1>Hai, {student.name.split(" ")[0]} 👋</h1><p>{student.className} · {masteryLabel(avg)} · {avg}% purata</p></div>
+            <div><span className="eyebrow dark">UTAMA</span><h1>Hai, {student.name.split(" ")[0]} 👋</h1><p>{student.className} · {masteryLabel(avg)} · {avg}% purata</p></div>
             <div className="student-level"><small>Mata Ilmu</small><b>{xp}</b><span>{completedChapters}/10 bab dikuasai</span></div>
           </div>
 
-          {student.pendingRoster?<div className="student-notice warn">⏳ Nama anda ditambah secara manual dan sedang menunggu semakan guru. Anda masih boleh menggunakan GeoBoost.</div>:null}
+          {student.pendingRoster?<div className="student-notice warn">⏳ Nama anda sedang menunggu semakan guru. Anda masih boleh menggunakan GeoBoost.</div>:null}
 
           {resume.length?<section className="student-focus-card resume"><div><small>SAMBUNG LATIHAN</small><h2>{resume[0].title}</h2><p>Soalan {Math.min(resume[0].index+1,resume[0].total)}/{resume[0].total} · kemajuan disimpan automatik.</p></div><a className="primary" href={resume[0].href}>Sambung →</a></section>:null}
 
@@ -197,7 +197,7 @@ export function StudentPortal({ section }: { section: Section }) {
 
           <section className="student-home-section"><div className="student-section-head"><div><small>KEMAJUAN</small><h2>Bab Saya</h2></div><a href="/murid/prestasi">Prestasi penuh →</a></div><div className="student-chapter-compact">{byChapter.map(ch=>{const locked=classRecord?!classRecord.openChapters.includes(ch.id):false;return <a key={ch.id} className={locked?"locked":""} href={locked?"#":"/bab/"+ch.id}><span>{ch.icon}</span><div><small>BAB {ch.id}</small><b>{ch.title}</b><i>{locked?"🔒 Ditutup":ch.tries?ch.label:"Belum cuba"}</i></div><strong>{locked?"—":ch.best+"%"}</strong></a>})}</div></section>
 
-          <section className="student-quick-grid"><a href="/harian"><span>⚡</span><b>Misi Hari Ini</b><small>5 soalan pantas</small></a><a href="/pemulihan"><span>🎯</span><b>Pemulihan Pintar</b><small>Fokus kelemahan</small></a><a href="/uasa"><span>🏆</span><b>Simulasi UASA</b><small>Mod peperiksaan</small></a></section>
+          <section className="student-quick-grid"><a href="/harian"><span>⚡</span><b>Misi Hari Ini</b><small>5 soalan pantas</small></a><a href="/pemulihan"><span>🎯</span><b>Pemulihan Pintar</b><small>Fokus kelemahan</small></a><a href="/uasa"><span>🏆</span><b>Simulasi UASA</b><small>Simulasi peperiksaan</small></a></section>
         </>:null}
 
         {section==="tugasan"?<>
@@ -208,7 +208,7 @@ export function StudentPortal({ section }: { section: Section }) {
 
         {section==="latihan"?<>
           <div className="student-page-title"><span className="eyebrow dark">LATIHAN</span><h1>Pilih Cara Belajar</h1><p>Latihan kendiri, pemulihan, cabaran harian dan UASA.</p></div>
-          <div className="student-mode-grid"><a href="/pantas"><span>⚡</span><h3>Latih Tubi Pantas</h3><p>Gabungkan bab yang telah dibuka.</p></a><a href="/pemulihan"><span>🎯</span><h3>Pemulihan</h3><p>Soalan berdasarkan kelemahan anda.</p></a><a href="/uasa"><span>🏆</span><h3>Cabaran UASA</h3><p>Simulasi tanpa jawapan segera.</p></a><a href="/ulang-salah"><span>🔁</span><h3>Soalan Lemah</h3><p>Ulang bank soalan yang pernah salah.</p></a></div>
+          <div className="student-mode-grid"><a href="/pantas"><span>⚡</span><h3>Latih Tubi Pantas</h3><p>Gabungkan bab yang telah dibuka.</p></a><a href="/pemulihan"><span>🎯</span><h3>Pemulihan</h3><p>Soalan berdasarkan kelemahan anda.</p></a><a href="/uasa"><span>🏆</span><h3>Cabaran UASA</h3><p>Simulasi tanpa jawapan segera.</p></a><a href="/ulang-salah"><span>🔁</span><h3>Ulang Soalan Salah</h3><p>Ulang soalan yang pernah dijawab salah.</p></a></div>
           <div className="student-section-head"><div><small>BAB 1–10</small><h2>Latihan Bab</h2></div></div>
           <div className="student-chapter-compact full">{byChapter.map(ch=>{const locked=classRecord?!classRecord.openChapters.includes(ch.id):false;return <a key={ch.id} className={locked?"locked":""} href={locked?"#":"/bab/"+ch.id}><span>{ch.icon}</span><div><small>BAB {ch.id}</small><b>{ch.title}</b><i>{locked?"Dikunci guru":ch.tries?ch.label:"Belum cuba"}</i></div><strong>{locked?"🔒":ch.best+"%"}</strong></a>})}</div>
           {bookmarks.length?<a className="student-notice bookmark-notice" href="/bookmark">🔖 Anda mempunyai <b>{bookmarks.length}</b> soalan disimpan. Tekan untuk ulang sekarang →</a>:null}
@@ -226,7 +226,7 @@ export function StudentPortal({ section }: { section: Section }) {
         {section==="profil"?<>
           <div className="student-page-title"><span className="eyebrow dark">PROFIL</span><h1>Profil Saya</h1><p>Maklumat diri dan pencapaian GeoBoost.</p></div>
           <section className="student-profile-main"><div className="student-profile-avatar">{student.name.split(/\s+/).slice(0,2).map(x=>x[0]).join("")}</div><h2>{student.name}</h2><p>{student.className} · Kod {student.classCode}</p><div className="student-profile-stats"><div><small>Mata Ilmu</small><b>{xp}</b></div><div><small>Percubaan</small><b>{own.length}</b></div><div><small>Soalan Disimpan</small><b>{bookmarks.length}</b></div></div></section>
-          <section className="student-performance-panel"><div className="student-section-head"><div><small>PENCAPAIAN</small><h2>Lencana Saya</h2></div></div><div className="badge-grid">{badges.length?badges.map(([icon,label])=><div key={label}><span>{icon}</span><b>{label}</b></div>):<div className="student-empty">Lengkapkan latihan untuk membuka badge.</div>}</div></section>
+          <section className="student-performance-panel"><div className="student-section-head"><div><small>PENCAPAIAN</small><h2>Lencana Saya</h2></div></div><div className="badge-grid">{badges.length?badges.map(([icon,label])=><div key={label}><span>{icon}</span><b>{label}</b></div>):<div className="student-empty">Lengkapkan latihan untuk membuka lencana.</div>}</div></section>
           
           <button className="student-danger-button" onClick={logout}>Keluar / Tukar Murid</button>
         </>:null}
