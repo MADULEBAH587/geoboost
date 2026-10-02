@@ -122,6 +122,25 @@ async function publishRules(token:string) {
   return rulesetName;
 }
 
+async function setMultiTeacherConfig(token:string){
+  const params=new URLSearchParams();
+  ["multiTeacherEnabled","studentLoginMode","teacherAuthMode","updatedAtMs"].forEach(field=>params.append("updateMask.fieldPaths",field));
+  const url=
+    "https://firestore.googleapis.com/v1/projects/"+encodeURIComponent(PROJECT_ID)+
+    "/databases/(default)/documents/settings/system?"+params.toString();
+  await api(url,token,{
+    method:"PATCH",
+    body:JSON.stringify({
+      fields:{
+        multiTeacherEnabled:{booleanValue:true},
+        studentLoginMode:{stringValue:"double-confirm"},
+        teacherAuthMode:{stringValue:"email-password"},
+        updatedAtMs:{integerValue:String(Date.now())},
+      },
+    }),
+  });
+}
+
 async function upsertAdminTeacher(token:string,user:User) {
   const uid=user.uid;
   const params=new URLSearchParams();
@@ -155,6 +174,7 @@ export async function deployGeoBoostMultiTeacher() {
   await enableEmailPassword(token);
   const rulesetName=await publishRules(token);
   const uid=await upsertAdminTeacher(token,user);
+  await setMultiTeacherConfig(token);
   return {
     uid,
     email:user.email||"",
