@@ -1,6 +1,6 @@
 "use client";
 
-import { addDoc, collection, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import { getFirebaseServices } from "./firebase";
 
 export type TeacherRole = "admin" | "guru" | "viewer";
@@ -118,6 +118,17 @@ export async function listTeacherProfiles(): Promise<TeacherProfile[]> {
     return snap.docs.map(d=>profileFromData(d.id,d.data() as Record<string,any>))
       .sort((a,b)=>(rank[a.status||"active"]-rank[b.status||"active"])||a.name.localeCompare(b.name,"ms"));
   }catch{return []}
+}
+
+export function watchTeacherProfiles(callback:(profiles:TeacherProfile[])=>void){
+  const services=getFirebaseServices();
+  if(!services){callback([]);return ()=>{}}
+  const rank:Record<TeacherStatus,number>={pending:0,active:1,suspended:2,rejected:3};
+  return onSnapshot(collection(services.db,"teachers"),snap=>{
+    const profiles=snap.docs.map(d=>profileFromData(d.id,d.data() as Record<string,any>))
+      .sort((a,b)=>(rank[a.status||"active"]-rank[b.status||"active"])||a.name.localeCompare(b.name,"ms"));
+    callback(profiles);
+  },()=>{});
 }
 
 export async function touchTeacherLastSeen(uid:string){
