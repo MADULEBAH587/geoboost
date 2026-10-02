@@ -48,7 +48,7 @@ function markAttemptSynced(id: string) {
   setLocalAttempts(next);
 }
 
-export async function syncStudentProfile(profile: { localStudentId: string; name: string; className: string; classCode?: string; pin?: string }) {
+export async function syncStudentProfile(profile: { localStudentId: string; name: string; className: string; classCode?: string }) {
   const services = getFirebaseServices();
   if (!services) return { synced: false, uid: null as string | null };
   try {
