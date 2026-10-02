@@ -1,4 +1,4 @@
-# GeoBoost Tingkatan 2 v1.1
+# GeoBoost Tingkatan 2 v2.5
 **Latihan Pengukuhan Interaktif Geografi — By Cikgu Zulhasif**
 
 GeoBoost ialah aplikasi Next.js/PWA untuk latihan Geografi Tingkatan 2 Bab 1–10. Aplikasi boleh berjalan secara local-first pada peranti; apabila Firebase dikonfigurasi, profil murid dan keputusan diselaraskan ke Firestore untuk analitik pusat guru.
@@ -27,7 +27,7 @@ Pilihan jawapan diacak pada setiap sesi supaya jawapan betul tidak kekal pada po
 - Latih Tubi Pantas 10 / 15 / 20 soalan
 - Cabaran UASA 30 soalan
 - Pemulihan pintar berdasarkan subtopik yang kerap salah
-- XP, markah terbaik dan sejarah percubaan
+- Mata Ilmu, markah terbaik dan sejarah percubaan
 - Mod Aplikasi Geografi dengan stimulus SVG
 - Item hotspot untuk grid dan zon iklim
 - Rekod local-first dengan retry sync Firebase
