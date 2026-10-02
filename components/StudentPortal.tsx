@@ -151,7 +151,7 @@ export function StudentPortal({ section }: { section: Section }) {
     own.length>=1?["🎯","Langkah Pertama"]:null,
     own.length>=5?["🔥","Konsisten 5 Sesi"]:null,
     own.some(a=>a.percentage===100)?["🏆","Skor Sempurna"]:null,
-    xp>=500?["⭐","500 XP"]:null,
+    xp>=500?["⭐","500 Mata Ilmu"]:null,
     completedChapters>=5?["🗺️","5 Bab Dikuasai"]:null,
   ].filter(Boolean) as string[][];
 
@@ -181,7 +181,7 @@ export function StudentPortal({ section }: { section: Section }) {
         {section==="utama"?<>
           <div className="student-welcome">
             <div><span className="eyebrow dark">DASHBOARD MURID</span><h1>Hai, {student.name.split(" ")[0]} 👋</h1><p>{student.className} · {masteryLabel(avg)} · {avg}% purata</p></div>
-            <div className="student-level"><small>XP</small><b>{xp}</b><span>{completedChapters}/10 bab dikuasai</span></div>
+            <div className="student-level"><small>Mata Ilmu</small><b>{xp}</b><span>{completedChapters}/10 bab dikuasai</span></div>
           </div>
 
           {student.pendingRoster?<div className="student-notice warn">⏳ Nama anda ditambah secara manual dan sedang menunggu semakan guru. Anda masih boleh menggunakan GeoBoost.</div>:null}
@@ -216,18 +216,18 @@ export function StudentPortal({ section }: { section: Section }) {
 
         {section==="prestasi"?<>
           <div className="student-page-title"><span className="eyebrow dark">PRESTASI</span><h1>Prestasi Saya</h1><p>Jejak perkembangan dan fokus pada topik yang masih lemah.</p></div>
-          <div className="student-metric-grid"><div><small>Purata</small><b>{avg}%</b><span>{masteryLabel(avg)}</span></div><div><small>XP</small><b>{xp}</b><span>{own.length} sesi</span></div><div><small>Bab dikuasai</small><b>{completedChapters}/10</b><span>sasaran ≥60%</span></div><div><small>Tidak pasti</small><b>{unsureCount}</b><span>jawapan ditanda</span></div></div>
-          <section className="student-performance-panel"><div className="student-section-head"><div><small>TREND</small><h2>10 latihan terakhir</h2></div></div><div className="student-trend">{own.slice(0,10).reverse().map((a,i)=><div key={a.id}><span style={{height:Math.max(8,a.percentage)+"%"}}></span><small>{a.percentage}%</small><i>{i+1}</i></div>)}</div></section>
-          <section className="student-performance-panel"><div className="student-section-head"><div><small>MASTERY</small><h2>Penguasaan Setiap Bab</h2></div></div><div className="mastery-list">{byChapter.map(ch=><div key={ch.id}><span>{ch.icon}</span><div><b>Bab {ch.id} · {ch.title}</b><div><i style={{width:ch.best+"%"}} /></div><small>{ch.label} · {ch.tries} percubaan</small></div><strong>{ch.best}%</strong></div>)}</div></section>
+          <div className="student-metric-grid"><div><small>Purata</small><b>{avg}%</b><span>{masteryLabel(avg)}</span></div><div><small>Mata Ilmu</small><b>{xp}</b><span>{own.length} latihan</span></div><div><small>Bab dikuasai</small><b>{completedChapters}/10</b><span>sasaran ≥60%</span></div><div><small>Tidak pasti</small><b>{unsureCount}</b><span>jawapan ditanda</span></div></div>
+          <section className="student-performance-panel"><div className="student-section-head"><div><small>PERKEMBANGAN</small><h2>10 latihan terakhir</h2></div></div><div className="student-trend">{own.slice(0,10).reverse().map((a,i)=><div key={a.id}><span style={{height:Math.max(8,a.percentage)+"%"}}></span><small>{a.percentage}%</small><i>{i+1}</i></div>)}</div></section>
+          <section className="student-performance-panel"><div className="student-section-head"><div><small>PENGUASAAN</small><h2>Penguasaan Setiap Bab</h2></div></div><div className="mastery-list">{byChapter.map(ch=><div key={ch.id}><span>{ch.icon}</span><div><b>Bab {ch.id} · {ch.title}</b><div><i style={{width:ch.best+"%"}} /></div><small>{ch.label} · {ch.tries} percubaan</small></div><strong>{ch.best}%</strong></div>)}</div></section>
           <section className="student-performance-panel"><div className="student-section-head"><div><small>FOKUS</small><h2>Subtopik Perlu Pengukuhan</h2></div></div>{weakTopics.length?<div className="student-weak-list">{weakTopics.map(([topic,count])=><div key={topic}><b>{topic}</b><span>{count} kesalahan</span></div>)}</div>:<div className="student-empty">Belum cukup data. Lengkapkan latihan dahulu.</div>}</section>
-          <section className="student-performance-panel"><div className="student-section-head"><div><small>MASTERY SUBTOPIK</small><h2>Penguasaan Terperinci</h2></div></div>{subtopicMastery.length?<div className="subtopic-mastery-list">{subtopicMastery.map(item=><div key={item.topic}><div><b>{item.topic}</b><small>{item.total} jawapan direkodkan</small></div><div className="subtopic-track"><i style={{width:item.percentage+"%"}} /></div><strong>{item.percentage}%</strong></div>)}</div>:<div className="student-empty">Belum cukup data.</div>}</section>
+          <section className="student-performance-panel"><div className="student-section-head"><div><small>PENGUASAAN SUBTOPIK</small><h2>Penguasaan Terperinci</h2></div></div>{subtopicMastery.length?<div className="subtopic-mastery-list">{subtopicMastery.map(item=><div key={item.topic}><div><b>{item.topic}</b><small>{item.total} jawapan direkodkan</small></div><div className="subtopic-track"><i style={{width:item.percentage+"%"}} /></div><strong>{item.percentage}%</strong></div>)}</div>:<div className="student-empty">Belum cukup data.</div>}</section>
         </>:null}
 
         {section==="profil"?<>
-          <div className="student-page-title"><span className="eyebrow dark">PROFIL</span><h1>Profil Saya</h1><p>Maklumat sesi dan pencapaian GeoBoost.</p></div>
-          <section className="student-profile-main"><div className="student-profile-avatar">{student.name.split(/\s+/).slice(0,2).map(x=>x[0]).join("")}</div><h2>{student.name}</h2><p>{student.className} · Kod {student.classCode}</p><div className="student-profile-stats"><div><small>XP</small><b>{xp}</b></div><div><small>Percubaan</small><b>{own.length}</b></div><div><small>Bookmark</small><b>{bookmarks.length}</b></div></div></section>
-          <section className="student-performance-panel"><div className="student-section-head"><div><small>PENCAPAIAN</small><h2>Badge Saya</h2></div></div><div className="badge-grid">{badges.length?badges.map(([icon,label])=><div key={label}><span>{icon}</span><b>{label}</b></div>):<div className="student-empty">Lengkapkan latihan untuk membuka badge.</div>}</div></section>
-          <div className="student-notice">☁️ Rekod pada peranti ini diselaraskan ke Firebase. Sejarah merentas peranti tersedia apabila peraturan cloud v2 aktif.</div>
+          <div className="student-page-title"><span className="eyebrow dark">PROFIL</span><h1>Profil Saya</h1><p>Maklumat diri dan pencapaian GeoBoost.</p></div>
+          <section className="student-profile-main"><div className="student-profile-avatar">{student.name.split(/\s+/).slice(0,2).map(x=>x[0]).join("")}</div><h2>{student.name}</h2><p>{student.className} · Kod {student.classCode}</p><div className="student-profile-stats"><div><small>Mata Ilmu</small><b>{xp}</b></div><div><small>Percubaan</small><b>{own.length}</b></div><div><small>Soalan Disimpan</small><b>{bookmarks.length}</b></div></div></section>
+          <section className="student-performance-panel"><div className="student-section-head"><div><small>PENCAPAIAN</small><h2>Lencana Saya</h2></div></div><div className="badge-grid">{badges.length?badges.map(([icon,label])=><div key={label}><span>{icon}</span><b>{label}</b></div>):<div className="student-empty">Lengkapkan latihan untuk membuka badge.</div>}</div></section>
+          
           <button className="student-danger-button" onClick={logout}>Keluar / Tukar Murid</button>
         </>:null}
       </section>
