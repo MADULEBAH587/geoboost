@@ -2,11 +2,28 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
+    function teacherDoc() {
+      return get(/databases/$(database)/documents/teachers/$(request.auth.uid));
+    }
     function isTeacher() {
-      return signedIn() && exists(/databases/$(database)/documents/teachers/$(request.auth.uid));
+      return signedIn()
+        && exists(/databases/$(database)/documents/teachers/$(request.auth.uid))
+        && teacherDoc().data.active != false;
+    }
+    function teacherRole() {
+      return isTeacher() ? teacherDoc().data.role : "none";
+    }
+    function canEdit() {
+      return isTeacher() && (teacherRole() == "admin" || teacherRole() == "guru");
+    }
+    function isAdmin() {
+      return isTeacher() && teacherRole() == "admin";
     }
     function isStudent(studentId) {
       return signedIn() && request.auth.uid == studentId;
+    }
+    function currentStudentLocalId() {
+      return get(/databases/$(database)/documents/students/$(request.auth.uid)).data.localStudentId;
     }
     function validStudentProfile() {
       return request.resource.data.keys().hasOnly([
@@ -24,6 +41,7 @@ service cloud.firestore {
         'wrongSubtopics', 'responses', 'completedAt'
       ])
       && request.resource.data.studentId == request.auth.uid
+      && request.resource.data.localStudentId is string
       && request.resource.data.studentName is string
       && request.resource.data.className is string
       && request.resource.data.chapter is int
@@ -42,54 +60,66 @@ service cloud.firestore {
 
     match /chapters/{chapterId} {
       allow read: if true;
-      allow write: if isTeacher();
+      allow write: if canEdit();
     }
 
     match /questions/{questionId} {
       allow read: if true;
-      allow write: if isTeacher();
+      allow create, update, delete: if canEdit();
     }
 
     match /classes/{classId} {
       allow get: if signedIn();
-      allow list, create, update, delete: if isTeacher();
+      allow list: if isTeacher();
+      allow create, update, delete: if canEdit();
     }
 
     match /students/{studentId} {
       allow read: if isTeacher() || isStudent(studentId);
       allow create, update: if isStudent(studentId) && validStudentProfile();
-      allow delete: if isTeacher();
+      allow delete: if canEdit();
     }
 
     match /attempts/{attemptId} {
       allow create: if signedIn() && validAttempt();
-      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow read: if isTeacher()
+        || (signedIn() && resource.data.studentId == request.auth.uid)
+        || (signedIn()
+            && exists(/databases/$(database)/documents/students/$(request.auth.uid))
+            && resource.data.localStudentId == currentStudentLocalId());
       allow update: if signedIn()
         && resource.data.studentId == request.auth.uid
         && validAttempt();
-      allow delete: if isTeacher();
+      allow delete: if canEdit();
     }
 
     match /responses/{responseId} {
       allow create: if signedIn() && request.resource.data.studentId == request.auth.uid;
       allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
       allow update: if false;
-      allow delete: if isTeacher();
+      allow delete: if canEdit();
     }
 
     match /progress/{studentId} {
       allow read: if isTeacher() || isStudent(studentId);
-      allow write: if isTeacher() || isStudent(studentId);
+      allow write: if isStudent(studentId);
+      allow delete: if canEdit();
     }
 
     match /settings/{docId} {
       allow read: if true;
-      allow write: if isTeacher();
+      allow write: if canEdit();
     }
 
     match /teachers/{teacherId} {
-      allow read: if signedIn() && request.auth.uid == teacherId;
-      allow write: if false;
+      allow read: if isTeacher() || (signedIn() && request.auth.uid == teacherId);
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if isTeacher();
+      allow create: if canEdit();
+      allow update, delete: if isAdmin();
     }
   }
 }
