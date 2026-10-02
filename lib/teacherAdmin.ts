@@ -9,6 +9,7 @@ export type TeacherProfile = {
   name: string;
   role: TeacherRole;
   active: boolean;
+  email?: string;
 };
 
 export type AuditEntry = {
@@ -27,8 +28,22 @@ export async function getTeacherProfile(uid: string): Promise<TeacherProfile | n
   const snap=await getDoc(doc(services.db,"teachers",uid));
   if(!snap.exists()) return null;
   const data=snap.data() as Record<string,any>;
-  const role=(["admin","guru","viewer"].includes(data.role) ? data.role : "guru") as TeacherRole;
-  return { uid, name:String(data.name||"Guru"), role, active:data.active!==false };
+  const hasRole=["admin","guru","viewer"].includes(data.role);
+  const role=(hasRole ? data.role : "admin") as TeacherRole;
+  const profile={ uid, name:String(data.name||"Guru"), role, active:data.active!==false, email:String(data.email||services.auth.currentUser?.email||"") };
+  if(!hasRole || typeof data.active!=="boolean"){
+    try{
+      await setDoc(doc(services.db,"teachers",uid),{
+        name:profile.name,
+        email:profile.email,
+        role,
+        active:true,
+        email:profile.email||"",
+    updatedAt:serverTimestamp(),
+      },{merge:true});
+    }catch{}
+  }
+  return profile;
 }
 
 export async function saveTeacherProfile(profile: TeacherProfile) {
@@ -50,7 +65,7 @@ export async function listTeacherProfiles(): Promise<TeacherProfile[]> {
     return snap.docs.map(d=>{
       const data=d.data() as Record<string,any>;
       const role=(["admin","guru","viewer"].includes(data.role) ? data.role : "guru") as TeacherRole;
-      return {uid:d.id,name:String(data.name||"Guru"),role,active:data.active!==false};
+      return {uid:d.id,name:String(data.name||"Guru"),role,active:data.active!==false,email:String(data.email||"")};
     });
   }catch{return []}
 }
