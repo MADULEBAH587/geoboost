@@ -48,7 +48,7 @@ function downloadText(filename:string,text:string,type="application/json"){
 }
 function downloadCsv(attempts:AttemptRecord[]){
   const esc=(v:unknown)=>'"'+String(v??"").replaceAll('"','""')+'"';
-  const rows=[["Nama","Kelas","Bab/Mod","Markah","Jumlah","Peratus","Tempoh(s)","Subtopik lemah","Tarikh"],...attempts.map(a=>[
+  const rows=[["Nama","Kelas","Bab / Aktiviti","Markah","Jumlah","Peratus","Tempoh (s)","Subtopik lemah","Tarikh"],...attempts.map(a=>[
     a.studentName,a.className,a.chapter?"Bab "+a.chapter:(a.label||a.mode||"Campuran"),a.score,a.total,a.percentage,a.durationSeconds,a.wrongSubtopics.join(" | "),new Date(a.completedAt).toLocaleString("ms-MY")
   ])];
   downloadText("geoboost-laporan-"+new Date().toISOString().slice(0,10)+".csv","\ufeff"+rows.map(r=>r.map(esc).join(",")).join("\n"),"text/csv;charset=utf-8");
@@ -300,7 +300,7 @@ export default function TeacherPage(){
       console.error(error);
       const code=String(error?.code||"");
       setAuthError(code.includes("email-already-in-use")
-        ?"Email ini sudah mempunyai akaun. Gunakan Log Masuk atau Lupa Password."
+        ?"Email ini sudah mempunyai akaun. Gunakan Log Masuk atau Lupa Kata Laluan."
         :code.includes("operation-not-allowed")
           ?"Pendaftaran belum tersedia. Hubungi pentadbir."
           :"Pendaftaran gagal. Cuba semula.");
@@ -860,7 +860,7 @@ export default function TeacherPage(){
                 ["all","Semua",studentClassStats.total],
                 ["logged","Pernah Masuk",studentClassStats.logged],
                 ["new","Belum Masuk",studentClassStats.new],
-                ["intervention","Perlu Intervensi",studentRosterRows.filter(row=>row.needsIntervention).length],
+                ["intervention","Perlu Pemulihan",studentRosterRows.filter(row=>row.needsIntervention).length],
                 ["duplicate","2+ Peranti",studentClassStats.duplicate],
               ].map(([id,label,count])=><button key={String(id)} className={studentStatusFilter===id?"active":""} onClick={()=>setStudentStatusFilter(id as typeof studentStatusFilter)}>{label}<b>{count}</b></button>)}
             </div>
