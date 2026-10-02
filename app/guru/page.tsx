@@ -212,6 +212,18 @@ export default function TeacherPage(){
     return watchTeacherProfiles(setTeacherProfiles);
   },[source,teacherProfile?.role]);
 
+  useEffect(()=>{
+    if(!adminEditUntil)return;
+    const delay=Math.max(0,adminEditUntil-Date.now());
+    const timer=window.setTimeout(()=>{
+      void endAdminEditSession();
+      setAdminEditUntil(0);
+      setAdminEditPassword("");
+      setMessage("Mode Edit Admin tamat. Kembali ke Mode Lihat.");
+    },delay);
+    return ()=>window.clearTimeout(timer);
+  },[adminEditUntil]);
+
   async function connectTeacher(){
     if(!loginEmail.trim()||!loginPassword)return;
     setAuthBusy(true);setAuthError("");setMessage("");
@@ -283,6 +295,7 @@ export default function TeacherPage(){
   }
   async function disconnectTeacher(){
     setAuthReady(false);
+    await endAdminEditSession();
     await signOutFirebaseUser();
     setAuthUser(null);setTeacherEmail("");setTeacherUid("");clearTeacherData();setMessage("");setAuthReady(true);
   }
