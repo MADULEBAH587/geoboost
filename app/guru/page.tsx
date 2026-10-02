@@ -11,7 +11,7 @@ import {
   firebaseConfigured, signInTeacherWithGoogle, signOutFirebaseUser, watchFirebaseAuth,
 } from "@/lib/firebase";
 import {
-  ClassRecord, addRosterStudent, deleteAssignment, listClasses, normalizeStudentName,
+  ClassRecord, ClassStudent, addRosterStudent, deleteAssignment, listClasses, normalizeStudentName,
   removeClass, removeRosterStudent, saveAssignment, saveClass, saveClassRoster,
   setClassArchived, setOpenChapters,
 } from "@/lib/classroom";
@@ -22,6 +22,9 @@ import {
   AuditEntry, TeacherProfile, getAuditLogs, getTeacherProfile, listTeacherProfiles,
   saveTeacherProfile, writeAudit,
 } from "@/lib/teacherAdmin";
+import {
+  StudentAccessRecord, ensureStudentAccessCodes, removeStudentAccessCode,
+} from "@/lib/studentAccess";
 
 type Source = "local"|"firebase";
 type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"bank"|"settings";
@@ -57,6 +60,7 @@ export default function TeacherPage(){
   const [auditLogs,setAuditLogs]=useState<AuditEntry[]>([]);
   const [teacherProfiles,setTeacherProfiles]=useState<TeacherProfile[]>([]);
   const [teacherProfile,setTeacherProfile]=useState<TeacherProfile|null>(null);
+  const [studentAccessCodes,setStudentAccessCodes]=useState<StudentAccessRecord[]>([]);
   const [source,setSource]=useState<Source>("local");
   const [message,setMessage]=useState("");
   const [teacherEmail,setTeacherEmail]=useState("");
@@ -102,7 +106,7 @@ export default function TeacherPage(){
 
   function clearTeacherData(){
     setTeacherProfile(null);setManagedClasses([]);setRegisteredStudents([]);setAttempts([]);
-    setCustomQuestions([]);setAuditLogs([]);setTeacherProfiles([]);setLiveItems([]);setSource("local");
+    setCustomQuestions([]);setAuditLogs([]);setTeacherProfiles([]);setStudentAccessCodes([]);setLiveItems([]);setSource("local");
   }
 
   async function loadTeacherData(user:{email:string|null;uid:string}){
@@ -118,10 +122,14 @@ export default function TeacherPage(){
     }
 
     const [remote,classes,students,custom,audit,profiles]=await Promise.all([
-      getRemoteAttempts(),listClasses(),getRemoteStudents(),getCustomQuestions(true),getAuditLogs(),profile.role==="admin"?listTeacherProfiles():Promise.resolve([]),
+      getRemoteAttempts(),listClasses(profile.role),getRemoteStudents(),getCustomQuestions(true),getAuditLogs(),profile.role==="admin"?listTeacherProfiles():Promise.resolve([]),
     ]);
     setManagedClasses(classes);setRegisteredStudents(students);setAttempts(remote);
     setCustomQuestions(custom);setAuditLogs(audit);setTeacherProfiles(profiles);setSource("firebase");
+    if(profile.role!=="viewer"){
+      const access=(await Promise.all(classes.map(item=>ensureStudentAccessCodes(item)))).flat();
+      setStudentAccessCodes(access);
+    }else setStudentAccessCodes([]);
     const first=classes.find(c=>!c.archived)?.code||classes[0]?.code||"";
     setRosterClassCode(current=>current||first);setAssignmentClassCode(current=>current||first);
     setMessage("Berjaya memuat "+remote.length+" rekod, "+students.length+" profil murid dan "+classes.length+" kelas.");
