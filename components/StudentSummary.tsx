@@ -3,20 +3,26 @@
 import { useEffect, useMemo, useState } from "react";
 import { getStudentSession, StudentSession } from "@/lib/session";
 import { getLocalAttempts, AttemptRecord } from "@/lib/repository";
+import { ClassRecord, validateClassCode } from "@/lib/classroom";
 
 export function StudentSummary() {
   const [student, setStudent] = useState<StudentSession | null>(null);
   const [attempts, setAttempts] = useState<AttemptRecord[]>([]);
+  const [classRecord, setClassRecord] = useState<ClassRecord | null>(null);
 
   useEffect(() => {
-    setStudent(getStudentSession());
+    const current = getStudentSession();
+    setStudent(current);
     setAttempts(getLocalAttempts());
+    if (current?.classCode) {
+      validateClassCode(current.classCode).then(setClassRecord).catch(()=>setClassRecord(null));
+    }
   }, []);
 
   const ownAttempts = useMemo(() => student ? attempts.filter(a => a.studentId === student.id) : [], [attempts, student]);
   const latestByChapter = useMemo(() => {
     const map = new Map<number, AttemptRecord>();
-    ownAttempts.forEach(a => { if (!map.has(a.chapter)) map.set(a.chapter, a); });
+    ownAttempts.forEach(a => { if (a.chapter && !map.has(a.chapter)) map.set(a.chapter, a); });
     return map;
   }, [ownAttempts]);
   const completed = [...latestByChapter.values()].filter(a => a.percentage >= 60).length;
@@ -27,6 +33,9 @@ export function StudentSummary() {
     ownAttempts.forEach((attempt) => attempt.wrongSubtopics.forEach((topic) => counts.set(topic, (counts.get(topic) || 0) + 1)));
     return [...counts.entries()].sort((a,b)=>b[1]-a[1])[0]?.[0];
   }, [ownAttempts]);
+  const mastery = avg >= 80 ? "Cemerlang" : avg >= 60 ? "Menguasai" : avg > 0 ? "Perlu Pengukuhan" : "Belum dinilai";
+  const today = new Date().toISOString().slice(0,10);
+  const activeAssignments = (classRecord?.assignments || []).filter(item=>item.active && (!item.dueDate || item.dueDate >= today));
 
   if (!student) {
     return (
@@ -49,18 +58,22 @@ export function StudentSummary() {
         <a className="pill" href="/murid">Tukar</a>
       </div>
       <div className="overall">
-        <div><span>Purata bab dicuba</span><b>{avg}%</b></div>
-        <div className="overall-track"><span style={{width:`${avg}%`}} /></div>
+        <div><span>Penguasaan semasa · {mastery}</span><b>{avg}%</b></div>
+        <div className="overall-track"><span style={{width:avg+"%"}} /></div>
       </div>
       <div className="stat-grid">
         <div><small>XP</small><b>{xp}</b><span>⭐</span></div>
         <div><small>Bab lulus</small><b>{completed}/10</b><span>✓</span></div>
         <div><small>Percubaan</small><b>{ownAttempts.length}</b><span>◎</span></div>
       </div>
+      {activeAssignments.length ? <div className="student-assignments">
+        <div className="student-assignments-head"><small>TUGASAN GURU</small><b>{activeAssignments.length} aktif</b></div>
+        {activeAssignments.slice(0,2).map(item=><a key={item.id} href={"/tugasan?chapter="+item.chapter+"&count="+item.questionCount+"&title="+encodeURIComponent(item.title)}><div><strong>{item.title}</strong><small>Bab {item.chapter} · {item.questionCount} soalan{item.dueDate ? " · akhir "+new Date(item.dueDate+"T00:00:00").toLocaleDateString("ms-MY") : ""}</small></div><span>→</span></a>)}
+      </div> : null}
       <div className="weakness">
         <span className="weak-icon">🎯</span>
-        <div><small>Cadangan pengukuhan</small><strong>{weak ? `Ulang subtopik ${weak}` : "Lengkapkan satu latihan dahulu"}</strong></div>
-        {weak ? <a className="weak-link" href="/#bab">Latih</a> : null}
+        <div><small>Cadangan pengukuhan</small><strong>{weak ? "Ulang subtopik "+weak : "Lengkapkan satu latihan dahulu"}</strong></div>
+        {weak ? <a className="weak-link" href="/pemulihan">Latih</a> : null}
       </div>
     </div>
   );
