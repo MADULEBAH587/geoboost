@@ -71,4 +71,4 @@ Web App Firebase boleh ditetapkan melalui Vercel:
 Konfigurasi fallback projek production turut tersedia dalam `lib/firebase.ts`.
 
 ## Nota Visual tanpa Cloud Storage
-GeoBoost tidak menggunakan Firebase Cloud Storage untuk Nota Visual. Poster, gambar dan slide tambahan dimampatkan di pelayar kepada WebP dan disimpan sebagai dokumen Firestore berasingan (`visualNoteAssets` + `visualNotePayloads`). Had dalaman aplikasi ialah 480 KB bagi setiap imej dan 100 MB bagi keseluruhan pustaka media tambahan.
+GeoBoost tidak menggunakan Firebase Cloud Storage untuk Nota Visual. Poster, gambar dan slide tambahan dimampatkan di pelayar kepada WebP. Metadata disimpan dalam `settings/visualNoteAssetsIndex` dan kandungan imej dimuat secara malas daripada dokumen `settings/visualNotePayload__*`. Had dalaman aplikasi ialah 480 KB bagi setiap imej dan 100 MB bagi keseluruhan pustaka media tambahan.
