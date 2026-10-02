@@ -7,25 +7,20 @@ import { syncPendingAttempts, syncStudentProfile } from "@/lib/repository";
 import { firebaseConfigured, signOutFirebaseUser } from "@/lib/firebase";
 import { ClassRecord, normalizeClassCode, normalizeStudentName, validateClassCode } from "@/lib/classroom";
 import { registerStudentPresence } from "@/lib/studentPresence";
-import { claimStudentAccess } from "@/lib/studentAccess";
-import { getStudentLoginMode, type StudentLoginMode } from "@/lib/systemConfig";
 
 export default function StudentLoginPage() {
   const router = useRouter();
   const [existing,setExisting]=useState<StudentSession|null>(null);
-  const [loginMode,setLoginMode]=useState<StudentLoginMode>("legacy-pin");
   const [classCode,setClassCode]=useState("");
   const [classRecord,setClassRecord]=useState<ClassRecord|null>(null);
   const [selectedStudentId,setSelectedStudentId]=useState("");
   const [searchName,setSearchName]=useState("");
-  const [accessPin,setAccessPin]=useState("");
   const [confirmStage,setConfirmStage]=useState<0|1|2>(0);
   const [checking,setChecking]=useState(false);
   const [saving,setSaving]=useState(false);
   const [note,setNote]=useState("");
 
   useEffect(()=>{
-    void getStudentLoginMode().then(setLoginMode);
     const current=getStudentSession();
     setExisting(current);
     const params=new URLSearchParams(window.location.search);
@@ -48,7 +43,7 @@ export default function StudentLoginPage() {
   async function findClass(code=classCode){
     const clean=normalizeClassCode(code);
     if(!clean){setNote("Masukkan kod kelas dahulu.");return}
-    setChecking(true);setNote("");setClassRecord(null);setSelectedStudentId("");setConfirmStage(0);setAccessPin("");
+    setChecking(true);setNote("");setClassRecord(null);setSelectedStudentId("");setConfirmStage(0);
     try{
       const found=await validateClassCode(clean);
       if(!found){setNote("Kod kelas tidak sah, kelas telah diarkib atau belum diaktifkan oleh guru.");return}
@@ -64,9 +59,6 @@ export default function StudentLoginPage() {
   function chooseForConfirmation(e:FormEvent){
     e.preventDefault();
     if(!selectedStudent){setNote("Pilih nama anda daripada senarai kelas.");return}
-    if(loginMode==="legacy-pin"&&!/^\d{6}$/.test(accessPin.trim())){
-      setNote("Sistem sedang dalam fasa naik taraf. Masukkan kod akses 6 digit buat sementara.");return;
-    }
     setConfirmStage(1);setNote("");
   }
 
@@ -74,14 +66,6 @@ export default function StudentLoginPage() {
     if(!classRecord||!selectedStudent)return;
     setSaving(true);setNote("");
     try{
-      if(loginMode==="legacy-pin"){
-        await claimStudentAccess({
-          classCode:classRecord.code,
-          studentId:selectedStudent.id,
-          pin:accessPin,
-        });
-      }
-
       const prior=getStudentSession();
       const session:StudentSession={
         id:selectedStudent.id,
@@ -105,13 +89,11 @@ export default function StudentLoginPage() {
           setSaving(false);
           return;
         }
-        if(loginMode==="double-confirm"){
-          await registerStudentPresence({
-            classCode:classRecord.code,
-            studentId:selectedStudent.id,
-            studentName:selectedStudent.name,
-          });
-        }
+        await registerStudentPresence({
+          classCode:classRecord.code,
+          studentId:selectedStudent.id,
+          studentName:selectedStudent.name,
+        });
         await syncPendingAttempts();
       }
 
@@ -121,7 +103,7 @@ export default function StudentLoginPage() {
       console.error(error);
       const permission=String(error?.code||"").includes("permission-denied");
       setNote(permission
-        ?(loginMode==="legacy-pin"?"Kod akses tidak betul atau akses murid belum tersedia.":"Nama ini belum dibenarkan untuk kelas tersebut. Minta guru semak senarai nama.")
+        ?"Nama ini belum dibenarkan untuk kelas tersebut. Minta guru semak senarai nama."
         :"Pengesahan murid gagal. Semak Internet dan cuba semula.");
       setConfirmStage(0);setSaving(false);
     }
@@ -130,17 +112,15 @@ export default function StudentLoginPage() {
   async function logout(){
     clearStudentSession();
     try{await signOutFirebaseUser()}catch{}
-    setExisting(null);setClassRecord(null);setSelectedStudentId("");setSearchName("");setAccessPin("");setConfirmStage(0);
+    setExisting(null);setClassRecord(null);setSelectedStudentId("");setSearchName("");setConfirmStage(0);
   }
-
-  const modern=loginMode==="double-confirm";
 
   return <main className="auth-shell student-login-shell">
     <section className="auth-card student-login-card">
       <a href="/" className="mini-brand"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>TINGKATAN 2</small></span></a>
       <span className="eyebrow dark">AKSES MURID · v2.2</span>
       <h1>Masuk GeoBoost</h1>
-      <p>{modern?<>Masukkan <b>kod kelas</b>, pilih nama anda dan buat <b>dua pengesahan ringkas</b>. Tiada PIN atau akaun murid diperlukan.</>:<>Masukkan <b>kod kelas</b>, pilih nama dan kod akses. Sistem akan bertukar automatik kepada login tanpa PIN selepas naik taraf admin selesai.</>}</p>
+      <p>Masukkan <b>kod kelas</b>, pilih nama anda dan buat <b>dua pengesahan ringkas</b>. Tiada PIN atau akaun murid diperlukan.</p>
 
       {existing&&!classRecord?<div className="existing-student-card"><div><small>PERANTI INI</small><b>{existing.name}</b><span>{existing.className}</span></div><button onClick={()=>router.push("/murid/utama")}>Teruskan →</button></div>:null}
 
@@ -148,8 +128,8 @@ export default function StudentLoginPage() {
         <label>Kod kelas<input value={classCode} onChange={e=>setClassCode(e.target.value.toUpperCase())} placeholder="Contoh: 2E26" autoCapitalize="characters" required autoFocus/></label>
         <button className="primary full" type="submit" disabled={checking}>{checking?"Menyemak kelas...":"Semak Kod Kelas →"}</button>
       </form>:confirmStage===0?<form onSubmit={chooseForConfirmation} className="student-form">
-        <div className="class-confirm"><div><small>KELAS DIJUMPAI</small><strong>{classRecord.name}</strong><span>Kod: {classRecord.code}</span></div><button type="button" onClick={()=>{setClassRecord(null);setSelectedStudentId("");setSearchName("");setAccessPin("");setConfirmStage(0)}}>Tukar</button></div>
-        {roster.length>0?<><label>Cari nama<input value={searchName} onChange={e=>setSearchName(e.target.value)} placeholder="Taip sebahagian nama..."/></label><label>Nama murid<select value={selectedStudentId} onChange={e=>setSelectedStudentId(e.target.value)} size={Math.min(8,Math.max(3,filteredRoster.length))} required><option value="">— Pilih nama anda —</option>{filteredRoster.map(student=><option key={student.id} value={student.id}>{student.name}{roster.filter(x=>x.name===student.name).length>1?" · "+student.id.slice(-4):""}</option>)}</select></label>{!modern?<label>Kod akses 6 digit<input inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={accessPin} onChange={e=>setAccessPin(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="Kod sementara"/><span>Medan ini hilang automatik selepas Sistem Multi-Guru diaktifkan admin.</span></label>:null}<button className="primary full" type="submit" disabled={!selectedStudent||(!modern&&accessPin.length!==6)}>Ini Nama Saya →</button></>:<div className="auth-note">Senarai murid untuk kelas ini belum tersedia. Minta guru masukkan nama murid terlebih dahulu.</div>}
+        <div className="class-confirm"><div><small>KELAS DIJUMPAI</small><strong>{classRecord.name}</strong><span>Kod: {classRecord.code}</span></div><button type="button" onClick={()=>{setClassRecord(null);setSelectedStudentId("");setSearchName("");setConfirmStage(0)}}>Tukar</button></div>
+        {roster.length>0?<><label>Cari nama<input value={searchName} onChange={e=>setSearchName(e.target.value)} placeholder="Taip sebahagian nama..."/></label><label>Nama murid<select value={selectedStudentId} onChange={e=>setSelectedStudentId(e.target.value)} size={Math.min(8,Math.max(3,filteredRoster.length))} required><option value="">— Pilih nama anda —</option>{filteredRoster.map(student=><option key={student.id} value={student.id}>{student.name}{roster.filter(x=>x.name===student.name).length>1?" · "+student.id.slice(-4):""}</option>)}</select></label><button className="primary full" type="submit" disabled={!selectedStudent}>Ini Nama Saya →</button></>:<div className="auth-note">Senarai murid untuk kelas ini belum tersedia. Minta guru masukkan nama murid terlebih dahulu.</div>}
       </form>:confirmStage===1?<div className="student-confirm-name">
         <span className="confirm-icon">👤</span><small>PENGESAHAN 1 DARIPADA 2</small><h2>{selectedStudent?.name}</h2><p>Kelas <b>{classRecord.name}</b> · Kod <b>{classRecord.code}</b></p>
         <div className="confirm-warning">Adakah ini benar-benar nama anda? Pastikan anda tidak tersalah memilih nama rakan.</div>
@@ -162,7 +142,7 @@ export default function StudentLoginPage() {
 
       {existing?<button className="student-logout" type="button" onClick={logout}>Keluar murid tersimpan / guna nama lain</button>:null}
       {note?<small className="auth-note">{note}</small>:null}
-      <small className="auth-note">☁️ {firebaseConfigured?(modern?"Firebase aktif · login murid tanpa PIN":"Firebase aktif · mod peralihan selamat"):"Mod peranti"}</small>
+      <small className="auth-note">☁️ {firebaseConfigured?"Firebase aktif · login murid tanpa PIN":"Mod peranti"}</small>
     </section>
   </main>;
 }
