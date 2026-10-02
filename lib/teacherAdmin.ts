@@ -30,16 +30,23 @@ export async function getTeacherProfile(uid: string): Promise<TeacherProfile | n
   const data=snap.data() as Record<string,any>;
   const hasRole=["admin","guru","viewer"].includes(data.role);
   const role=(hasRole ? data.role : "admin") as TeacherRole;
-  const profile={ uid, name:String(data.name||"Guru"), role, active:data.active!==false, email:String(data.email||services.auth.currentUser?.email||"") };
+  const profile:TeacherProfile={
+    uid,
+    name:String(data.name||"Guru"),
+    role,
+    active:data.active!==false,
+    email:String(data.email||services.auth.currentUser?.email||""),
+  };
+
+  // Legacy teacher records created before roles/active existed are upgraded in-place.
   if(!hasRole || typeof data.active!=="boolean"){
     try{
       await setDoc(doc(services.db,"teachers",uid),{
         name:profile.name,
-        email:profile.email,
+        email:profile.email||"",
         role,
         active:true,
-        email:profile.email||"",
-    updatedAt:serverTimestamp(),
+        updatedAt:serverTimestamp(),
       },{merge:true});
     }catch{}
   }
@@ -51,6 +58,7 @@ export async function saveTeacherProfile(profile: TeacherProfile) {
   if(!services) throw new Error("Firebase belum dikonfigurasi");
   await setDoc(doc(services.db,"teachers",profile.uid),{
     name:profile.name,
+    email:profile.email||"",
     role:profile.role,
     active:profile.active,
     updatedAt:serverTimestamp(),
@@ -64,7 +72,7 @@ export async function listTeacherProfiles(): Promise<TeacherProfile[]> {
     const snap=await getDocs(collection(services.db,"teachers"));
     return snap.docs.map(d=>{
       const data=d.data() as Record<string,any>;
-      const role=(["admin","guru","viewer"].includes(data.role) ? data.role : "guru") as TeacherRole;
+      const role=(["admin","guru","viewer"].includes(data.role) ? data.role : "admin") as TeacherRole;
       return {uid:d.id,name:String(data.name||"Guru"),role,active:data.active!==false,email:String(data.email||"")};
     });
   }catch{return []}
