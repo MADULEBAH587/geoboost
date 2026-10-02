@@ -2,15 +2,28 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
+    function teacherExists() {
+      return signedIn() && exists(/databases/$(database)/documents/teachers/$(request.auth.uid));
+    }
     function teacherDoc() {
       return get(/databases/$(database)/documents/teachers/$(request.auth.uid));
     }
     function isTeacher() {
-      return signedIn()
-        && exists(/databases/$(database)/documents/teachers/$(request.auth.uid))
+      return teacherExists()
         && (
-          !teacherDoc().data.keys().hasAll(["active"])
-          || teacherDoc().data.active != false
+          (
+            teacherDoc().data.keys().hasAll(["status"])
+            && teacherDoc().data.status == "active"
+            && teacherDoc().data.active == true
+          )
+          ||
+          (
+            !teacherDoc().data.keys().hasAll(["status"])
+            && (
+              !teacherDoc().data.keys().hasAll(["active"])
+              || teacherDoc().data.active != false
+            )
+          )
         );
     }
     function teacherRole() {
@@ -35,25 +48,31 @@ service cloud.firestore {
     function classDoc(classCode) {
       return get(/databases/$(database)/documents/classes/$(classCode));
     }
-    function canReadClass(classCode) {
+    function ownsClass(classCode) {
       return isTeacher()
         && classExists(classCode)
-        && (
-          isAdmin()
-          || (
-            classDoc(classCode).data.keys().hasAll(["ownerTeacherId"])
-            && classDoc(classCode).data.ownerTeacherId == request.auth.uid
-          )
-        );
+        && classDoc(classCode).data.keys().hasAll(["ownerTeacherId"])
+        && classDoc(classCode).data.ownerTeacherId == request.auth.uid;
+    }
+    function canReadClass(classCode) {
+      return isTeacher() && classExists(classCode) && (isAdmin() || ownsClass(classCode));
     }
     function canManageClass(classCode) {
-      return canEdit() && canReadClass(classCode);
+      return canEdit() && classExists(classCode) && (isAdmin() || ownsClass(classCode));
+    }
+    function rosterHasStudent(classCode, localStudentId, studentName) {
+      return classExists(classCode)
+        && classDoc(classCode).data.keys().hasAll(["studentRoster"])
+        && {"id": localStudentId, "name": studentName} in classDoc(classCode).data.studentRoster;
     }
     function isStudent(studentId) {
       return signedIn() && request.auth.uid == studentId;
     }
     function studentDoc() {
       return get(/databases/$(database)/documents/students/$(request.auth.uid));
+    }
+    function hasStudentProfile() {
+      return signedIn() && exists(/databases/$(database)/documents/students/$(request.auth.uid));
     }
     function currentStudentLocalId() {
       return studentDoc().data.localStudentId;
@@ -64,16 +83,6 @@ service cloud.firestore {
     function currentStudentName() {
       return studentDoc().data.name;
     }
-    function hasStudentProfile() {
-      return signedIn()
-        && exists(/databases/$(database)/documents/students/$(request.auth.uid));
-    }
-    function hasMatchingClaim(localStudentId, classCode) {
-      return signedIn()
-        && exists(/databases/$(database)/documents/studentClaims/$(request.auth.uid))
-        && get(/databases/$(database)/documents/studentClaims/$(request.auth.uid)).data.studentId == localStudentId
-        && get(/databases/$(database)/documents/studentClaims/$(request.auth.uid)).data.classCode == classCode;
-    }
     function validStudentProfile() {
       return request.resource.data.keys().hasOnly([
         'name', 'className', 'classCode', 'localStudentId', 'updatedAt'
@@ -82,10 +91,11 @@ service cloud.firestore {
       && request.resource.data.className is string
       && request.resource.data.classCode is string
       && request.resource.data.localStudentId is string
-      && hasMatchingClaim(request.resource.data.localStudentId, request.resource.data.classCode)
-      && exists(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.localStudentId))
-      && get(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.localStudentId)).data.active == true
-      && get(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.localStudentId)).data.name == request.resource.data.name;
+      && rosterHasStudent(
+        request.resource.data.classCode,
+        request.resource.data.localStudentId,
+        request.resource.data.name
+      );
     }
     function validAttempt() {
       return hasStudentProfile()
@@ -132,6 +142,7 @@ service cloud.firestore {
     }
 
     match /classes/{classId} {
+      // Murid perlu membaca satu dokumen kelas selepas memasukkan kod untuk memilih nama.
       allow get: if signedIn();
       allow list: if isAdmin()
         || (isTeacher() && resource.data.ownerTeacherId == request.auth.uid);
@@ -149,32 +160,23 @@ service cloud.firestore {
         && (isAdmin() || resource.data.ownerTeacherId == request.auth.uid);
     }
 
+    // Legacy P1 access records are retained for migration/history, but no longer
+    // participate in student login.
     match /studentAccess/{accessId} {
-      allow read: if isTeacher()
-        && (isAdmin() || canManageClass(resource.data.classCode));
-      allow create: if canEdit()
-        && canManageClass(request.resource.data.classCode);
-      allow update: if canEdit()
-        && canManageClass(resource.data.classCode)
-        && request.resource.data.classCode == resource.data.classCode
-        && request.resource.data.studentId == resource.data.studentId;
-      allow delete: if canEdit()
-        && canManageClass(resource.data.classCode);
+      allow read, create, update, delete: if canEdit()
+        && (
+          isAdmin()
+          || (
+            request.method == "create"
+              ? ownsClass(request.resource.data.classCode)
+              : ownsClass(resource.data.classCode)
+          )
+        );
     }
 
-    match /studentClaims/{studentUid} {
-      allow read: if isAdmin()
-        || (isTeacher() && canReadClass(resource.data.classCode));
-      allow create, update: if isStudent(studentUid)
-        && request.resource.data.keys().hasOnly(['classCode','studentId','pin','createdAt'])
-        && request.resource.data.classCode is string
-        && request.resource.data.studentId is string
-        && request.resource.data.pin is string
-        && request.resource.data.pin.size() == 6
-        && exists(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.studentId))
-        && get(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.studentId)).data.active == true
-        && get(/databases/$(database)/documents/studentAccess/$(request.resource.data.classCode + "__" + request.resource.data.studentId)).data.pin == request.resource.data.pin;
-      allow delete: if isStudent(studentUid) || isAdmin();
+    match /studentClaims/{claimId} {
+      allow read, delete: if isAdmin();
+      allow create, update: if false;
     }
 
     match /students/{studentId} {
@@ -182,6 +184,33 @@ service cloud.firestore {
         || isAdmin()
         || (isTeacher() && canReadClass(resource.data.classCode));
       allow create, update: if isStudent(studentId) && validStudentProfile();
+      allow delete: if canEdit()
+        && (isAdmin() || canManageClass(resource.data.classCode));
+    }
+
+    match /studentPresence/{presenceId} {
+      allow get: if signedIn();
+      allow list: if isAdmin()
+        || (isTeacher() && canReadClass(resource.data.classCode));
+      allow create: if signedIn()
+        && request.resource.data.currentUid == request.auth.uid
+        && request.resource.data.classCode is string
+        && request.resource.data.studentId is string
+        && request.resource.data.studentName is string
+        && rosterHasStudent(
+          request.resource.data.classCode,
+          request.resource.data.studentId,
+          request.resource.data.studentName
+        );
+      allow update: if signedIn()
+        && request.resource.data.currentUid == request.auth.uid
+        && request.resource.data.classCode == resource.data.classCode
+        && request.resource.data.studentId == resource.data.studentId
+        && rosterHasStudent(
+          request.resource.data.classCode,
+          request.resource.data.studentId,
+          request.resource.data.studentName
+        );
       allow delete: if canEdit()
         && (isAdmin() || canManageClass(resource.data.classCode));
     }
@@ -228,14 +257,43 @@ service cloud.firestore {
     match /teachers/{teacherId} {
       allow get: if isAdmin() || (signedIn() && request.auth.uid == teacherId);
       allow list: if isAdmin();
-      allow create: if isAdmin();
+
+      // Guru baharu mendaftar sendiri tetapi sentiasa bermula sebagai PENDING.
+      allow create: if isAdmin()
+        || (
+          signedIn()
+          && request.auth.uid == teacherId
+          && request.resource.data.keys().hasOnly([
+            'name','email','role','status','active','createdAt','updatedAt'
+          ])
+          && request.resource.data.name is string
+          && request.resource.data.email is string
+          && request.resource.data.role == "guru"
+          && request.resource.data.status == "pending"
+          && request.resource.data.active == false
+        );
+
+      // Admin mengurus kelulusan/role. Guru aktif hanya boleh menyentuh metadata
+      // sesi sendiri tanpa menaikkan keistimewaan.
       allow update: if isAdmin()
         || (
           signedIn()
           && request.auth.uid == teacherId
           && isTeacher()
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.status == resource.data.status
+          && request.resource.data.active == resource.data.active
+          && request.resource.data.email == resource.data.email
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'name','lastSeenAt','updatedAt'
+          ])
+        )
+        || (
+          signedIn()
+          && request.auth.uid == teacherId
           && !resource.data.keys().hasAll(["role"])
           && request.resource.data.role == "admin"
+          && request.resource.data.status == "active"
           && request.resource.data.active == true
         );
       allow delete: if isAdmin();
