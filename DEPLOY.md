@@ -42,4 +42,4 @@ npx firebase-tools deploy --config firebase/firebase.json --only firestore:rules
 ```
 
 ## Nota Visual
-Nota Visual menggunakan Firestore sahaja untuk media tambahan dan tidak memerlukan Firebase Storage. Kandungan terbina dalam Bab 1–10 berada terus dalam kod aplikasi.
+Nota Visual menggunakan koleksi Firestore `settings` yang sedia ada untuk media tambahan dan tidak memerlukan Firebase Storage atau rules baharu. Kandungan terbina dalam Bab 1–10 berada terus dalam kod aplikasi.
