@@ -375,6 +375,16 @@ export default function TeacherPage(){
       await log("MURID_BUANG",student.name+" · "+rosterClassCode);
     }catch{setMessage("Nama murid tidak dapat dibuang.")}
   }
+  async function clearStudentSession(student:ClassStudent){
+    if(!rosterClassCode||!canManageClassCode(rosterClassCode)){setMessage("Reset sesi memerlukan akses edit kelas.");return}
+    try{
+      await resetStudentPresence(rosterClassCode,student.id);
+      setStudentPresence(current=>current.filter(item=>!(item.classCode===rosterClassCode&&item.studentId===student.id)));
+      await log("MURID_RESET_SESI",student.name+" · "+rosterClassCode);
+      setMessage("Sesi aktif "+student.name+" telah direset.");
+    }catch(error){console.error(error);setMessage("Sesi murid tidak dapat direset.")}
+  }
+
   async function copyLegacyAccessCodes(){
     if(!rosterClass||studentLoginMode!=="legacy-pin")return;
     const rows=rosterClass.studentRoster.map((student,index)=>{
