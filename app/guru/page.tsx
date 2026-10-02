@@ -103,7 +103,6 @@ export default function TeacherPage(){
   const [bankChapter,setBankChapter]=useState(1);
   const [bankSelection,setBankSelection]=useState<string[]>([]);
   const [qrData,setQrData]=useState<{code:string;name:string;url:string;image:string}|null>(null);
-  const [teacherForm,setTeacherForm]=useState({uid:"",name:"",role:"guru" as "admin"|"guru"|"viewer"});
   const [questionForm,setQuestionForm]=useState({
     id:"",chapter:1,subtopic:"1.1",difficulty:"medium" as Difficulty,type:"mcq" as QuestionType,
     prompt:"",a:"",b:"",c:"",d:"",answer:"A",explanation:"",
