@@ -19,7 +19,7 @@ export default function Home() {
           <h1>Belajar. Cuba.<br/><em>Kuasai Geografi.</em></h1>
           <p>Latihan Bab 1–10, pembetulan segera, pemulihan berasaskan subtopik dan rekod pencapaian dalam satu pengalaman yang mesra telefon.</p>
           <div className="hero-actions"><a className="primary" href="#bab">Mula Latihan <span>→</span></a><a className="secondary" href="/murid">👤 Akses Murid</a></div>
-          <div className="byline">By Cikgu Zulhasif · v1.1</div>
+          <div className="byline">By Cikgu Zulhasif · v1.2</div>
         </div>
         <StudentSummary />
       </section>
@@ -39,7 +39,7 @@ export default function Home() {
         <div className="chapter-grid">{chapters.map((chapter) => <ChapterCard key={chapter.id} chapter={chapter} />)}</div>
       </section>
 
-      <footer><div className="footer-brand"><span className="brand-mark small">G</span><div><b>GeoBoost Tingkatan 2</b><small>Latihan Pengukuhan Interaktif Geografi</small></div></div><span>By Cikgu Zulhasif · v1.1</span></footer>
+      <footer><div className="footer-brand"><span className="brand-mark small">G</span><div><b>GeoBoost Tingkatan 2</b><small>Latihan Pengukuhan Interaktif Geografi</small></div></div><span>By Cikgu Zulhasif · v1.2</span></footer>
     </main>
   );
 }
