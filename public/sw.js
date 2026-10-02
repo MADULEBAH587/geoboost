@@ -1,5 +1,9 @@
-const CACHE = 'geoboost-v1.1.1';
-const CORE = ['/', '/murid', '/pantas', '/uasa', '/pemulihan', '/manifest.webmanifest', '/geoboost-icon.svg', '/icon-192.png', '/icon-512.png'];
+const CACHE = 'geoboost-v2.0';
+const CORE = [
+  '/', '/murid', '/murid/utama', '/murid/tugasan', '/murid/latihan', '/murid/prestasi', '/murid/profil',
+  '/pantas', '/uasa', '/pemulihan', '/ulang-salah', '/bookmark', '/harian',
+  '/manifest.webmanifest', '/geoboost-icon.svg', '/icon-192.png', '/icon-512.png'
+];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
@@ -27,7 +31,7 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE).then(cache => cache.put(event.request, copy));
           return response;
         })
-        .catch(() => caches.match(event.request).then(hit => hit || caches.match('/')))
+        .catch(() => caches.match(event.request).then(hit => hit || caches.match('/murid/utama') || caches.match('/')))
     );
     return;
   }
