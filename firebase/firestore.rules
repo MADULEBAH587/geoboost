@@ -57,8 +57,26 @@ service cloud.firestore {
     function canReadClass(classCode) {
       return isTeacher() && classExists(classCode) && (isAdmin() || ownsClass(classCode));
     }
+    function adminEditSessionExists() {
+      return isAdmin()
+        && exists(/databases/$(database)/documents/adminEditSessions/$(request.auth.uid));
+    }
+    function adminCanEditTeacher(teacherId) {
+      return adminEditSessionExists()
+        && get(/databases/$(database)/documents/adminEditSessions/$(request.auth.uid)).data.targetTeacherId == teacherId
+        && get(/databases/$(database)/documents/adminEditSessions/$(request.auth.uid)).data.expiresAt > request.time;
+    }
     function canManageClass(classCode) {
-      return canEdit() && classExists(classCode) && (isAdmin() || ownsClass(classCode));
+      return canEdit()
+        && classExists(classCode)
+        && (
+          ownsClass(classCode)
+          || (
+            isAdmin()
+            && classDoc(classCode).data.keys().hasAll(["ownerTeacherId"])
+            && adminCanEditTeacher(classDoc(classCode).data.ownerTeacherId)
+          )
+        );
     }
     function rosterHasStudent(classCode, localStudentId, studentName) {
       return classExists(classCode)
@@ -166,25 +184,52 @@ service cloud.firestore {
         && request.resource.data.ownerTeacherId == request.auth.uid;
       allow update: if canEdit()
         && (
-          isAdmin()
-          || (
+          (
             resource.data.ownerTeacherId == request.auth.uid
             && request.resource.data.ownerTeacherId == resource.data.ownerTeacherId
           )
+          || (
+            isAdmin()
+            && adminCanEditTeacher(resource.data.ownerTeacherId)
+          )
         );
       allow delete: if canEdit()
-        && (isAdmin() || resource.data.ownerTeacherId == request.auth.uid);
+        && (
+          resource.data.ownerTeacherId == request.auth.uid
+          || (
+            isAdmin()
+            && adminCanEditTeacher(resource.data.ownerTeacherId)
+          )
+        );
     }
 
     // Legacy P1 access records are retained for migration/history, but no longer
     // participate in student login.
     match /studentAccess/{accessId} {
-      allow read: if canEdit()
-        && (isAdmin() || ownsClass(resource.data.classCode));
+      allow read: if isTeacher()
+        && (
+          ownsClass(resource.data.classCode)
+          || (
+            isAdmin()
+            && canReadClass(resource.data.classCode)
+          )
+        );
       allow create: if canEdit()
-        && (isAdmin() || ownsClass(request.resource.data.classCode));
+        && (
+          ownsClass(request.resource.data.classCode)
+          || (
+            isAdmin()
+            && canManageClass(request.resource.data.classCode)
+          )
+        );
       allow update, delete: if canEdit()
-        && (isAdmin() || ownsClass(resource.data.classCode));
+        && (
+          ownsClass(resource.data.classCode)
+          || (
+            isAdmin()
+            && canManageClass(resource.data.classCode)
+          )
+        );
     }
 
     match /studentClaims/{studentUid} {
@@ -298,7 +343,13 @@ service cloud.firestore {
 
       // Admin mengurus kelulusan/role. Guru aktif hanya boleh menyentuh metadata
       // sesi sendiri tanpa menaikkan keistimewaan.
-      allow update: if isAdmin()
+      allow update: if (
+          isAdmin()
+          && (
+            request.auth.uid == teacherId
+            || adminCanEditTeacher(teacherId)
+          )
+        )
         || (
           signedIn()
           && request.auth.uid == teacherId
@@ -319,7 +370,22 @@ service cloud.firestore {
           && request.resource.data.status == "active"
           && request.resource.data.active == true
         );
-      allow delete: if isAdmin();
+      allow delete: if isAdmin() && adminCanEditTeacher(teacherId);
+    }
+
+    match /adminEditSessions/{adminUid} {
+      allow get, delete: if isAdmin() && request.auth.uid == adminUid;
+      allow create, update: if isAdmin()
+        && request.auth.uid == adminUid
+        && request.resource.data.keys().hasOnly([
+          'adminUid','targetTeacherId','expiresAt','createdAt'
+        ])
+        && request.resource.data.adminUid == request.auth.uid
+        && request.resource.data.targetTeacherId is string
+        && request.resource.data.expiresAt is timestamp
+        && request.resource.data.expiresAt > request.time
+        && request.resource.data.expiresAt <= request.time + duration.value(20, 'm');
+      allow list: if false;
     }
 
     match /auditLogs/{logId} {
