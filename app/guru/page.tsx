@@ -612,7 +612,7 @@ export default function TeacherPage(){
   const pendingTeachers=teacherProfiles.filter(item=>item.status==="pending");
   const adminTeacher=teacherProfiles.find(item=>item.uid===adminTeacherUid)||null;
   const adminTeacherClasses=adminTeacher?managedClasses.filter(item=>item.ownerTeacherId===adminTeacher.uid):[];
-  const activeTeacherOptions=teacherProfiles.filter(item=>item.status==="active"&&item.active);
+  const activeTeacherOptions=teacherProfiles.filter(item=>item.status==="active"&&item.active&&item.role!=="viewer");
   const bankItems=[...questions,...customQuestions.filter(q=>q.active)].filter(q=>q.chapter===bankChapter);
   const assignmentRows=(assignmentClass?.assignments||[]).map(item=>{
     const roster=assignmentClass?.studentRoster||[];
