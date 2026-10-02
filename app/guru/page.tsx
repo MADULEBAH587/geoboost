@@ -241,6 +241,18 @@ export default function TeacherPage(){
     finally{setAuthBusy(false)}
   }
 
+  async function submitMissingTeacherProfile(){
+    if(!authUser||!registerName.trim())return;
+    setAuthBusy(true);setAuthError("");
+    try{
+      await registerTeacherRequest({uid:authUser.uid,name:registerName,email:authUser.email||teacherEmail||""});
+      await loadTeacherData(authUser);
+      setMessage("Permohonan guru dihantar. Tunggu pengesahan admin.");
+    }catch(error:any){
+      setAuthError("Permohonan belum dapat dihantar: "+String(error?.message||""));
+    }finally{setAuthBusy(false)}
+  }
+
   async function connectLegacyAdmin(){
     setAuthBusy(true);setAuthError("");setMessage("");
     try{
@@ -631,7 +643,7 @@ export default function TeacherPage(){
             ?"Permohonan ini telah ditolak. Hubungi admin jika perlu semakan semula."
             :"Akaun ini dinyahaktifkan sementara oleh admin.")}</p>
       <div className="teacher-bootstrap"><div><small>AKAUN</small><b>{teacherProfile?.name||"Guru"}</b><span>{teacherEmail||authUser.email||""}</span></div><span className={"teacher-status "+status}>{status.toUpperCase()}</span></div>
-      {!teacherProfile?<button className="legacy-admin-link full" onClick={bootstrapFirstAdmin} disabled={deployingRules}>{deployingRules?"Menyediakan admin...":"Pemilik projek? Pulihkan Admin GeoBoost"}</button>:null}
+      {!teacherProfile?<div className="missing-profile-actions"><label>Nama penuh<input value={registerName} onChange={e=>setRegisterName(e.target.value)} placeholder="Nama untuk permohonan guru"/></label><button className="primary" onClick={submitMissingTeacherProfile} disabled={authBusy||!registerName.trim()}>Hantar Permohonan Guru</button><button className="legacy-admin-link full" onClick={bootstrapFirstAdmin} disabled={deployingRules}>{deployingRules?"Menyediakan admin...":"Pemilik projek? Pulihkan Admin GeoBoost"}</button></div>:null}
       <small className="auth-note">Selepas admin meluluskan akaun, log masuk semula atau refresh halaman ini untuk membuka Control Center.</small>
       <button className="launch-button full" onClick={disconnectTeacher}>Log keluar / guna akaun lain</button>
     </section></main>;
