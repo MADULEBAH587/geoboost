@@ -5,22 +5,29 @@ import {
   browserLocalPersistence,
   setPersistence,
   signInWithPopup,
+  type User,
 } from "firebase/auth";
 import { firebaseClientConfig, getFirebaseServices } from "./firebase";
 
 const PROJECT_ID = firebaseClientConfig.projectId;
 
-async function getAdminOAuthToken() {
+type AdminAuth = {
+  token: string;
+  user: User;
+};
+
+async function getAdminOAuth(): Promise<AdminAuth> {
   const services = getFirebaseServices();
   if (!services) throw new Error("Firebase belum dikonfigurasi");
   await setPersistence(services.auth,browserLocalPersistence);
   const provider = new GoogleAuthProvider();
   provider.addScope("https://www.googleapis.com/auth/firebase");
+  provider.addScope("https://www.googleapis.com/auth/datastore");
   provider.setCustomParameters({ prompt:"consent select_account" });
   const result = await signInWithPopup(services.auth,provider);
   const credential = GoogleAuthProvider.credentialFromResult(result);
   if (!credential?.accessToken) throw new Error("Token pentadbiran Firebase tidak diterima");
-  return credential.accessToken;
+  return {token:credential.accessToken,user:result.user};
 }
 
 async function api(url:string,token:string,init?:RequestInit) {
@@ -33,17 +40,17 @@ async function api(url:string,token:string,init?:RequestInit) {
     },
   });
   const text=await response.text();
-  const data=text?JSON.parse(text):{};
+  let data:any={};
+  try{data=text?JSON.parse(text):{}}catch{data={message:text}}
   if(!response.ok){
-    const error=new Error(data?.error?.message||("Firebase Rules API gagal ("+response.status+")"));
+    const error=new Error(data?.error?.message||data?.message||("Google/Firebase API gagal ("+response.status+")"));
     (error as any).status=response.status;
     throw error;
   }
   return data;
 }
 
-export async function deployGeoBoostFirestoreRules() {
-  const token=await getAdminOAuthToken();
+async function publishRules(token:string) {
   const rulesResponse=await fetch("/firestore.rules.txt",{cache:"no-store"});
   if(!rulesResponse.ok)throw new Error("Fail Firestore Rules tidak dapat dimuat");
   const content=await rulesResponse.text();
@@ -93,5 +100,44 @@ export async function deployGeoBoostFirestoreRules() {
       },
     );
   }
+  return rulesetName;
+}
+
+async function upsertAdminTeacher(token:string,user:User) {
+  const uid=user.uid;
+  const params=new URLSearchParams();
+  ["name","email","role","active"].forEach(field=>params.append("updateMask.fieldPaths",field));
+  const url=
+    "https://firestore.googleapis.com/v1/projects/"+encodeURIComponent(PROJECT_ID)+
+    "/databases/(default)/documents/teachers/"+encodeURIComponent(uid)+"?"+params.toString();
+  await api(url,token,{
+    method:"PATCH",
+    body:JSON.stringify({
+      fields:{
+        name:{stringValue:user.displayName||user.email||"Admin GeoBoost"},
+        email:{stringValue:user.email||""},
+        role:{stringValue:"admin"},
+        active:{booleanValue:true},
+      },
+    }),
+  });
+  return uid;
+}
+
+export async function deployGeoBoostFirestoreRules() {
+  const {token}=await getAdminOAuth();
+  const rulesetName=await publishRules(token);
   return {rulesetName};
+}
+
+export async function bootstrapGeoBoostAdmin() {
+  const {token,user}=await getAdminOAuth();
+  const rulesetName=await publishRules(token);
+  const uid=await upsertAdminTeacher(token,user);
+  return {
+    uid,
+    email:user.email||"",
+    name:user.displayName||user.email||"Admin GeoBoost",
+    rulesetName,
+  };
 }
