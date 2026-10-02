@@ -113,6 +113,15 @@ export default function TeacherPage(){
   const canEdit=teacherProfile?.role!=="viewer";
   const navItems=isAdmin?NAV:NAV.filter(item=>item.id!=="teachers");
 
+  function canManageClassCode(code:string){
+    if(!teacherProfile||teacherProfile.role==="viewer")return false;
+    const item=managedClasses.find(cls=>cls.code===code);
+    if(!item)return false;
+    if(!isAdmin)return item.ownerTeacherId===teacherUid;
+    if(!item.ownerTeacherId||item.ownerTeacherId===teacherUid)return true;
+    return adminEditActive&&adminTeacherUid===item.ownerTeacherId&&Date.now()<adminEditUntil;
+  }
+
   function patchClass(code:string,patch:Partial<ClassRecord>){
     setManagedClasses(current=>current.map(item=>item.code===code?{...item,...patch}:item));
   }
@@ -259,15 +268,16 @@ export default function TeacherPage(){
     }catch(e){console.error(e);setMessage("Kelas tidak dapat disimpan.")}
   }
   async function archiveClass(code:string,archived:boolean){
-    if(!canEdit)return;
+    if(!canManageClassCode(code)){setMessage("Kelas guru lain memerlukan Mode Edit Admin.");return;}
     try{await setClassArchived(code,archived);patchClass(code,{archived,active:!archived});await log(archived?"KELAS_ARKIB":"KELAS_AKTIF",code);setMessage(archived?"Kelas diarkib.":"Kelas diaktifkan semula.");}catch{setMessage("Status kelas tidak dapat dikemas kini.")}
   }
   async function deleteClass(code:string){
-    if(!canEdit||!confirm("Padam kelas "+code+"? Gunakan Arkib jika data lama masih diperlukan."))return;
+    if(!canManageClassCode(code)){setMessage("Kelas guru lain memerlukan Mode Edit Admin.");return;}
+    if(!confirm("Padam kelas "+code+"? Gunakan Arkib jika data lama masih diperlukan."))return;
     try{await removeClass(code);setManagedClasses(c=>c.filter(x=>x.code!==code));await log("KELAS_PADAM",code);setMessage("Kelas dipadam.");}catch{setMessage("Kelas tidak dapat dipadam.")}
   }
   async function toggleChapter(code:string,chapter:number){
-    if(!canEdit)return;
+    if(!canManageClassCode(code)){setMessage("Kelas guru lain memerlukan Mode Edit Admin.");return;}
     const item=managedClasses.find(c=>c.code===code);if(!item)return;
     const next=item.openChapters.includes(chapter)?item.openChapters.filter(id=>id!==chapter):[...item.openChapters,chapter].sort((a,b)=>a-b);
     try{patchClass(code,{openChapters:await setOpenChapters(code,next)});await log("AKSES_BAB",code+" Bab "+chapter);setMessage("Akses bab dikemas kini.");}catch{setMessage("Akses bab gagal dikemas kini.")}
@@ -288,7 +298,8 @@ export default function TeacherPage(){
     patchClass(code,{studentRoster,studentNames:studentRoster.map(student=>student.name)});
   }
   async function addStudentToRoster(name=manualStudentName){
-    if(!canEdit||!rosterClassCode||!name.trim())return;
+    if(!rosterClassCode||!name.trim())return;
+    if(!canManageClassCode(rosterClassCode)){setMessage("Senarai murid guru lain memerlukan Mode Edit Admin.");return;}
     try{
       const roster=await addRosterStudent(rosterClassCode,name);
       await updateRosterState(rosterClassCode,roster);setManualStudentName("");
@@ -296,7 +307,8 @@ export default function TeacherPage(){
     }catch{setMessage("Nama murid tidak dapat ditambah.")}
   }
   async function removeStudentFromRoster(student:ClassStudent){
-    if(!canEdit||!confirm("Buang "+student.name+" daripada senarai login?"))return;
+    if(!canManageClassCode(rosterClassCode)){setMessage("Senarai murid guru lain memerlukan Mode Edit Admin.");return;}
+    if(!confirm("Buang "+student.name+" daripada senarai login?"))return;
     try{
       const roster=await removeRosterStudent(rosterClassCode,student.id);
       await updateRosterState(rosterClassCode,roster);
@@ -304,7 +316,8 @@ export default function TeacherPage(){
     }catch{setMessage("Nama murid tidak dapat dibuang.")}
   }
   async function importStudents(event:ChangeEvent<HTMLInputElement>){
-    const file=event.target.files?.[0];event.target.value="";if(!file||!rosterClassCode||!canEdit)return;
+    const file=event.target.files?.[0];event.target.value="";if(!file||!rosterClassCode)return;
+    if(!canManageClassCode(rosterClassCode)){setMessage("Import ke kelas guru lain memerlukan Mode Edit Admin.");return;}
     setImporting(true);
     try{
       const XLSX=await import("xlsx");const data=await file.arrayBuffer();const wb=XLSX.read(data,{type:"array"});const sheet=wb.Sheets[wb.SheetNames[0]];
@@ -325,7 +338,8 @@ export default function TeacherPage(){
   }
 
   async function createAssignment(extra?:{questionIds?:string[];targetStudentIds?:string[];title?:string;chapter?:number;count?:number}){
-    if(!canEdit||!assignmentClassCode)return;
+    if(!assignmentClassCode)return;
+    if(!canManageClassCode(assignmentClassCode)){setMessage("Tugasan kelas guru lain memerlukan Mode Edit Admin.");return;}
     const title=extra?.title||assignmentTitle;if(!title.trim())return;
     try{
       const ids=extra?.questionIds||[];
@@ -338,15 +352,19 @@ export default function TeacherPage(){
     }catch(e){console.error(e);setMessage("Tugasan tidak dapat disimpan.")}
   }
   async function removeAssignmentItem(classCode:string,id:string){
-    if(!canEdit||!confirm("Padam tugasan ini?"))return;
+    if(!canManageClassCode(classCode)){setMessage("Tugasan guru lain memerlukan Mode Edit Admin.");return;}
+    if(!confirm("Padam tugasan ini?"))return;
     try{patchClass(classCode,{assignments:await deleteAssignment(classCode,id)});await log("TUGASAN_PADAM",id);}catch{setMessage("Tugasan gagal dipadam.")}
   }
   async function toggleAssignmentActive(classCode:string,id:string){
-    if(!canEdit)return;const item=managedClasses.find(c=>c.code===classCode)?.assignments.find(a=>a.id===id);if(!item)return;
+    if(!canManageClassCode(classCode)){setMessage("Tugasan guru lain memerlukan Mode Edit Admin.");return;}
+    const item=managedClasses.find(c=>c.code===classCode)?.assignments.find(a=>a.id===id);if(!item)return;
     try{patchClass(classCode,{assignments:await saveAssignment(classCode,{...item,active:!item.active})});await log("TUGASAN_STATUS",item.title+" -> "+(!item.active));}catch{setMessage("Status tugasan gagal.")}
   }
 
   async function resetAttempt(id:string){
+    const record=attempts.find(item=>item.id===id);
+    if(record?.classCode&&!canManageClassCode(record.classCode)){setMessage("Rekod kelas guru lain memerlukan Mode Edit Admin.");return;}
     if(!canEdit||!confirm("Reset rekod percubaan ini daripada data pusat?"))return;
     try{await deleteRemoteAttempt(id);setAttempts(a=>a.filter(x=>x.id!==id));await log("PERCUBAAN_RESET",id);setMessage("Rekod pusat dipadam. Murid boleh membuat percubaan baharu.");}catch{setMessage("Rekod tidak dapat direset.")}
   }
@@ -376,7 +394,7 @@ export default function TeacherPage(){
   }
 
   async function createIntervention(student:RegisteredStudent){
-    if(!canEdit)return;
+    if(!canManageClassCode(student.classCode)){setMessage("Intervensi kelas guru lain memerlukan Mode Edit Admin.");return;}
     const own=attempts.filter(a=>a.studentId===student.localStudentId||(a.studentName===student.name&&a.className===student.className));
     const groups=new Map<number,number[]>();own.filter(a=>a.chapter>0).forEach(a=>groups.set(a.chapter,[...(groups.get(a.chapter)||[]),a.percentage]));
     const weak=[...groups.entries()].sort((a,b)=>pct(a[1])-pct(b[1]))[0]?.[0]||1;
