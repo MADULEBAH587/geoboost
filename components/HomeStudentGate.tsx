@@ -17,5 +17,5 @@ export function HomeStudentGate(){
     const clean=normalizeClassCode(code);
     if(clean)router.push("/murid?class="+encodeURIComponent(clean));
   }
-  return <form className="home-class-entry" onSubmit={submit}><label>Kod kelas</label><div><input value={code} onChange={e=>setCode(e.target.value.toUpperCase())} placeholder="Contoh: 2E26" aria-label="Kod kelas"/><button type="submit">Masuk →</button></div><small>Tiada PIN. Selepas kod disahkan, pilih nama anda.</small></form>;
+  return <form className="home-class-entry" onSubmit={submit}><label>Kod kelas</label><div><input value={code} onChange={e=>setCode(e.target.value.toUpperCase())} placeholder="Contoh: 2E26" aria-label="Kod kelas"/><button type="submit">Masuk →</button></div><small>Selepas kod disahkan, pilih nama dan masukkan kod akses 6 digit.</small></form>;
 }
