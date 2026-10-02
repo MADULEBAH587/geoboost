@@ -73,20 +73,25 @@ function markAttemptSynced(id: string) {
 
 export async function syncStudentProfile(profile: { localStudentId: string; name: string; className: string; classCode?: string }) {
   const services = getFirebaseServices();
-  if (!services) return { synced: false, uid: null as string | null };
+  if (!services) return { synced: false, uid: null as string | null, errorCode: "firebase-unavailable" };
   try {
     const user = await ensureAnonymousFirebaseUser();
-    if (!user) return { synced: false, uid: null as string | null };
+    if (!user) return { synced: false, uid: null as string | null, errorCode: "anonymous-auth-failed" };
     await setDoc(doc(services.db, "students", user.uid), {
       name: profile.name,
       className: profile.className,
       classCode: profile.classCode || "",
       localStudentId: profile.localStudentId,
       updatedAt: serverTimestamp(),
-    }, { merge: true });
-    return { synced: true, uid: user.uid };
-  } catch {
-    return { synced: false, uid: null as string | null };
+    });
+    return { synced: true, uid: user.uid, errorCode: "" };
+  } catch (error:any) {
+    console.error("syncStudentProfile failed", error);
+    return {
+      synced: false,
+      uid: null as string | null,
+      errorCode: String(error?.code || error?.message || "student-profile-sync-failed"),
+    };
   }
 }
 
