@@ -2,462 +2,409 @@
 
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { chapters } from "@/lib/data";
-import { questions } from "@/lib/questions";
+import { questions, type Difficulty, type QuestionType } from "@/lib/questions";
 import {
-  AttemptRecord,
-  RegisteredStudent,
-  getLocalAttempts,
-  getRemoteAttempts,
-  getRemoteStudents,
+  AttemptRecord, RegisteredStudent, LiveProgress, deleteRemoteAttempt, getLocalAttempts,
+  getRemoteAttempts, getRemoteStudents, watchLiveProgress,
 } from "@/lib/repository";
 import {
-  firebaseConfigured,
-  signInTeacherWithGoogle,
-  signOutFirebaseUser,
-  watchFirebaseAuth,
+  firebaseConfigured, signInTeacherWithGoogle, signOutFirebaseUser, watchFirebaseAuth,
 } from "@/lib/firebase";
 import {
-  ClassRecord,
-  addRosterStudent,
-  deleteAssignment,
-  listClasses,
-  normalizeStudentName,
-  removeClass,
-  removeRosterStudent,
-  saveAssignment,
-  saveClass,
-  saveClassRoster,
-  setOpenChapters,
+  ClassRecord, addRosterStudent, deleteAssignment, listClasses, normalizeStudentName,
+  removeClass, removeRosterStudent, saveAssignment, saveClass, saveClassRoster,
+  setClassArchived, setOpenChapters,
 } from "@/lib/classroom";
+import {
+  CustomQuestion, archiveCustomQuestion, deleteCustomQuestion, getCustomQuestions, saveCustomQuestion,
+} from "@/lib/customQuestions";
+import {
+  AuditEntry, TeacherProfile, getAuditLogs, getTeacherProfile, listTeacherProfiles,
+  saveTeacherProfile, writeAudit,
+} from "@/lib/teacherAdmin";
 
-type Source = "local" | "firebase";
-type TeacherSection = "dashboard" | "classes" | "students" | "assignments" | "analytics" | "reports" | "bank" | "settings";
+type Source = "local"|"firebase";
+type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"bank"|"settings";
 
-const NAV: { id: TeacherSection; icon: string; label: string }[] = [
-  { id: "dashboard", icon: "▦", label: "Ringkasan" },
-  { id: "classes", icon: "🏫", label: "Kelas" },
-  { id: "students", icon: "👥", label: "Murid" },
-  { id: "assignments", icon: "📝", label: "Tugasan" },
-  { id: "analytics", icon: "📊", label: "Analitik" },
-  { id: "reports", icon: "🖨️", label: "Laporan" },
-  { id: "bank", icon: "🗂️", label: "Bank Soalan" },
-  { id: "settings", icon: "⚙️", label: "Tetapan" },
+const NAV:{id:TeacherSection;icon:string;label:string}[]=[
+  {id:"dashboard",icon:"▦",label:"Ringkasan"},{id:"classes",icon:"🏫",label:"Kelas"},
+  {id:"students",icon:"👥",label:"Murid"},{id:"assignments",icon:"📝",label:"Tugasan"},
+  {id:"live",icon:"🟢",label:"Live Monitoring"},{id:"interventions",icon:"🎯",label:"Intervensi"},
+  {id:"analytics",icon:"📊",label:"Analitik"},{id:"reports",icon:"🖨️",label:"Laporan"},
+  {id:"bank",icon:"🗂️",label:"Bank Soalan"},{id:"settings",icon:"⚙️",label:"Tetapan"},
 ];
 
-function downloadCsv(attempts: AttemptRecord[]) {
-  const esc = (v: unknown) => '"' + String(v ?? "").replaceAll('"','""') + '"';
-  const rows = [["Nama","Kelas","Bab/Mod","Markah","Jumlah","Peratus","Tempoh(s)","Subtopik lemah","Tarikh"], ...attempts.map(a=>[
-    a.studentName, a.className, a.chapter ? "Bab " + a.chapter : (a.label || a.mode || "Campuran"),
-    a.score, a.total, a.percentage, a.durationSeconds, a.wrongSubtopics.join(" | "),
-    new Date(a.completedAt).toLocaleString("ms-MY")
-  ])];
-  const csv = rows.map(r=>r.map(esc).join(",")).join("\n");
-  const blob = new Blob(["\ufeff"+csv], { type:"text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href=url;
-  a.download="geoboost-laporan-"+new Date().toISOString().slice(0,10)+".csv";
-  a.click();
-  URL.revokeObjectURL(url);
+function downloadText(filename:string,text:string,type="application/json"){
+  const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);
 }
+function downloadCsv(attempts:AttemptRecord[]){
+  const esc=(v:unknown)=>'"'+String(v??"").replaceAll('"','""')+'"';
+  const rows=[["Nama","Kelas","Bab/Mod","Markah","Jumlah","Peratus","Tempoh(s)","Subtopik lemah","Tarikh"],...attempts.map(a=>[
+    a.studentName,a.className,a.chapter?"Bab "+a.chapter:(a.label||a.mode||"Campuran"),a.score,a.total,a.percentage,a.durationSeconds,a.wrongSubtopics.join(" | "),new Date(a.completedAt).toLocaleString("ms-MY")
+  ])];
+  downloadText("geoboost-laporan-"+new Date().toISOString().slice(0,10)+".csv","\ufeff"+rows.map(r=>r.map(esc).join(",")).join("\n"),"text/csv;charset=utf-8");
+}
+function pct(list:number[]){return list.length?Math.round(list.reduce((s,v)=>s+v,0)/list.length):0}
 
-export default function TeacherPage() {
-  const [activeSection, setActiveSection] = useState<TeacherSection>("dashboard");
-  const [attempts, setAttempts] = useState<AttemptRecord[]>([]);
-  const [registeredStudents, setRegisteredStudents] = useState<RegisteredStudent[]>([]);
-  const [source, setSource] = useState<Source>("local");
-  const [message, setMessage] = useState("");
-  const [teacherEmail, setTeacherEmail] = useState("");
-  const [teacherUid, setTeacherUid] = useState("");
-  const [classFilter, setClassFilter] = useState("SEMUA");
-  const [chapterFilter, setChapterFilter] = useState(0);
-  const [managedClasses, setManagedClasses] = useState<ClassRecord[]>([]);
-  const [newClassName, setNewClassName] = useState("");
-  const [newClassCode, setNewClassCode] = useState("");
-  const [rosterClassCode, setRosterClassCode] = useState("");
-  const [manualStudentName, setManualStudentName] = useState("");
-  const [importing, setImporting] = useState(false);
-  const [selectedStudentKey, setSelectedStudentKey] = useState("");
-  const [assignmentClassCode, setAssignmentClassCode] = useState("");
-  const [assignmentTitle, setAssignmentTitle] = useState("");
-  const [assignmentChapter, setAssignmentChapter] = useState(1);
-  const [assignmentCount, setAssignmentCount] = useState(20);
-  const [assignmentDue, setAssignmentDue] = useState("");
-  const [bankChapter, setBankChapter] = useState(1);
+export default function TeacherPage(){
+  const [activeSection,setActiveSection]=useState<TeacherSection>("dashboard");
+  const [attempts,setAttempts]=useState<AttemptRecord[]>([]);
+  const [registeredStudents,setRegisteredStudents]=useState<RegisteredStudent[]>([]);
+  const [managedClasses,setManagedClasses]=useState<ClassRecord[]>([]);
+  const [customQuestions,setCustomQuestions]=useState<CustomQuestion[]>([]);
+  const [liveItems,setLiveItems]=useState<LiveProgress[]>([]);
+  const [auditLogs,setAuditLogs]=useState<AuditEntry[]>([]);
+  const [teacherProfiles,setTeacherProfiles]=useState<TeacherProfile[]>([]);
+  const [teacherProfile,setTeacherProfile]=useState<TeacherProfile|null>(null);
+  const [source,setSource]=useState<Source>("local");
+  const [message,setMessage]=useState("");
+  const [teacherEmail,setTeacherEmail]=useState("");
+  const [teacherUid,setTeacherUid]=useState("");
+  const [classFilter,setClassFilter]=useState("SEMUA");
+  const [chapterFilter,setChapterFilter]=useState(0);
+  const [newClassName,setNewClassName]=useState("");
+  const [newClassCode,setNewClassCode]=useState("");
+  const [newClassYear,setNewClassYear]=useState(String(new Date().getFullYear()));
+  const [rosterClassCode,setRosterClassCode]=useState("");
+  const [manualStudentName,setManualStudentName]=useState("");
+  const [importing,setImporting]=useState(false);
+  const [selectedStudentKey,setSelectedStudentKey]=useState("");
+  const [assignmentClassCode,setAssignmentClassCode]=useState("");
+  const [assignmentTitle,setAssignmentTitle]=useState("");
+  const [assignmentChapter,setAssignmentChapter]=useState(1);
+  const [assignmentCount,setAssignmentCount]=useState(20);
+  const [assignmentDue,setAssignmentDue]=useState("");
+  const [assignmentMax,setAssignmentMax]=useState(3);
+  const [bankChapter,setBankChapter]=useState(1);
+  const [bankSelection,setBankSelection]=useState<string[]>([]);
+  const [qrData,setQrData]=useState<{code:string;name:string;url:string;image:string}|null>(null);
+  const [teacherForm,setTeacherForm]=useState({uid:"",name:"",role:"guru" as "admin"|"guru"|"viewer"});
+  const [questionForm,setQuestionForm]=useState({
+    id:"",chapter:1,subtopic:"1.1",difficulty:"medium" as Difficulty,type:"mcq" as QuestionType,
+    prompt:"",a:"",b:"",c:"",d:"",answer:"A",explanation:"",
+  });
 
-  function patchClass(code: string, patch: Partial<ClassRecord>) {
-    setManagedClasses(current => current.map(item => item.code === code ? { ...item, ...patch } : item));
+  const canEdit=teacherProfile?.role!=="viewer";
+  const isAdmin=teacherProfile?.role==="admin";
+
+  function patchClass(code:string,patch:Partial<ClassRecord>){
+    setManagedClasses(current=>current.map(item=>item.code===code?{...item,...patch}:item));
+  }
+  async function log(action:string,detail:string){
+    await writeAudit(action,detail,teacherEmail||teacherUid||"Guru");
+    setAuditLogs(await getAuditLogs());
   }
 
-  async function loadTeacherData(user: { email: string | null; uid: string }) {
-    setTeacherEmail(user.email || "Guru");
-    setTeacherUid(user.uid);
-    const [remote, remoteClasses, remoteStudents] = await Promise.all([
-      getRemoteAttempts(), listClasses(), getRemoteStudents(),
+  async function loadTeacherData(user:{email:string|null;uid:string}){
+    setTeacherEmail(user.email||"Guru");setTeacherUid(user.uid);
+    const profile=await getTeacherProfile(user.uid);
+    const [remote,classes,students,custom,audit,profiles]=await Promise.all([
+      getRemoteAttempts(),listClasses(),getRemoteStudents(),getCustomQuestions(true),getAuditLogs(),profile?.role==="admin"?listTeacherProfiles():Promise.resolve([]),
     ]);
-    setManagedClasses(remoteClasses);
-    setRegisteredStudents(remoteStudents);
-    setAttempts(remote);
-    setSource("firebase");
-    setRosterClassCode(current => current || remoteClasses[0]?.code || "");
-    setAssignmentClassCode(current => current || remoteClasses[0]?.code || "");
-    setMessage("Berjaya memuat "+remote.length+" rekod pusat dan "+remoteStudents.length+" profil murid.");
+    setTeacherProfile(profile);setManagedClasses(classes);setRegisteredStudents(students);setAttempts(remote);
+    setCustomQuestions(custom);setAuditLogs(audit);setTeacherProfiles(profiles);setSource("firebase");
+    const first=classes.find(c=>!c.archived)?.code||classes[0]?.code||"";
+    setRosterClassCode(current=>current||first);setAssignmentClassCode(current=>current||first);
+    setMessage("Berjaya memuat "+remote.length+" rekod, "+students.length+" profil murid dan "+classes.length+" kelas.");
   }
 
-  useEffect(() => {
+  useEffect(()=>{
     setAttempts(getLocalAttempts().filter(a=>a.studentId!=="demo"));
-    const stop = watchFirebaseAuth((user) => {
-      if (user && !user.isAnonymous) {
-        loadTeacherData(user).catch((error: any) => {
-          console.error(error);
-          setTeacherEmail(user.email || "Guru");
-          setTeacherUid(user.uid);
-          setSource("local");
-          const detail = error?.code ? " ("+error.code+")" : "";
-          setMessage("Akaun Google dikesan tetapi akses pusat belum tersedia."+detail);
-        });
-      }
+    const stop=watchFirebaseAuth(user=>{
+      if(user&&!user.isAnonymous)loadTeacherData(user).catch((error:any)=>{
+        console.error(error);setTeacherEmail(user.email||"Guru");setTeacherUid(user.uid);setSource("local");
+        setMessage("Akaun Google dikesan tetapi akses pusat belum tersedia."+(error?.code?" ("+error.code+")":""));
+      });
     });
     return stop;
-  }, []);
+  },[]);
 
-  async function connectTeacher() {
+  useEffect(()=>{
+    if(source!=="firebase")return;
+    return watchLiveProgress(setLiveItems);
+  },[source]);
+
+  async function connectTeacher(){
     setMessage("Menyambung ke Firebase...");
-    try {
-      const user = await signInTeacherWithGoogle();
-      if (!user) { setMessage("Log masuk Google tidak selesai."); return; }
-      await loadTeacherData(user);
-    } catch (error: any) {
-      console.error(error);
-      const detail = error?.code ? " ("+error.code+")" : "";
-      setMessage("Akaun ini belum diberi akses guru dalam koleksi teachers, atau Firestore belum disediakan."+detail);
-    }
+    try{const user=await signInTeacherWithGoogle();if(user)await loadTeacherData(user);else setMessage("Log masuk Google tidak selesai.");}
+    catch(error:any){console.error(error);setMessage("Akses guru belum tersedia."+(error?.code?" ("+error.code+")":""))}
+  }
+  async function disconnectTeacher(){
+    await signOutFirebaseUser();setTeacherEmail("");setTeacherUid("");setTeacherProfile(null);setSource("local");
+    setAttempts(getLocalAttempts().filter(a=>a.studentId!=="demo"));setManagedClasses([]);setRegisteredStudents([]);setCustomQuestions([]);setLiveItems([]);
   }
 
-  async function disconnectTeacher() {
-    await signOutFirebaseUser();
-    setTeacherEmail(""); setTeacherUid(""); setSource("local");
-    setAttempts(getLocalAttempts().filter(a=>a.studentId!=="demo"));
-    setManagedClasses([]); setRegisteredStudents([]);
-    setRosterClassCode(""); setAssignmentClassCode("");
-    setMessage("Kembali ke data pada peranti ini.");
+  async function addClass(){
+    if(!canEdit||!newClassName.trim()||!newClassCode.trim())return;
+    try{
+      const saved=await saveClass({name:newClassName,code:newClassCode,academicYear:newClassYear});
+      setManagedClasses(current=>[...current.filter(x=>x.code!==saved.code),saved].sort((a,b)=>a.name.localeCompare(b.name)));
+      setRosterClassCode(c=>c||saved.code);setAssignmentClassCode(c=>c||saved.code);
+      await log("KELAS_TAMBAH",saved.name+" ("+saved.code+")");
+      setNewClassName("");setNewClassCode("");setMessage("Kelas berjaya disimpan.");
+    }catch(e){console.error(e);setMessage("Kelas tidak dapat disimpan.")}
+  }
+  async function archiveClass(code:string,archived:boolean){
+    if(!canEdit)return;
+    try{await setClassArchived(code,archived);patchClass(code,{archived,active:!archived});await log(archived?"KELAS_ARKIB":"KELAS_AKTIF",code);setMessage(archived?"Kelas diarkib.":"Kelas diaktifkan semula.");}catch{setMessage("Status kelas tidak dapat dikemas kini.")}
+  }
+  async function deleteClass(code:string){
+    if(!canEdit||!confirm("Padam kelas "+code+"? Gunakan Arkib jika data lama masih diperlukan."))return;
+    try{await removeClass(code);setManagedClasses(c=>c.filter(x=>x.code!==code));await log("KELAS_PADAM",code);setMessage("Kelas dipadam.");}catch{setMessage("Kelas tidak dapat dipadam.")}
+  }
+  async function toggleChapter(code:string,chapter:number){
+    if(!canEdit)return;
+    const item=managedClasses.find(c=>c.code===code);if(!item)return;
+    const next=item.openChapters.includes(chapter)?item.openChapters.filter(id=>id!==chapter):[...item.openChapters,chapter].sort((a,b)=>a-b);
+    try{patchClass(code,{openChapters:await setOpenChapters(code,next)});await log("AKSES_BAB",code+" Bab "+chapter);setMessage("Akses bab dikemas kini.");}catch{setMessage("Akses bab gagal dikemas kini.")}
+  }
+  async function showQr(item:ClassRecord){
+    try{
+      const url=window.location.origin+"/murid?class="+encodeURIComponent(item.code);
+      const {toDataURL}=await import("qrcode");
+      const image=await toDataURL(url,{width:420,margin:2});
+      setQrData({code:item.code,name:item.name,url,image});
+    }catch{setMessage("QR tidak dapat dijana.")}
+  }
+  async function copyStudentLink(code:string){
+    const link=window.location.origin+"/murid?class="+encodeURIComponent(code);await navigator.clipboard.writeText(link);setMessage("Link kelas "+code+" disalin.");
   }
 
-  async function addClass() {
-    if (!newClassName.trim() || !newClassCode.trim()) return;
-    try {
-      const saved = await saveClass({ name: newClassName, code: newClassCode });
-      setManagedClasses(current => [...current.filter(item => item.code !== saved.code), saved].sort((a,b)=>a.name.localeCompare(b.name)));
-      setRosterClassCode(current=>current || saved.code);
-      setAssignmentClassCode(current=>current || saved.code);
-      setNewClassName(""); setNewClassCode("");
-      setMessage("Kelas "+saved.name+" ("+saved.code+") disimpan.");
-    } catch (error) {
-      console.error(error);
-      setMessage("Kelas tidak dapat disimpan.");
-    }
+  function updateRosterState(code:string,studentNames:string[]){patchClass(code,{studentNames})}
+  async function addStudentToRoster(name=manualStudentName){
+    if(!canEdit||!rosterClassCode||!name.trim())return;
+    try{const names=await addRosterStudent(rosterClassCode,name);updateRosterState(rosterClassCode,names);setManualStudentName("");await log("MURID_TAMBAH",normalizeStudentName(name)+" · "+rosterClassCode);setMessage("Murid ditambah.");}catch{setMessage("Nama murid tidak dapat ditambah.")}
   }
-
-  async function deleteClass(code: string) {
-    if (!confirm("Padam kelas "+code+"?")) return;
-    try {
-      await removeClass(code);
-      setManagedClasses(current=>current.filter(item=>item.code!==code));
-      setRosterClassCode(current=>current===code ? "" : current);
-      setAssignmentClassCode(current=>current===code ? "" : current);
-      setMessage("Kelas "+code+" dipadam.");
-    } catch (error) {
-      console.error(error);
-      setMessage("Kelas tidak dapat dipadam.");
-    }
+  async function removeStudentFromRoster(name:string){
+    if(!canEdit||!confirm("Buang "+name+" daripada senarai login?"))return;
+    try{updateRosterState(rosterClassCode,await removeRosterStudent(rosterClassCode,name));await log("MURID_BUANG",name+" · "+rosterClassCode);}catch{setMessage("Nama murid tidak dapat dibuang.")}
   }
-
-  async function toggleChapter(code: string, chapter: number) {
-    const item = managedClasses.find(c=>c.code===code);
-    if (!item) return;
-    const next = item.openChapters.includes(chapter)
-      ? item.openChapters.filter(id=>id!==chapter)
-      : [...item.openChapters, chapter].sort((a,b)=>a-b);
-    try {
-      const saved = await setOpenChapters(code, next);
-      patchClass(code, { openChapters: saved });
-      setMessage("Akses bab kelas "+item.name+" dikemas kini.");
-    } catch (error) {
-      console.error(error);
-      setMessage("Akses bab tidak dapat dikemas kini.");
-    }
-  }
-
-  function updateRosterState(code: string, studentNames: string[]) {
-    patchClass(code, { studentNames });
-  }
-
-  async function addStudentToRoster(name = manualStudentName) {
-    if (!rosterClassCode || !name.trim()) return;
-    try {
-      const names = await addRosterStudent(rosterClassCode, name);
-      updateRosterState(rosterClassCode, names);
-      setManualStudentName("");
-      setMessage(normalizeStudentName(name)+" ditambah ke senarai kelas.");
-    } catch (error) {
-      console.error(error);
-      setMessage("Nama murid tidak dapat ditambah.");
-    }
-  }
-
-  async function removeStudentFromRoster(name: string) {
-    if (!rosterClassCode || !confirm("Buang "+name+" daripada senarai login kelas?")) return;
-    try {
-      const names = await removeRosterStudent(rosterClassCode, name);
-      updateRosterState(rosterClassCode, names);
-      setMessage(name+" dibuang daripada senarai login kelas.");
-    } catch (error) {
-      console.error(error);
-      setMessage("Nama murid tidak dapat dibuang.");
-    }
-  }
-
-  async function importStudents(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file || !rosterClassCode) return;
+  async function importStudents(event:ChangeEvent<HTMLInputElement>){
+    const file=event.target.files?.[0];event.target.value="";if(!file||!rosterClassCode||!canEdit)return;
     setImporting(true);
-    setMessage("Membaca fail senarai murid...");
-    try {
-      const XLSX = await import("xlsx");
-      const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, defval: "" });
-      const firstNonEmpty = rows.findIndex(row=>row.some(cell=>String(cell).trim()));
-      if (firstNonEmpty < 0) throw new Error("Fail kosong");
-      const header = rows[firstNonEmpty].map(cell=>String(cell).trim().toLowerCase());
-      let nameColumn = header.findIndex(cell=>["nama","nama murid","nama pelajar","name","student","student name"].includes(cell));
-      let start = firstNonEmpty;
-      if (nameColumn >= 0) start = firstNonEmpty + 1; else nameColumn = 0;
-      const imported = rows.slice(start).map(row=>normalizeStudentName(String(row[nameColumn] || ""))).filter(name=>name.length >= 2);
-      if (!imported.length) throw new Error("Tiada nama ditemui");
-      const current = managedClasses.find(item=>item.code===rosterClassCode)?.studentNames || [];
-      const merged = [...new Set([...current, ...imported])].sort((a,b)=>a.localeCompare(b,"ms"));
-      const saved = await saveClassRoster(rosterClassCode, merged);
-      updateRosterState(rosterClassCode, saved);
-      setMessage("Import selesai: "+imported.length+" nama dibaca, "+saved.length+" nama unik.");
-    } catch (error) {
-      console.error(error);
-      setMessage("Import gagal. Gunakan Excel/CSV dengan nama pada kolum pertama atau tajuk 'Nama'.");
-    } finally {
-      setImporting(false);
-    }
+    try{
+      const XLSX=await import("xlsx");const data=await file.arrayBuffer();const wb=XLSX.read(data,{type:"array"});const sheet=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json<any[]>(sheet,{header:1,defval:""});const first=rows.findIndex(row=>row.some(cell=>String(cell).trim()));if(first<0)throw new Error("kosong");
+      const header=rows[first].map(cell=>String(cell).trim().toLowerCase());let col=header.findIndex(cell=>["nama","nama murid","nama pelajar","name","student","student name"].includes(cell));let start=first;
+      if(col>=0)start=first+1;else col=0;
+      const imported=rows.slice(start).map(row=>normalizeStudentName(String(row[col]||""))).filter(name=>name.length>=2);
+      const current=managedClasses.find(x=>x.code===rosterClassCode)?.studentNames||[];
+      const saved=await saveClassRoster(rosterClassCode,[...new Set([...current,...imported])]);
+      updateRosterState(rosterClassCode,saved);await log("MURID_IMPORT",imported.length+" nama · "+rosterClassCode);setMessage("Import selesai: "+saved.length+" nama unik.");
+    }catch(e){console.error(e);setMessage("Import gagal. Gunakan Excel/CSV dengan kolum Nama.");}finally{setImporting(false)}
   }
 
-  async function copyStudentLink(code: string) {
-    const link = window.location.origin+"/murid?class="+encodeURIComponent(code);
-    await navigator.clipboard.writeText(link);
-    setMessage("Link murid untuk kelas "+code+" telah disalin.");
-  }
-
-  async function createAssignment() {
-    if (!assignmentClassCode || !assignmentTitle.trim()) return;
-    try {
-      const next = await saveAssignment(assignmentClassCode, {
-        title: assignmentTitle,
-        chapter: assignmentChapter,
-        questionCount: assignmentCount,
-        dueDate: assignmentDue,
-        active: true,
+  async function createAssignment(extra?:{questionIds?:string[];targetStudentIds?:string[];title?:string;chapter?:number;count?:number}){
+    if(!canEdit||!assignmentClassCode)return;
+    const title=extra?.title||assignmentTitle;if(!title.trim())return;
+    try{
+      const ids=extra?.questionIds||[];
+      const next=await saveAssignment(assignmentClassCode,{
+        title,chapter:extra?.chapter||assignmentChapter,questionCount:extra?.count||Math.max(1,ids.length||assignmentCount),
+        dueDate:assignmentDue,active:true,questionIds:ids,maxAttempts:assignmentMax,targetStudentIds:extra?.targetStudentIds||[],
       });
-      patchClass(assignmentClassCode, { assignments: next });
-      setAssignmentTitle(""); setAssignmentDue("");
-      setMessage("Tugasan baharu berjaya diterbitkan.");
-    } catch (error) {
-      console.error(error);
-      setMessage("Tugasan tidak dapat disimpan.");
-    }
+      patchClass(assignmentClassCode,{assignments:next});await log("TUGASAN_TAMBAH",title+" · "+assignmentClassCode);
+      setAssignmentTitle("");setAssignmentDue("");setMessage("Tugasan diterbitkan.");
+    }catch(e){console.error(e);setMessage("Tugasan tidak dapat disimpan.")}
+  }
+  async function removeAssignmentItem(classCode:string,id:string){
+    if(!canEdit||!confirm("Padam tugasan ini?"))return;
+    try{patchClass(classCode,{assignments:await deleteAssignment(classCode,id)});await log("TUGASAN_PADAM",id);}catch{setMessage("Tugasan gagal dipadam.")}
+  }
+  async function toggleAssignmentActive(classCode:string,id:string){
+    if(!canEdit)return;const item=managedClasses.find(c=>c.code===classCode)?.assignments.find(a=>a.id===id);if(!item)return;
+    try{patchClass(classCode,{assignments:await saveAssignment(classCode,{...item,active:!item.active})});await log("TUGASAN_STATUS",item.title+" -> "+(!item.active));}catch{setMessage("Status tugasan gagal.")}
   }
 
-  async function removeAssignmentItem(classCode: string, id: string) {
-    if (!confirm("Padam tugasan ini?")) return;
-    try {
-      const next = await deleteAssignment(classCode, id);
-      patchClass(classCode, { assignments: next });
-      setMessage("Tugasan dipadam.");
-    } catch (error) {
-      console.error(error);
-      setMessage("Tugasan tidak dapat dipadam.");
-    }
+  async function resetAttempt(id:string){
+    if(!canEdit||!confirm("Reset rekod percubaan ini daripada data pusat?"))return;
+    try{await deleteRemoteAttempt(id);setAttempts(a=>a.filter(x=>x.id!==id));await log("PERCUBAAN_RESET",id);setMessage("Rekod pusat dipadam. Murid boleh membuat percubaan baharu.");}catch{setMessage("Rekod tidak dapat direset.")}
   }
 
-  async function toggleAssignmentActive(classCode: string, id: string) {
-    const item = managedClasses.find(c=>c.code===classCode)?.assignments.find(a=>a.id===id);
-    if (!item) return;
-    try {
-      const next = await saveAssignment(classCode, { ...item, active: !item.active });
-      patchClass(classCode, { assignments: next });
-      setMessage(item.active ? "Tugasan ditutup." : "Tugasan diaktifkan.");
-    } catch (error) {
-      console.error(error);
-      setMessage("Status tugasan tidak dapat dikemas kini.");
-    }
+  async function saveQuestion(){
+    if(!canEdit)return;
+    const opts=[questionForm.a,questionForm.b,questionForm.c,questionForm.d].map(x=>x.trim()).filter(Boolean);
+    const answer=({A:questionForm.a,B:questionForm.b,C:questionForm.c,D:questionForm.d} as Record<string,string>)[questionForm.answer]?.trim()||"";
+    try{
+      await saveCustomQuestion({id:questionForm.id||undefined,chapter:questionForm.chapter,subtopic:questionForm.subtopic,difficulty:questionForm.difficulty,type:questionForm.type,prompt:questionForm.prompt,options:opts,answer,explanation:questionForm.explanation,custom:true,active:true});
+      setCustomQuestions(await getCustomQuestions(true));setQuestionForm({id:"",chapter:bankChapter,subtopic:bankChapter+".1",difficulty:"medium",type:"mcq",prompt:"",a:"",b:"",c:"",d:"",answer:"A",explanation:""});
+      await log("SOALAN_SIMPAN",questionForm.id||"Soalan custom baharu");setMessage("Soalan custom disimpan.");
+    }catch(e:any){setMessage(e?.message||"Soalan gagal disimpan.")}
+  }
+  function editQuestion(q:CustomQuestion){
+    setQuestionForm({id:q.id,chapter:q.chapter,subtopic:q.subtopic,difficulty:q.difficulty,type:q.type,prompt:q.prompt,a:q.options[0]||"",b:q.options[1]||"",c:q.options[2]||"",d:q.options[3]||"",answer:["A","B","C","D"][Math.max(0,q.options.indexOf(q.answer))]||"A",explanation:q.explanation});
+  }
+  async function archiveQuestion(id:string,active:boolean){
+    if(!canEdit)return;await archiveCustomQuestion(id,active);setCustomQuestions(await getCustomQuestions(true));await log("SOALAN_STATUS",id+" -> "+active);
+  }
+  async function removeQuestion(id:string){
+    if(!canEdit||!confirm("Padam soalan custom "+id+"?"))return;await deleteCustomQuestion(id);setCustomQuestions(await getCustomQuestions(true));setBankSelection(s=>s.filter(x=>x!==id));await log("SOALAN_PADAM",id);
+  }
+  function makeWorksheet(){
+    if(!bankSelection.length){setMessage("Pilih sekurang-kurangnya satu soalan.");return}
+    window.open("/guru/worksheet?ids="+encodeURIComponent(bankSelection.join(","))+"&title="+encodeURIComponent("Latihan Geografi"),"_blank");
   }
 
-  const classes = useMemo(() => ["SEMUA", ...Array.from(new Set([...attempts.map(a=>a.className), ...managedClasses.map(c=>c.name)].filter(Boolean))).sort()], [attempts, managedClasses]);
-  const filtered = useMemo(() => attempts.filter(a => (classFilter === "SEMUA" || a.className === classFilter) && (!chapterFilter || a.chapter === chapterFilter)), [attempts,classFilter,chapterFilter]);
-  const stats = useMemo(() => {
-    const avg = filtered.length ? Math.round(filtered.reduce((s,a)=>s+a.percentage,0)/filtered.length) : 0;
-    const students = new Set(filtered.map(a=>a.studentId || a.studentName+"|"+a.className)).size;
-    const passed = filtered.filter(a=>a.percentage>=60).length;
-    return { avg, students, completed: filtered.length, passRate: filtered.length ? Math.round(passed/filtered.length*100) : 0 };
-  }, [filtered]);
+  async function createIntervention(student:RegisteredStudent){
+    if(!canEdit)return;
+    const own=attempts.filter(a=>a.studentId===student.localStudentId||(a.studentName===student.name&&a.className===student.className));
+    const groups=new Map<number,number[]>();own.filter(a=>a.chapter>0).forEach(a=>groups.set(a.chapter,[...(groups.get(a.chapter)||[]),a.percentage]));
+    const weak=[...groups.entries()].sort((a,b)=>pct(a[1])-pct(b[1]))[0]?.[0]||1;
+    const cls=managedClasses.find(c=>c.code===student.classCode);if(!cls)return;
+    setAssignmentClassCode(cls.code);
+    try{
+      const due=new Date();due.setDate(due.getDate()+7);
+      const next=await saveAssignment(cls.code,{title:"Pemulihan · "+student.name,chapter:weak,questionCount:10,dueDate:due.toISOString().slice(0,10),active:true,questionIds:[],maxAttempts:3,targetStudentIds:[student.localStudentId]});
+      patchClass(cls.code,{assignments:next});await log("INTERVENSI_ASSIGN",student.name+" · Bab "+weak);setMessage("Pemulihan Bab "+weak+" ditetapkan kepada "+student.name+".");
+    }catch{setMessage("Intervensi gagal ditetapkan.")}
+  }
 
-  const weak = useMemo(() => {
-    const counts = new Map<string, number>();
-    filtered.forEach(a=>a.wrongSubtopics.forEach(s=>counts.set(s,(counts.get(s)||0)+1)));
-    return [...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,8);
-  }, [filtered]);
+  async function saveRole(){
+    if(!isAdmin||!teacherForm.uid.trim()||!teacherForm.name.trim())return;
+    try{
+      await saveTeacherProfile({uid:teacherForm.uid.trim(),name:teacherForm.name.trim(),role:teacherForm.role,active:true});
+      setTeacherProfiles(await listTeacherProfiles());await log("GURU_ROLE",teacherForm.name+" · "+teacherForm.role);setTeacherForm({uid:"",name:"",role:"guru"});setMessage("Akses guru disimpan.");
+    }catch{setMessage("Perubahan role memerlukan Firestore Rules v2 diterbitkan.")}
+  }
 
-  const missedItems = useMemo(() => {
-    const counts = new Map<string, {wrong:number,total:number}>();
-    filtered.forEach(a=>a.responses?.forEach(r=>{
-      const cur=counts.get(r.questionId)||{wrong:0,total:0};
-      cur.total++; if(!r.correct) cur.wrong++; counts.set(r.questionId,cur);
-    }));
-    return [...counts.entries()].map(([id,v])=>({id,...v,rate:v.total?Math.round(v.wrong/v.total*100):0}))
-      .filter(x=>x.total>=1).sort((a,b)=>b.rate-a.rate || b.wrong-a.wrong).slice(0,10);
-  }, [filtered]);
+  function backup(){
+    const payload={exportedAt:new Date().toISOString(),version:"2.0",classes:managedClasses,students:registeredStudents,attempts,customQuestions,auditLogs};
+    downloadText("geoboost-backup-"+new Date().toISOString().slice(0,10)+".json",JSON.stringify(payload,null,2));
+  }
 
-  const rosterClass = managedClasses.find(item=>item.code===rosterClassCode) || null;
-  const selfRegistered = registeredStudents.filter(student=>student.classCode===rosterClassCode);
-  const selfAddedNotRoster = selfRegistered.filter(student=>!rosterClass?.studentNames.some(name=>normalizeStudentName(name)===normalizeStudentName(student.name)));
-  const assignmentClass = managedClasses.find(item=>item.code===assignmentClassCode) || null;
+  const activeClasses=managedClasses.filter(c=>!c.archived);
+  const classes=useMemo(()=>["SEMUA",...Array.from(new Set([...attempts.map(a=>a.className),...activeClasses.map(c=>c.name)].filter(Boolean))).sort()],[attempts,managedClasses]);
+  const filtered=useMemo(()=>attempts.filter(a=>(classFilter==="SEMUA"||a.className===classFilter)&&(!chapterFilter||a.chapter===chapterFilter)),[attempts,classFilter,chapterFilter]);
+  const stats=useMemo(()=>{
+    const avg=filtered.length?Math.round(filtered.reduce((s,a)=>s+a.percentage,0)/filtered.length):0;
+    const students=new Set(filtered.map(a=>a.studentId||a.studentName+"|"+a.className)).size;
+    const passed=filtered.filter(a=>a.percentage>=60).length;
+    return{avg,students,completed:filtered.length,passRate:filtered.length?Math.round(passed/filtered.length*100):0};
+  },[filtered]);
+  const weak=useMemo(()=>{
+    const counts=new Map<string,number>();filtered.forEach(a=>a.wrongSubtopics.forEach(s=>counts.set(s,(counts.get(s)||0)+1)));
+    return[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10);
+  },[filtered]);
+  const missedItems=useMemo(()=>{
+    const counts=new Map<string,{wrong:number,total:number,unsure:number}>();
+    filtered.forEach(a=>a.responses?.forEach(r=>{const cur=counts.get(r.questionId)||{wrong:0,total:0,unsure:0};cur.total++;if(!r.correct)cur.wrong++;if(r.unsure)cur.unsure++;counts.set(r.questionId,cur)}));
+    return[...counts.entries()].map(([id,v])=>({id,...v,rate:v.total?Math.round(v.wrong/v.total*100):0})).sort((a,b)=>b.rate-a.rate).slice(0,12);
+  },[filtered]);
+  const classComparison=useMemo(()=>activeClasses.map(c=>{
+    const list=attempts.filter(a=>a.className===c.name||a.classCode===c.code);
+    return{name:c.name,code:c.code,attempts:list.length,students:new Set(list.map(a=>a.studentId)).size,avg:pct(list.map(a=>a.percentage)),pass:list.length?Math.round(list.filter(a=>a.percentage>=60).length/list.length*100):0};
+  }).sort((a,b)=>b.avg-a.avg),[attempts,managedClasses]);
 
-  const studentDirectory = useMemo(() => {
-    const map = new Map<string, RegisteredStudent>();
-    registeredStudents.forEach(student => {
-      const key = student.localStudentId || student.name+"|"+student.classCode;
-      if (!map.has(key)) map.set(key, student);
-    });
-    return [...map.entries()].sort((a,b)=>a[1].name.localeCompare(b[1].name,"ms"));
-  }, [registeredStudents]);
-  const selectedStudent = studentDirectory.find(([key])=>key===selectedStudentKey)?.[1] || null;
-  const selectedStudentAttempts = selectedStudent ? attempts.filter(a =>
-    (selectedStudent.localStudentId && a.studentId===selectedStudent.localStudentId) ||
-    (a.studentName===selectedStudent.name && a.className===selectedStudent.className)
-  ) : [];
+  const rosterClass=managedClasses.find(c=>c.code===rosterClassCode)||null;
+  const selfRegistered=registeredStudents.filter(s=>s.classCode===rosterClassCode);
+  const selfAddedNotRoster=selfRegistered.filter(student=>!rosterClass?.studentNames.some(name=>normalizeStudentName(name)===normalizeStudentName(student.name)));
+  const studentDirectory=useMemo(()=>{
+    const map=new Map<string,RegisteredStudent>();registeredStudents.forEach(s=>{const key=s.localStudentId||s.name+"|"+s.classCode;if(!map.has(key))map.set(key,s)});
+    return[...map.entries()].sort((a,b)=>a[1].name.localeCompare(b[1].name,"ms"));
+  },[registeredStudents]);
+  const selectedStudent=studentDirectory.find(([key])=>key===selectedStudentKey)?.[1]||null;
+  const selectedStudentAttempts=selectedStudent?attempts.filter(a=>(selectedStudent.localStudentId&&a.studentId===selectedStudent.localStudentId)||(a.studentName===selectedStudent.name&&a.className===selectedStudent.className)):[];
+  const assignmentClass=managedClasses.find(c=>c.code===assignmentClassCode)||null;
 
-  const bankItems = questions.filter(q=>q.chapter===bankChapter);
-  const bankStats = {
-    easy: bankItems.filter(q=>q.difficulty==="easy").length,
-    medium: bankItems.filter(q=>q.difficulty==="medium").length,
-    kbat: bankItems.filter(q=>q.difficulty==="kbat").length,
-  };
+  const interventionRows=useMemo(()=>registeredStudents.map(student=>{
+    const own=attempts.filter(a=>a.studentId===student.localStudentId||(a.studentName===student.name&&a.className===student.className));
+    const average=pct(own.map(a=>a.percentage));
+    const cls=managedClasses.find(c=>c.code===student.classCode);
+    const missing=(cls?.assignments||[]).filter(t=>t.active&&(!t.targetStudentIds?.length||t.targetStudentIds.includes(student.localStudentId))&&!own.some(a=>a.mode==="tugasan:"+t.id)).length;
+    const topicCounts=new Map<string,number>();own.forEach(a=>a.wrongSubtopics.forEach(t=>topicCounts.set(t,(topicCounts.get(t)||0)+1)));
+    const weakTopic=[...topicCounts.entries()].sort((a,b)=>b[1]-a[1])[0]?.[0]||"-";
+    return{student,average,attempts:own.length,missing,weakTopic,needs:(own.length>0&&average<60)||missing>0};
+  }).filter(x=>x.needs).sort((a,b)=>b.missing-a.missing||a.average-b.average),[registeredStudents,attempts,managedClasses]);
 
-  const filterBar = <div className="filter-bar">
-    <label>Kelas<select value={classFilter} onChange={e=>setClassFilter(e.target.value)}>{classes.map(c=><option key={c}>{c}</option>)}</select></label>
-    <label>Bab<select value={chapterFilter} onChange={e=>setChapterFilter(Number(e.target.value))}><option value={0}>Semua Bab</option>{chapters.map(c=><option key={c.id} value={c.id}>Bab {c.id}</option>)}</select></label>
-  </div>;
+  const now=Date.now();
+  const currentLive=liveItems.filter(x=>now-x.updatedAt<30*60*1000);
+  const bankItems=[...questions,...customQuestions.filter(q=>q.active)].filter(q=>q.chapter===bankChapter);
+  const assignmentRows=(assignmentClass?.assignments||[]).map(item=>{
+    const roster=assignmentClass?.studentNames||[];
+    const related=attempts.filter(a=>(a.classCode===assignmentClass?.code||a.className===assignmentClass?.name)&&a.mode==="tugasan:"+item.id);
+    const completedNames=new Set(related.map(a=>normalizeStudentName(a.studentName)));
+    const completed=roster.filter(name=>completedNames.has(normalizeStudentName(name))).length;
+    const avg=pct(related.map(a=>a.percentage));
+    return{item,completed,total:roster.length,avg,missing:roster.filter(name=>!completedNames.has(normalizeStudentName(name)))};
+  });
 
-  return (
-    <main className="teacher-app">
-      <aside className="teacher-sidebar">
-        <a className="teacher-side-brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>CONTROL CENTER</small></span></a>
-        <nav>{NAV.map(item=><button key={item.id} className={activeSection===item.id ? "active" : ""} onClick={()=>setActiveSection(item.id)}><span>{item.icon}</span>{item.label}</button>)}</nav>
-        <div className="teacher-side-account">
-          <span className={"source-pill "+source}>{source === "firebase" ? "☁️ Firebase" : "📱 Peranti"}</span>
-          <small>{teacherEmail || "Belum login guru"}</small>
-          {firebaseConfigured ? (source==="firebase" ? <button onClick={disconnectTeacher}>Log keluar</button> : <button onClick={connectTeacher}>Masuk Google Guru</button>) : null}
-          <a href="/">← Paparan murid</a>
-        </div>
-      </aside>
+  const filterBar=<div className="filter-bar"><label>Kelas<select value={classFilter} onChange={e=>setClassFilter(e.target.value)}>{classes.map(c=><option key={c}>{c}</option>)}</select></label><label>Bab<select value={chapterFilter} onChange={e=>setChapterFilter(Number(e.target.value))}><option value={0}>Semua Bab</option>{chapters.map(c=><option key={c.id} value={c.id}>Bab {c.id}</option>)}</select></label></div>;
 
-      <div className="teacher-main">
-        <header className="teacher-mobile-nav">
-          <a className="brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>GURU</small></span></a>
-          <select value={activeSection} onChange={e=>setActiveSection(e.target.value as TeacherSection)}>
-            {NAV.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}
-          </select>
-        </header>
+  return <main className="teacher-app">
+    <aside className="teacher-sidebar">
+      <a className="teacher-side-brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>CONTROL CENTER</small></span></a>
+      <nav>{NAV.map(item=><button key={item.id} className={activeSection===item.id?"active":""} onClick={()=>setActiveSection(item.id)}><span>{item.icon}</span>{item.label}</button>)}</nav>
+      <div className="teacher-side-account"><span className={"source-pill "+source}>{source==="firebase"?"☁️ Firebase":"📱 Peranti"}</span><small>{teacherEmail||"Belum login"}{teacherProfile?" · "+teacherProfile.role.toUpperCase():""}</small>{firebaseConfigured?(source==="firebase"?<button onClick={disconnectTeacher}>Log keluar</button>:<button onClick={connectTeacher}>Masuk Google Guru</button>):null}<a href="/">← Paparan utama</a></div>
+    </aside>
 
-        <section className="teacher-head">
-          <span className="eyebrow dark">PANEL GURU · v1.3</span>
-          <h1>{NAV.find(item=>item.id===activeSection)?.label}</h1>
-          <p>GeoBoost Control Center — pengurusan kelas, murid, tugasan, analitik dan laporan dalam satu panel.</p>
-          {message ? <div className="teacher-message">{message}</div> : null}
-          {teacherUid && source !== "firebase" ? <div className="teacher-bootstrap"><div><small>UID UNTUK AKTIFKAN ADMIN</small><code>{teacherUid}</code><span>{teacherEmail || "Akaun Google guru"}</span></div><button onClick={async()=>{await navigator.clipboard.writeText(teacherUid);setMessage("UID guru telah disalin.");}}>Salin UID</button></div> : null}
-        </section>
+    <div className="teacher-main">
+      <header className="teacher-mobile-nav"><a className="brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>GURU</small></span></a><select value={activeSection} onChange={e=>setActiveSection(e.target.value as TeacherSection)}>{NAV.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select></header>
+      <section className="teacher-head"><span className="eyebrow dark">PANEL GURU · v2.0</span><h1>{NAV.find(x=>x.id===activeSection)?.label}</h1><p>Control Center GeoBoost untuk kelas, tugasan, live monitoring, intervensi, analitik, laporan dan bank soalan.</p>{!canEdit&&source==="firebase"?<div className="teacher-message">👁️ Role VIEWER aktif — paparan sahaja, fungsi edit disekat pada UI.</div>:null}{message?<div className="teacher-message">{message}</div>:null}{teacherUid&&source!=="firebase"?<div className="teacher-bootstrap"><div><small>UID UNTUK AKTIFKAN ADMIN</small><code>{teacherUid}</code><span>{teacherEmail}</span></div><button onClick={async()=>{await navigator.clipboard.writeText(teacherUid);setMessage("UID disalin.")}}>Salin UID</button></div>:null}</section>
 
-        <section className="teacher-content">
-          {activeSection==="dashboard" ? <>
-            <div className="teacher-stats"><div><small>Murid</small><b>{stats.students}</b></div><div><small>Latihan selesai</small><b>{stats.completed}</b></div><div><small>Purata</small><b>{stats.avg}%</b></div><div><small>Kadar ≥60%</small><b>{stats.passRate}%</b></div><div><small>Bank aktif</small><b>{questions.length}</b></div></div>
-            <div className="teacher-grid">
-              <section className="panel"><div className="panel-title"><div><small>TERKINI</small><h2>Percubaan murid</h2></div><span>{attempts.length}</span></div>{attempts.length ? <div className="attempt-table">{attempts.slice(0,12).map(a=><div className="attempt-row" key={a.id}><div><strong>{a.studentName}</strong><small>{a.className} · {a.chapter ? "Bab "+a.chapter : (a.label || a.mode || "Campuran")}</small></div><b>{a.percentage}%</b><span>{new Date(a.completedAt).toLocaleDateString("ms-MY")}</span></div>)}</div> : <div className="panel-empty">Belum ada rekod murid.</div>}</section>
-              <section className="panel"><div className="panel-title"><div><small>PEMULIHAN</small><h2>Subtopik perlu perhatian</h2></div></div>{weak.length ? weak.slice(0,6).map(([topic,count],i)=><div className="weak-row" key={topic}><span>#{i+1}</span><div><i style={{width:Math.min(100,count*14)+"%"}} /></div><b>{count}</b><small>{topic}</small></div>) : <div className="panel-empty">Analisis akan muncul selepas terdapat jawapan salah.</div>}</section>
-            </div>
-          </> : null}
+      <section className="teacher-content">
+        {activeSection==="dashboard"?<>
+          <div className="teacher-stats"><div><small>Murid</small><b>{stats.students}</b></div><div><small>Latihan selesai</small><b>{stats.completed}</b></div><div><small>Purata</small><b>{stats.avg}%</b></div><div><small>Kadar ≥60%</small><b>{stats.passRate}%</b></div><div><small>Live sekarang</small><b>{currentLive.filter(x=>x.status==="active").length}</b></div></div>
+          <div className="teacher-grid"><section className="panel"><div className="panel-title"><div><small>TERKINI</small><h2>Percubaan murid</h2></div><span>{attempts.length}</span></div>{attempts.length?<div className="attempt-table">{attempts.slice(0,12).map(a=><div className="attempt-row" key={a.id}><div><strong>{a.studentName}</strong><small>{a.className} · {a.chapter?"Bab "+a.chapter:(a.label||a.mode)}</small></div><b>{a.percentage}%</b><span>{new Date(a.completedAt).toLocaleDateString("ms-MY")}</span></div>)}</div>:<div className="panel-empty">Belum ada rekod.</div>}</section><section className="panel"><div className="panel-title"><div><small>PERLU TINDAKAN</small><h2>Intervensi</h2></div><span>{interventionRows.length}</span></div>{interventionRows.slice(0,6).map(x=><div className="intervention-mini" key={x.student.uid}><div><b>{x.student.name}</b><small>{x.student.className} · {x.weakTopic}</small></div><span>{x.average}%</span></div>)}</section></div>
+        </>:null}
 
-          {activeSection==="classes" ? <section className="panel class-manager">
-            <div className="panel-title"><div><small>PENGURUSAN KELAS</small><h2>Kelas, kod akses & bab dibuka</h2></div><span>{managedClasses.length}</span></div>
-            <p className="class-help">Murid hanya perlukan kod kelas. Guru boleh buka atau tutup bab untuk setiap kelas.</p>
-            <div className="class-create"><input value={newClassName} onChange={e=>setNewClassName(e.target.value)} placeholder="Nama kelas · contoh 2E"/><input value={newClassCode} onChange={e=>setNewClassCode(e.target.value)} placeholder="Kod · contoh 2E26"/><button onClick={addClass} disabled={!newClassName.trim() || !newClassCode.trim()}>Tambah kelas</button></div>
-            {managedClasses.length ? <div className="class-cards">{managedClasses.map(item=><article key={item.code} className="class-admin-card"><div className="class-admin-head"><div><strong>{item.name}</strong><small>{item.code} · {item.studentNames.length} murid · {item.openChapters.length}/10 bab dibuka</small></div><div className="class-actions"><button onClick={()=>copyStudentLink(item.code)}>Salin link</button><button className="danger" onClick={()=>deleteClass(item.code)}>Padam</button></div></div><div className="chapter-access-grid">{chapters.map(ch=><button key={ch.id} className={item.openChapters.includes(ch.id) ? "open" : "closed"} onClick={()=>toggleChapter(item.code,ch.id)}><span>Bab {ch.id}</span><b>{item.openChapters.includes(ch.id) ? "Dibuka" : "Ditutup"}</b></button>)}</div></article>)}</div> : <div className="panel-empty">Belum ada kelas. Cipta kelas pertama untuk bermula.</div>}
-          </section> : null}
+        {activeSection==="classes"?<section className="panel class-manager">
+          <div className="panel-title"><div><small>PENGURUSAN KELAS</small><h2>Kelas, QR, arkib & akses bab</h2></div><span>{managedClasses.length}</span></div>
+          <div className="class-create"><input value={newClassName} onChange={e=>setNewClassName(e.target.value)} placeholder="Nama kelas · 2E"/><input value={newClassCode} onChange={e=>setNewClassCode(e.target.value)} placeholder="Kod · 2E26"/><input value={newClassYear} onChange={e=>setNewClassYear(e.target.value)} placeholder="Tahun"/><button onClick={addClass} disabled={!canEdit||!newClassName.trim()||!newClassCode.trim()}>Tambah kelas</button></div>
+          <div className="class-cards">{managedClasses.map(item=><article key={item.code} className={"class-admin-card "+(item.archived?"archived":"")}><div className="class-admin-head"><div><strong>{item.name}</strong><small>{item.code} · {item.academicYear} · {item.studentNames.length} murid · {item.openChapters.length}/10 bab</small></div><div className="class-actions"><button onClick={()=>showQr(item)}>QR</button><button onClick={()=>copyStudentLink(item.code)}>Salin link</button><button onClick={()=>archiveClass(item.code,!item.archived)} disabled={!canEdit}>{item.archived?"Aktifkan":"Arkib"}</button><button className="danger" onClick={()=>deleteClass(item.code)} disabled={!canEdit}>Padam</button></div></div>{!item.archived?<div className="chapter-access-grid">{chapters.map(ch=><button key={ch.id} className={item.openChapters.includes(ch.id)?"open":"closed"} disabled={!canEdit} onClick={()=>toggleChapter(item.code,ch.id)}><span>Bab {ch.id}</span><b>{item.openChapters.includes(ch.id)?"Dibuka":"Ditutup"}</b></button>)}</div>:<div className="archive-banner">📦 Kelas ini diarkib dan tidak boleh digunakan untuk login murid.</div>}</article>)}</div>
+        </section>:null}
 
-          {activeSection==="students" ? <section className="panel roster-manager">
-            <div className="panel-title"><div><small>PENGURUSAN MURID</small><h2>Senarai murid</h2></div><span>{studentDirectory.length}</span></div>
-            {!managedClasses.length ? <div className="panel-empty">Cipta kelas dahulu.</div> : <>
-              <div className="roster-toolbar">
-                <label>Kelas<select value={rosterClassCode} onChange={e=>setRosterClassCode(e.target.value)}>{managedClasses.map(item=><option key={item.code} value={item.code}>{item.name} · {item.code}</option>)}</select></label>
-                <div className="roster-add"><input value={manualStudentName} onChange={e=>setManualStudentName(e.target.value)} placeholder="Nama penuh murid"/><button onClick={()=>addStudentToRoster()} disabled={!manualStudentName.trim()}>Tambah manual</button></div>
-                <label className="import-button">{importing ? "Mengimport..." : "Import Excel / CSV"}<input type="file" accept=".xlsx,.xls,.csv,.txt" disabled={importing} onChange={importStudents}/></label>
-              </div>
-              {selfAddedNotRoster.length ? <div className="self-added-box"><strong>Nama ditambah sendiri oleh murid</strong><p>Semak dan masukkan ke dropdown rasmi kelas.</p>{selfAddedNotRoster.map(student=><div key={student.uid}><span>{student.name}</span><button onClick={()=>addStudentToRoster(student.name)}>Masuk Senarai</button></div>)}</div> : null}
-              <div className="student-admin-layout">
-                <div>{rosterClass?.studentNames.length ? <div className="roster-list">{rosterClass.studentNames.map((name,index)=>{const profile=selfRegistered.find(s=>normalizeStudentName(s.name)===normalizeStudentName(name));const key=profile?.localStudentId || name+"|"+rosterClassCode;return <div key={name} className={selectedStudentKey===key ? "selected" : ""}><span>{index+1}</span><strong onClick={()=>profile && setSelectedStudentKey(key)}>{name}</strong><small>{profile ? "Pernah masuk GeoBoost" : "Belum masuk"}</small><button onClick={()=>removeStudentFromRoster(name)}>Buang</button></div>})}</div> : <div className="panel-empty">Belum ada nama. Tambah manual atau import Excel/CSV.</div>}</div>
-                <div className="student-profile-card">{selectedStudent ? <><small>PROFIL MURID</small><h3>{selectedStudent.name}</h3><p>{selectedStudent.className} · {selectedStudentAttempts.length} percubaan</p><div className="profile-metrics"><div><span>Purata</span><b>{selectedStudentAttempts.length ? Math.round(selectedStudentAttempts.reduce((s,a)=>s+a.percentage,0)/selectedStudentAttempts.length) : 0}%</b></div><div><span>Terbaik</span><b>{selectedStudentAttempts.length ? Math.max(...selectedStudentAttempts.map(a=>a.percentage)) : 0}%</b></div></div>{selectedStudentAttempts.slice(0,6).map(a=><div className="profile-attempt" key={a.id}><span>{a.chapter ? "Bab "+a.chapter : a.mode}</span><b>{a.percentage}%</b></div>)}</> : <><small>PROFIL MURID</small><h3>Pilih murid</h3><p>Klik nama murid yang pernah masuk GeoBoost untuk melihat statistik individu.</p></>}</div>
-              </div>
-            </>}
-          </section> : null}
+        {activeSection==="students"?<section className="panel roster-manager">
+          <div className="panel-title"><div><small>PENGURUSAN MURID</small><h2>Senarai & profil murid</h2></div><span>{studentDirectory.length}</span></div>
+          {!activeClasses.length?<div className="panel-empty">Cipta atau aktifkan kelas dahulu.</div>:<><div className="roster-toolbar"><label>Kelas<select value={rosterClassCode} onChange={e=>setRosterClassCode(e.target.value)}>{activeClasses.map(c=><option key={c.code} value={c.code}>{c.name} · {c.code}</option>)}</select></label><div className="roster-add"><input value={manualStudentName} onChange={e=>setManualStudentName(e.target.value)} placeholder="Nama penuh murid"/><button onClick={()=>addStudentToRoster()} disabled={!canEdit||!manualStudentName.trim()}>Tambah manual</button></div><label className="import-button">{importing?"Mengimport...":"Import Excel / CSV"}<input type="file" accept=".xlsx,.xls,.csv,.txt" disabled={!canEdit||importing} onChange={importStudents}/></label></div>
+          {selfAddedNotRoster.length?<div className="self-added-box"><strong>Nama ditambah sendiri oleh murid</strong><p>Semak dan masukkan ke dropdown rasmi kelas.</p>{selfAddedNotRoster.map(s=><div key={s.uid}><span>{s.name}</span><button disabled={!canEdit} onClick={()=>addStudentToRoster(s.name)}>Masuk Senarai</button></div>)}</div>:null}
+          <div className="student-admin-layout"><div>{rosterClass?.studentNames.length?<div className="roster-list">{rosterClass.studentNames.map((name,index)=>{const profile=selfRegistered.find(s=>normalizeStudentName(s.name)===normalizeStudentName(name));const key=profile?.localStudentId||name+"|"+rosterClassCode;return <div key={name} className={selectedStudentKey===key?"selected":""}><span>{index+1}</span><strong onClick={()=>profile&&setSelectedStudentKey(key)}>{name}</strong><small>{profile?"Pernah masuk":"Belum masuk"}</small><button disabled={!canEdit} onClick={()=>removeStudentFromRoster(name)}>Buang</button></div>})}</div>:<div className="panel-empty">Belum ada nama.</div>}</div><div className="student-profile-card">{selectedStudent?<><small>PROFIL MURID</small><h3>{selectedStudent.name}</h3><p>{selectedStudent.className} · {selectedStudentAttempts.length} percubaan</p><div className="profile-metrics"><div><span>Purata</span><b>{pct(selectedStudentAttempts.map(a=>a.percentage))}%</b></div><div><span>Terbaik</span><b>{selectedStudentAttempts.length?Math.max(...selectedStudentAttempts.map(a=>a.percentage)):0}%</b></div></div>{selectedStudentAttempts.slice(0,7).map(a=><div className="profile-attempt" key={a.id}><span>{a.chapter?"Bab "+a.chapter:a.mode}</span><b>{a.percentage}%</b></div>)}<button className="intervention-button" disabled={!canEdit} onClick={()=>createIntervention(selectedStudent)}>🎯 Assign Pemulihan</button></>:<><small>PROFIL MURID</small><h3>Pilih murid</h3><p>Klik nama murid yang pernah masuk GeoBoost.</p></>}</div></div></>}
+        </section>:null}
 
-          {activeSection==="assignments" ? <section className="panel assignment-manager">
-            <div className="panel-title"><div><small>TUGASAN KELAS</small><h2>Cipta & pantau tugasan</h2></div><span>{managedClasses.reduce((s,c)=>s+c.assignments.length,0)}</span></div>
-            {!managedClasses.length ? <div className="panel-empty">Cipta kelas dahulu.</div> : <>
-              <div className="assignment-create">
-                <label>Kelas<select value={assignmentClassCode} onChange={e=>setAssignmentClassCode(e.target.value)}>{managedClasses.map(item=><option key={item.code} value={item.code}>{item.name}</option>)}</select></label>
-                <label>Tajuk<input value={assignmentTitle} onChange={e=>setAssignmentTitle(e.target.value)} placeholder="Contoh: Pengukuhan Bab 7"/></label>
-                <label>Bab<select value={assignmentChapter} onChange={e=>setAssignmentChapter(Number(e.target.value))}>{chapters.map(ch=><option key={ch.id} value={ch.id}>Bab {ch.id}</option>)}</select></label>
-                <label>Soalan<select value={assignmentCount} onChange={e=>setAssignmentCount(Number(e.target.value))}>{[5,10,15,20].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
-                <label>Tarikh akhir<input type="date" value={assignmentDue} onChange={e=>setAssignmentDue(e.target.value)}/></label>
-                <button onClick={createAssignment} disabled={!assignmentTitle.trim()}>Terbitkan tugasan</button>
-              </div>
-              <div className="assignment-list">{assignmentClass?.assignments.length ? assignmentClass.assignments.map(item=><div key={item.id}><div><strong>{item.title}</strong><small>Bab {item.chapter} · {item.questionCount} soalan{item.dueDate ? " · Akhir "+new Date(item.dueDate+"T00:00:00").toLocaleDateString("ms-MY") : ""}</small></div><span className={item.active ? "active" : "inactive"}>{item.active ? "Aktif" : "Ditutup"}</span><button onClick={()=>toggleAssignmentActive(assignmentClass.code,item.id)}>{item.active ? "Tutup" : "Buka"}</button><button className="danger" onClick={()=>removeAssignmentItem(assignmentClass.code,item.id)}>Padam</button></div>) : <div className="panel-empty">Belum ada tugasan untuk kelas ini.</div>}</div>
-            </>}
-          </section> : null}
+        {activeSection==="assignments"?<section className="panel assignment-manager">
+          <div className="panel-title"><div><small>TUGASAN KELAS</small><h2>Cipta, had percubaan & completion</h2></div><span>{managedClasses.reduce((s,c)=>s+c.assignments.length,0)}</span></div>
+          {!activeClasses.length?<div className="panel-empty">Cipta kelas dahulu.</div>:<><div className="assignment-create"><label>Kelas<select value={assignmentClassCode} onChange={e=>setAssignmentClassCode(e.target.value)}>{activeClasses.map(c=><option key={c.code} value={c.code}>{c.name}</option>)}</select></label><label>Tajuk<input value={assignmentTitle} onChange={e=>setAssignmentTitle(e.target.value)} placeholder="Pengukuhan Bab 7"/></label><label>Bab<select value={assignmentChapter} onChange={e=>setAssignmentChapter(Number(e.target.value))}>{chapters.map(ch=><option key={ch.id} value={ch.id}>Bab {ch.id}</option>)}</select></label><label>Soalan<select value={assignmentCount} onChange={e=>setAssignmentCount(Number(e.target.value))}>{[5,10,15,20,30].map(n=><option key={n}>{n}</option>)}</select></label><label>Had cubaan<select value={assignmentMax} onChange={e=>setAssignmentMax(Number(e.target.value))}>{[1,2,3,5,10].map(n=><option key={n}>{n}</option>)}</select></label><label>Tarikh akhir<input type="date" value={assignmentDue} onChange={e=>setAssignmentDue(e.target.value)}/></label><button onClick={()=>createAssignment()} disabled={!canEdit||!assignmentTitle.trim()}>Terbitkan</button></div>
+          {bankSelection.length?<div className="selected-bank-banner">🗂️ {bankSelection.length} soalan dipilih daripada Bank Soalan. <button onClick={()=>createAssignment({questionIds:bankSelection,count:bankSelection.length})} disabled={!canEdit||!assignmentTitle.trim()}>Guna sebagai set tugasan</button></div>:null}
+          <div className="assignment-list">{assignmentRows.length?assignmentRows.map(({item,completed,total,avg,missing})=><div key={item.id} className="assignment-row-rich"><div><strong>{item.title}</strong><small>Bab {item.chapter} · {item.questionIds?.length?item.questionIds.length+" soalan dipilih":item.questionCount+" soalan"} · maks {item.maxAttempts||3} cubaan{item.dueDate?" · akhir "+new Date(item.dueDate+"T00:00:00").toLocaleDateString("ms-MY"):""}</small><em>{completed}/{total} selesai · purata {avg}%{missing.length?" · belum: "+missing.slice(0,4).join(", ")+(missing.length>4?"…":""):""}</em></div><span className={item.active?"active":"inactive"}>{item.active?"Aktif":"Ditutup"}</span><button disabled={!canEdit} onClick={()=>toggleAssignmentActive(assignmentClass!.code,item.id)}>{item.active?"Tutup":"Buka"}</button><button className="danger" disabled={!canEdit} onClick={()=>removeAssignmentItem(assignmentClass!.code,item.id)}>Padam</button></div>):<div className="panel-empty">Belum ada tugasan.</div>}</div></>}
+        </section>:null}
 
-          {activeSection==="analytics" ? <>
-            {filterBar}
-            <div className="teacher-grid"><section className="panel"><div className="panel-title"><div><small>PEMULIHAN</small><h2>Subtopik perlu perhatian</h2></div></div>{weak.length ? weak.map(([topic,count],i)=><div className="weak-row detailed" key={topic}><span>#{i+1}</span><div><i style={{width:Math.min(100,count*12)+"%"}} /></div><b>{count}</b><small>{topic}</small></div>) : <div className="panel-empty">Belum ada data.</div>}</section><section className="panel"><div className="panel-title"><div><small>RINGKASAN</small><h2>Prestasi penapis</h2></div></div><div className="analytics-summary"><div><span>Purata</span><b>{stats.avg}%</b></div><div><span>Percubaan</span><b>{stats.completed}</b></div><div><span>Kadar ≥60%</span><b>{stats.passRate}%</b></div></div></section></div>
-            <section className="panel"><div className="panel-title"><div><small>ANALISIS ITEM</small><h2>Soalan paling kerap salah</h2></div></div>{missedItems.length ? <div className="item-analysis">{missedItems.map(x=>{const q=questions.find(q=>q.id===x.id);return <div key={x.id}><span>{x.id}</span><div><strong>{q?.prompt || "Soalan"}</strong><small>{x.wrong}/{x.total} salah</small></div><b>{x.rate}%</b></div>})}</div> : <div className="panel-empty">Analisis akan terbina selepas murid menjawab latihan.</div>}</section>
-          </> : null}
+        {activeSection==="live"?<section className="panel live-panel">
+          <div className="panel-title"><div><small>LIVE MONITORING</small><h2>Aktiviti kelas sekarang</h2></div><span>{currentLive.length}</span></div>
+          <p className="class-help">Status berubah apabila murid bergerak ke soalan seterusnya. Rekod lebih 30 minit tidak dianggap aktif.</p>
+          {currentLive.length?<div className="live-grid">{currentLive.map(item=><div key={item.uid}><span className={"live-dot "+item.status}/><div><strong>{item.studentName}</strong><small>{item.className} · {item.title}</small></div><b>{item.status==="complete"?"Selesai":item.current+"/"+item.total}</b><em>{item.total?Math.round(item.current/item.total*100):0}%</em></div>)}</div>:<div className="panel-empty">Tiada murid aktif dalam 30 minit terakhir.</div>}
+        </section>:null}
 
-          {activeSection==="reports" ? <section className="panel report-panel">
-            <div className="panel-title"><div><small>LAPORAN</small><h2>Laporan prestasi</h2></div><div className="report-actions"><button onClick={()=>downloadCsv(filtered)} disabled={!filtered.length}>Eksport CSV</button><button onClick={()=>window.print()} disabled={!filtered.length}>Cetak / Simpan PDF</button></div></div>
-            {filterBar}
-            <div className="report-summary"><div><span>Murid</span><b>{stats.students}</b></div><div><span>Percubaan</span><b>{stats.completed}</b></div><div><span>Purata</span><b>{stats.avg}%</b></div><div><span>≥60%</span><b>{stats.passRate}%</b></div></div>
-            {filtered.length ? <table className="report-table"><thead><tr><th>Nama</th><th>Kelas</th><th>Bab</th><th>Markah</th><th>%</th><th>Tarikh</th></tr></thead><tbody>{filtered.map(a=><tr key={a.id}><td>{a.studentName}</td><td>{a.className}</td><td>{a.chapter ? "Bab "+a.chapter : a.mode}</td><td>{a.score}/{a.total}</td><td>{a.percentage}%</td><td>{new Date(a.completedAt).toLocaleDateString("ms-MY")}</td></tr>)}</tbody></table> : <div className="panel-empty">Tiada rekod untuk laporan ini.</div>}
-          </section> : null}
+        {activeSection==="interventions"?<section className="panel intervention-panel">
+          <div className="panel-title"><div><small>INTERVENSI AUTOMATIK</small><h2>Murid perlu perhatian</h2></div><span>{interventionRows.length}</span></div>
+          {interventionRows.length?<div className="intervention-table">{interventionRows.map(x=><div key={x.student.uid}><div><strong>{x.student.name}</strong><small>{x.student.className} · {x.attempts} percubaan</small></div><span>Purata <b>{x.average}%</b></span><span>Tugasan belum siap <b>{x.missing}</b></span><span>Fokus <b>{x.weakTopic}</b></span><button disabled={!canEdit} onClick={()=>createIntervention(x.student)}>Assign Pemulihan</button></div>)}</div>:<div className="panel-empty">Tiada murid dikesan memerlukan intervensi berdasarkan rekod semasa.</div>}
+        </section>:null}
 
-          {activeSection==="bank" ? <section className="panel bank-manager">
-            <div className="panel-title"><div><small>BANK SOALAN</small><h2>390 soalan GeoBoost</h2></div><span>{questions.length}</span></div>
-            <div className="bank-toolbar"><label>Bab<select value={bankChapter} onChange={e=>setBankChapter(Number(e.target.value))}>{chapters.map(ch=><option key={ch.id} value={ch.id}>Bab {ch.id} · {ch.title}</option>)}</select></label><div><span>Mudah <b>{bankStats.easy}</b></span><span>Sederhana <b>{bankStats.medium}</b></span><span>KBAT <b>{bankStats.kbat}</b></span></div></div>
-            <div className="bank-list">{bankItems.map(q=><div key={q.id}><span>{q.id}</span><div><strong>{q.prompt}</strong><small>{q.subtopic}</small></div><b className={"difficulty "+q.difficulty}>{q.difficulty==="easy" ? "MUDAH" : q.difficulty==="medium" ? "SEDERHANA" : "KBAT"}</b></div>)}</div>
-          </section> : null}
+        {activeSection==="analytics"?<>{filterBar}<div className="teacher-grid"><section className="panel"><div className="panel-title"><div><small>SUBTOPIK</small><h2>Perlu perhatian</h2></div></div>{weak.length?weak.map(([topic,count],i)=><div className="weak-row detailed" key={topic}><span>#{i+1}</span><div><i style={{width:Math.min(100,count*12)+"%"}}/></div><b>{count}</b><small>{topic}</small></div>):<div className="panel-empty">Belum ada data.</div>}</section><section className="panel"><div className="panel-title"><div><small>PERBANDINGAN</small><h2>Prestasi kelas</h2></div></div><div className="class-compare">{classComparison.map(c=><div key={c.code}><div><b>{c.name}</b><small>{c.students} murid · {c.attempts} percubaan</small></div><span>{c.avg}%</span><em>≥60%: {c.pass}%</em></div>)}</div></section></div>
+          <section className="panel"><div className="panel-title"><div><small>ANALISIS ITEM</small><h2>Soalan paling kerap salah / tidak pasti</h2></div></div>{missedItems.length?<div className="item-analysis">{missedItems.map(x=>{const q=[...questions,...customQuestions].find(q=>q.id===x.id);return <div key={x.id}><span>{x.id}</span><div><strong>{q?.prompt||"Soalan"}</strong><small>{x.wrong}/{x.total} salah · {x.unsure} tidak pasti</small></div><b>{x.rate}%</b></div>})}</div>:<div className="panel-empty">Belum ada data.</div>}</section>
+        </>:null}
 
-          {activeSection==="settings" ? <section className="panel settings-panel">
-            <div className="panel-title"><div><small>TETAPAN SISTEM</small><h2>GeoBoost v1.3</h2></div></div>
-            <div className="settings-grid"><div><span>Sumber data</span><b>{source==="firebase" ? "Firebase pusat" : "Peranti"}</b></div><div><span>Akaun guru</span><b>{teacherEmail || "Belum login"}</b></div><div><span>Jumlah kelas</span><b>{managedClasses.length}</b></div><div><span>Bank soalan</span><b>{questions.length}</b></div></div>
-            <div className="settings-note"><strong>Aliran murid</strong><p>Kod kelas → pilih nama → latihan. PIN tidak digunakan. Bab yang ditutup guru tidak boleh dimulakan oleh murid kelas tersebut.</p></div>
-          </section> : null}
-        </section>
-      </div>
-    </main>
-  );
+        {activeSection==="reports"?<section className="panel report-panel">
+          <div className="report-print-header"><b>GEOBOOST TINGKATAN 2</b><h2>Laporan Prestasi Murid</h2><span>By Cikgu Zulhasif · {new Date().toLocaleDateString("ms-MY")}</span></div>
+          <div className="panel-title"><div><small>LAPORAN</small><h2>Prestasi kelas / bab</h2></div><div className="report-actions"><button onClick={()=>downloadCsv(filtered)} disabled={!filtered.length}>Eksport CSV</button><button onClick={()=>window.print()} disabled={!filtered.length}>Cetak / PDF</button></div></div>{filterBar}
+          <div className="report-summary"><div><span>Murid</span><b>{stats.students}</b></div><div><span>Percubaan</span><b>{stats.completed}</b></div><div><span>Purata</span><b>{stats.avg}%</b></div><div><span>≥60%</span><b>{stats.passRate}%</b></div></div>
+          {filtered.length?<table className="report-table"><thead><tr><th>Nama</th><th>Kelas</th><th>Bab/Mod</th><th>Markah</th><th>%</th><th>Tarikh</th><th className="no-print">Tindakan</th></tr></thead><tbody>{filtered.map(a=><tr key={a.id}><td>{a.studentName}</td><td>{a.className}</td><td>{a.chapter?"Bab "+a.chapter:a.mode}</td><td>{a.score}/{a.total}</td><td>{a.percentage}%</td><td>{new Date(a.completedAt).toLocaleDateString("ms-MY")}</td><td className="no-print"><button className="reset-attempt" disabled={!canEdit} onClick={()=>resetAttempt(a.id)}>Reset</button></td></tr>)}</tbody></table>:<div className="panel-empty">Tiada rekod.</div>}
+        </section>:null}
+
+        {activeSection==="bank"?<section className="panel bank-manager">
+          <div className="panel-title"><div><small>BANK SOALAN</small><h2>{questions.length} soalan teras + {customQuestions.filter(q=>q.active).length} custom</h2></div><span>{bankSelection.length} dipilih</span></div>
+          <div className="bank-toolbar"><label>Bab<select value={bankChapter} onChange={e=>{setBankChapter(Number(e.target.value));setQuestionForm(f=>({...f,chapter:Number(e.target.value),subtopic:e.target.value+".1"}))}}>{chapters.map(ch=><option key={ch.id} value={ch.id}>Bab {ch.id} · {ch.title}</option>)}</select></label><div><button onClick={makeWorksheet} disabled={!bankSelection.length}>Worksheet / PDF</button><button onClick={()=>setBankSelection([])} disabled={!bankSelection.length}>Kosongkan pilihan</button></div></div>
+          {canEdit?<div className="question-editor"><div className="question-editor-title"><b>{questionForm.id?"Edit "+questionForm.id:"Tambah Soalan Custom"}</b>{questionForm.id?<button onClick={()=>setQuestionForm({id:"",chapter:bankChapter,subtopic:bankChapter+".1",difficulty:"medium",type:"mcq",prompt:"",a:"",b:"",c:"",d:"",answer:"A",explanation:""})}>Batal edit</button>:null}</div><div className="question-editor-grid"><label>Bab<input type="number" min="1" max="10" value={questionForm.chapter} onChange={e=>setQuestionForm(f=>({...f,chapter:Number(e.target.value)}))}/></label><label>Subtopik<input value={questionForm.subtopic} onChange={e=>setQuestionForm(f=>({...f,subtopic:e.target.value}))}/></label><label>Aras<select value={questionForm.difficulty} onChange={e=>setQuestionForm(f=>({...f,difficulty:e.target.value as Difficulty}))}><option value="easy">Mudah</option><option value="medium">Sederhana</option><option value="kbat">KBAT</option></select></label><label>Jawapan<select value={questionForm.answer} onChange={e=>setQuestionForm(f=>({...f,answer:e.target.value}))}>{["A","B","C","D"].map(x=><option key={x}>{x}</option>)}</select></label></div><label>Soalan<textarea value={questionForm.prompt} onChange={e=>setQuestionForm(f=>({...f,prompt:e.target.value}))}/></label><div className="question-options-edit">{(["a","b","c","d"] as const).map((key,i)=><label key={key}>{String.fromCharCode(65+i)}<input value={questionForm[key]} onChange={e=>setQuestionForm(f=>({...f,[key]:e.target.value}))}/></label>)}</div><label>Penerangan<textarea value={questionForm.explanation} onChange={e=>setQuestionForm(f=>({...f,explanation:e.target.value}))}/></label><button className="primary" onClick={saveQuestion}>Simpan Soalan</button></div>:null}
+          <div className="bank-list selectable">{bankItems.map(q=>{const custom=(q as any).custom===true;return <div key={q.id} className={bankSelection.includes(q.id)?"selected":""}><input type="checkbox" checked={bankSelection.includes(q.id)} onChange={e=>setBankSelection(s=>e.target.checked?[...new Set([...s,q.id])]:s.filter(id=>id!==q.id))}/><span>{q.id}</span><div><strong>{q.prompt}</strong><small>{q.subtopic} · {custom?"CUSTOM":"TERAS"}</small></div><b className={"difficulty "+q.difficulty}>{q.difficulty==="easy"?"MUDAH":q.difficulty==="medium"?"SEDERHANA":"KBAT"}</b>{custom?<div className="bank-actions"><button onClick={()=>editQuestion(q as CustomQuestion)}>Edit</button><button onClick={()=>archiveQuestion(q.id,false)}>Arkib</button><button className="danger" onClick={()=>removeQuestion(q.id)}>Padam</button></div>:null}</div>})}</div>
+        </section>:null}
+
+        {activeSection==="settings"?<section className="settings-stack">
+          <section className="panel settings-panel"><div className="panel-title"><div><small>SISTEM</small><h2>GeoBoost v2.0</h2></div><button onClick={backup}>Backup JSON</button></div><div className="settings-grid"><div><span>Sumber data</span><b>{source==="firebase"?"Firebase pusat":"Peranti"}</b></div><div><span>Role</span><b>{teacherProfile?.role?.toUpperCase()||"-"}</b></div><div><span>Kelas aktif</span><b>{activeClasses.length}</b></div><div><span>Bank</span><b>{questions.length+customQuestions.filter(q=>q.active).length}</b></div></div><div className="settings-note"><strong>Backup</strong><p>Backup JSON merangkumi kelas, murid, rekod percubaan, soalan custom dan audit yang boleh dibaca semula jika diperlukan.</p></div></section>
+          {isAdmin?<section className="panel"><div className="panel-title"><div><small>ROLE GURU</small><h2>Admin / Guru / Viewer</h2></div></div><div className="teacher-role-form"><input value={teacherForm.uid} onChange={e=>setTeacherForm(f=>({...f,uid:e.target.value}))} placeholder="UID Firebase guru"/><input value={teacherForm.name} onChange={e=>setTeacherForm(f=>({...f,name:e.target.value}))} placeholder="Nama guru"/><select value={teacherForm.role} onChange={e=>setTeacherForm(f=>({...f,role:e.target.value as any}))}><option value="admin">Admin</option><option value="guru">Guru</option><option value="viewer">Viewer</option></select><button onClick={saveRole}>Simpan akses</button></div><div className="teacher-role-list">{teacherProfiles.map(t=><div key={t.uid}><b>{t.name}</b><span>{t.role}</span><small>{t.uid}</small></div>)}</div></section>:null}
+          <section className="panel"><div className="panel-title"><div><small>AUDIT LOG</small><h2>Aktiviti pentadbiran</h2></div><span>{auditLogs.length}</span></div><div className="audit-list">{auditLogs.slice(0,40).map(a=><div key={a.id}><b>{a.action}</b><span>{a.detail}</span><small>{a.by} · {new Date(a.createdAt).toLocaleString("ms-MY")}</small></div>)}</div></section>
+        </section>:null}
+      </section>
+    </div>
+
+    {qrData?<div className="qr-modal" onClick={()=>setQrData(null)}><div onClick={e=>e.stopPropagation()}><button className="qr-close" onClick={()=>setQrData(null)}>×</button><small>QR KELAS</small><h2>{qrData.name}</h2><img src={qrData.image} alt={"QR "+qrData.code}/><b>{qrData.code}</b><p>Scan QR → pilih nama → masuk GeoBoost.</p><div><button onClick={()=>navigator.clipboard.writeText(qrData.url)}>Salin Link</button><button onClick={()=>window.print()}>Cetak QR</button></div></div></div>:null}
+  </main>;
 }
