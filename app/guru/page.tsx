@@ -26,6 +26,8 @@ import {
 } from "@/lib/teacherAdmin";
 import { bootstrapGeoBoostAdmin, deployGeoBoostFirestoreRules, deployGeoBoostMultiTeacher } from "@/lib/firebaseRulesAdmin";
 import { StudentPresence, watchStudentPresence } from "@/lib/studentPresence";
+import { StudentAccessRecord, ensureStudentAccessCodes, removeStudentAccessCode } from "@/lib/studentAccess";
+import { getStudentLoginMode, type StudentLoginMode } from "@/lib/systemConfig";
 
 type Source = "local"|"firebase";
 type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"bank"|"teachers"|"settings";
@@ -63,6 +65,8 @@ export default function TeacherPage(){
   const [teacherProfiles,setTeacherProfiles]=useState<TeacherProfile[]>([]);
   const [teacherProfile,setTeacherProfile]=useState<TeacherProfile|null>(null);
   const [studentPresence,setStudentPresence]=useState<StudentPresence[]>([]);
+  const [studentAccessCodes,setStudentAccessCodes]=useState<StudentAccessRecord[]>([]);
+  const [studentLoginMode,setStudentLoginMode]=useState<StudentLoginMode>("legacy-pin");
   const [source,setSource]=useState<Source>("local");
   const [message,setMessage]=useState("");
   const [teacherEmail,setTeacherEmail]=useState("");
@@ -132,7 +136,7 @@ export default function TeacherPage(){
 
   function clearTeacherData(){
     setTeacherProfile(null);setManagedClasses([]);setRegisteredStudents([]);setAttempts([]);
-    setCustomQuestions([]);setAuditLogs([]);setTeacherProfiles([]);setStudentPresence([]);setLiveItems([]);setFirebaseRulesReady(null);setSource("local");
+    setCustomQuestions([]);setAuditLogs([]);setTeacherProfiles([]);setStudentPresence([]);setStudentAccessCodes([]);setLiveItems([]);setFirebaseRulesReady(null);setSource("local");
     setAdminTeacherUid("");setAdminEditUntil(0);setAdminEditPassword("");
   }
 
@@ -158,6 +162,14 @@ export default function TeacherPage(){
     const classes=await listClasses(profile.role);
     const classCodes=classes.map(item=>item.code);
     const allowAll=profile.role==="admin";
+    const loginMode=await getStudentLoginMode();
+    setStudentLoginMode(loginMode);
+    if(loginMode==="legacy-pin"&&profile.role!=="viewer"){
+      try{
+        const access=(await Promise.all(classes.map(item=>ensureStudentAccessCodes(item)))).flat();
+        setStudentAccessCodes(access);
+      }catch{setStudentAccessCodes([])}
+    }else setStudentAccessCodes([]);
     const [remote,students,custom,audit,profiles]=await Promise.all([
       getRemoteAttempts(classCodes,allowAll),getRemoteStudents(classCodes,allowAll),getCustomQuestions(true),getAuditLogs(),allowAll?listTeacherProfiles():Promise.resolve([]),
     ]);
@@ -308,6 +320,15 @@ export default function TeacherPage(){
 
   async function updateRosterState(code:string,studentRoster:ClassStudent[]){
     patchClass(code,{studentRoster,studentNames:studentRoster.map(student=>student.name)});
+    if(studentLoginMode==="legacy-pin"){
+      const current=managedClasses.find(item=>item.code===code);
+      if(current){
+        try{
+          const access=await ensureStudentAccessCodes({...current,studentRoster,studentNames:studentRoster.map(student=>student.name)});
+          setStudentAccessCodes(all=>[...all.filter(item=>item.classCode!==code),...access]);
+        }catch{}
+      }
+    }
   }
   async function addStudentToRoster(name=manualStudentName){
     if(!rosterClassCode||!name.trim())return;
@@ -323,10 +344,23 @@ export default function TeacherPage(){
     if(!confirm("Buang "+student.name+" daripada senarai login?"))return;
     try{
       const roster=await removeRosterStudent(rosterClassCode,student.id);
+      if(studentLoginMode==="legacy-pin"){
+        try{await removeStudentAccessCode(rosterClassCode,student.id)}catch{}
+      }
       await updateRosterState(rosterClassCode,roster);
       await log("MURID_BUANG",student.name+" · "+rosterClassCode);
     }catch{setMessage("Nama murid tidak dapat dibuang.")}
   }
+  async function copyLegacyAccessCodes(){
+    if(!rosterClass||studentLoginMode!=="legacy-pin")return;
+    const rows=rosterClass.studentRoster.map((student,index)=>{
+      const access=studentAccessCodes.find(item=>item.classCode===rosterClass.code&&item.studentId===student.id);
+      return (index+1)+". "+student.name+" — "+(access?.pin||"BELUM DIJANA");
+    });
+    await navigator.clipboard.writeText("GeoBoost "+rosterClass.name+" ("+rosterClass.code+")\n"+rows.join("\n"));
+    setMessage("Senarai kod akses sementara "+rosterClass.code+" disalin.");
+  }
+
   async function importStudents(event:ChangeEvent<HTMLInputElement>){
     const file=event.target.files?.[0];event.target.value="";if(!file||!rosterClassCode)return;
     if(!canManageClassCode(rosterClassCode)){setMessage("Import ke kelas guru lain memerlukan Mode Edit Admin.");return;}
