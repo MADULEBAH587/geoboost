@@ -189,7 +189,7 @@ export function PracticeRunner({
       {uncertain>0?<div className="sync-banner offline">🤔 {uncertain} jawapan ditanda “Saya tak pasti” — sesuai untuk ulang kaji.</div>:null}
       {guest?<div className="sync-banner offline">Masuk sebagai murid untuk menyimpan markah dan kemajuan.</div>:<div className={"sync-banner "+(synced?"online":"offline")}>{synced?"Rekod berjaya disimpan":"Rekod belum selesai disimpan. Sistem akan cuba semula secara automatik."}</div>}
       {wrong.length>0?<div className="recovery-box"><span>🎯</span><div><small>Cadangan pemulihan</small><strong>{wrong.join(", ")}</strong></div></div>:null}
-      <div className="result-actions"><a className="primary" href="/murid/utama">Dashboard</a>{wrongCount>0?<a className="secondary dark-button" href="/ulang-salah">Ulang Soalan Lemah</a>:null}<a className="secondary dark-button" href="/pemulihan">Pemulihan</a></div>
+      <div className="result-actions"><a className="primary" href="/murid/utama">Utama</a>{wrongCount>0?<a className="secondary dark-button" href="/ulang-salah">Ulang Soalan Salah</a>:null}<a className="secondary dark-button" href="/pemulihan">Pemulihan</a></div>
     </section></main>;
   }
 
