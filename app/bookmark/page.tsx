@@ -16,7 +16,7 @@ export default function BookmarkPage(){
       setBank(ids.map(id=>merged.find(q=>q.id===id)).filter(Boolean) as Question[]);
     }catch{setBank([])}
   })()},[]);
-  if(bank===null)return <main className="quiz-shell"><div className="empty-state"><h1>Memuatkan bookmark…</h1></div></main>;
+  if(bank===null)return <main className="quiz-shell"><div className="empty-state"><h1>Memuatkan soalan disimpan…</h1></div></main>;
   if(!bank.length)return <main className="quiz-shell"><div className="empty-state"><span className="result-icon">🔖</span><h1>Belum ada soalan disimpan</h1><p>Tekan “Simpan” pada soalan yang anda mahu ulang kemudian.</p><a className="primary" href="/murid/latihan">Kembali</a></div></main>;
-  return <PracticeRunner bank={bank} requested={Math.min(20,bank.length)} title="Soalan Disimpan Saya" eyebrow="BOOKMARK" mode="bookmark" returnHref="/murid/latihan"/>;
+  return <PracticeRunner bank={bank} requested={Math.min(20,bank.length)} title="Soalan Disimpan Saya" eyebrow="SOALAN DISIMPAN" mode="bookmark" returnHref="/murid/latihan"/>;
 }
