@@ -4,6 +4,7 @@ export type StudentSession = {
   className: string;
   classCode: string;
   createdAt: number;
+  pendingRoster?: boolean;
 };
 
 const KEY = "geoboost_student_session";
@@ -21,6 +22,7 @@ export function getStudentSession(): StudentSession | null {
       className: String(parsed.className),
       classCode: String(parsed.classCode || ""),
       createdAt: Number(parsed.createdAt || Date.now()),
+      pendingRoster: Boolean(parsed.pendingRoster),
     };
   } catch {
     return null;
