@@ -687,6 +687,42 @@ export default function TeacherPage(){
           <div className="bank-list selectable">{bankItems.map(q=>{const custom=(q as any).custom===true;return <div key={q.id} className={bankSelection.includes(q.id)?"selected":""}><input type="checkbox" checked={bankSelection.includes(q.id)} onChange={e=>setBankSelection(s=>e.target.checked?[...new Set([...s,q.id])]:s.filter(id=>id!==q.id))}/><span>{q.id}</span><div><strong>{q.prompt}</strong><small>{q.subtopic} · {custom?"CUSTOM":"TERAS"}</small></div><b className={"difficulty "+q.difficulty}>{q.difficulty==="easy"?"MUDAH":q.difficulty==="medium"?"SEDERHANA":"KBAT"}</b>{custom?<div className="bank-actions"><button onClick={()=>editQuestion(q as CustomQuestion)}>Edit</button><button onClick={()=>archiveQuestion(q.id,false)}>Arkib</button><button className="danger" onClick={()=>removeQuestion(q.id)}>Padam</button></div>:null}</div>})}</div>
         </section>:null}
 
+        {activeSection==="teachers"&&isAdmin?<div className="teacher-management-grid">
+          <section className="panel teacher-directory-panel">
+            <div className="panel-title"><div><small>PENGURUSAN GURU</small><h2>Akaun & permohonan guru</h2></div><span>{pendingTeachers.length} pending</span></div>
+            <p className="class-help">Guru baharu daftar sendiri. Admin menyemak, meluluskan dan mengurus akses dari sini.</p>
+            <div className="teacher-admin-list">{teacherProfiles.map(t=>{
+              const count=managedClasses.filter(c=>c.ownerTeacherId===t.uid).length;
+              return <button key={t.uid} className={adminTeacherUid===t.uid?"selected":""} onClick={()=>{setAdminTeacherUid(t.uid);setAdminEditUntil(0);setAdminEditPassword("")}}>
+                <div><strong>{t.name}</strong><small>{t.email||"Tiada email"} · {count} kelas</small></div>
+                <span className={"teacher-status "+(t.status||"active")}>{(t.status||"active").toUpperCase()}</span>
+                <b>{t.role.toUpperCase()}</b>
+              </button>
+            })}</div>
+          </section>
+          <section className="panel teacher-detail-panel">
+            {!adminTeacher?<div className="panel-empty">Pilih seorang guru untuk melihat profil, kelas dan aksesnya.</div>:<>
+              <div className="panel-title"><div><small>PROFIL GURU</small><h2>{adminTeacher.name}</h2></div><span className={"teacher-status "+(adminTeacher.status||"active")}>{(adminTeacher.status||"active").toUpperCase()}</span></div>
+              <div className="teacher-detail-meta"><div><span>Email</span><b>{adminTeacher.email||"-"}</b></div><div><span>Role</span><b>{adminTeacher.role.toUpperCase()}</b></div><div><span>Kelas</span><b>{adminTeacherClasses.length}</b></div><div><span>Murid</span><b>{adminTeacherClasses.reduce((s,item)=>s+item.studentRoster.length,0)}</b></div></div>
+
+              <div className={"admin-edit-banner "+(adminEditActive?"active":"view")}><strong>{adminEditActive?"✏️ MODE EDIT ADMIN":"👁️ MODE LIHAT"}</strong><span>{adminEditActive?"Edit dibenarkan selama 15 minit selepas pengesahan password.":"Data guru boleh dilihat tetapi perubahan dikunci."}</span>{adminEditActive?<button onClick={leaveAdminEdit}>Keluar Mode Edit</button>:null}</div>
+
+              {!adminEditActive?<div className="admin-reauth-box"><label>Sahkan kata laluan admin<input type="password" value={adminEditPassword} onChange={e=>setAdminEditPassword(e.target.value)} placeholder="Kata laluan admin"/></label><button className="primary" onClick={beginAdminEdit} disabled={!adminEditPassword}>Aktifkan Mode Edit · 15 minit</button><small>Admin kekal menggunakan akaun sendiri. Semua perubahan direkodkan dalam Audit Log.</small></div>:<div className="teacher-edit-controls">
+                <div className="teacher-control-row"><div><strong>Status akaun</strong><small>Luluskan, gantung atau tolak akses.</small></div>
+                  {adminTeacher.status!=="active"?<button onClick={()=>updateTeacherAccess(adminTeacher,{status:"active",active:true},"GURU_LULUS")}>Luluskan / Aktifkan</button>:<button disabled={adminTeacher.uid===teacherUid} onClick={()=>updateTeacherAccess(adminTeacher,{status:"suspended",active:false},"GURU_GANTUNG")}>Nyahaktif</button>}
+                  {adminTeacher.status!=="rejected"&&adminTeacher.uid!==teacherUid?<button className="danger" onClick={()=>updateTeacherAccess(adminTeacher,{status:"rejected",active:false},"GURU_TOLAK")}>Tolak</button>:null}
+                </div>
+                <div className="teacher-control-row"><div><strong>Role</strong><small>Admin mempunyai semua fungsi guru.</small></div><select value={adminTeacher.role} disabled={adminTeacher.uid===teacherUid} onChange={e=>updateTeacherAccess(adminTeacher,{role:e.target.value as "admin"|"guru"|"viewer"},"GURU_ROLE")}><option value="guru">Guru</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></div>
+                <div className="teacher-control-row"><div><strong>Nama paparan</strong><small>{adminTeacher.name}</small></div><button onClick={()=>{const name=window.prompt("Nama guru",adminTeacher.name);if(name?.trim())void updateTeacherAccess(adminTeacher,{name:name.trim()},"GURU_NAMA")}}>Edit nama</button></div>
+              </div>}
+
+              <div className="teacher-owned-classes"><div className="subsection-title"><strong>Kelas milik guru</strong><span>{adminTeacherClasses.length}</span></div>
+                {adminTeacherClasses.length?adminTeacherClasses.map(cls=><div key={cls.code} className="teacher-owned-class"><div><b>{cls.name}</b><small>{cls.code} · {cls.studentRoster.length} murid · {cls.assignments.length} tugasan</small></div>{adminEditActive?<><select value={adminTransferTarget[cls.code]||""} onChange={e=>setAdminTransferTarget(x=>({...x,[cls.code]:e.target.value}))}><option value="">Tukar kepada...</option>{activeTeacherOptions.filter(t=>t.uid!==adminTeacher.uid).map(t=><option key={t.uid} value={t.uid}>{t.name} · {t.role}</option>)}</select><button disabled={!adminTransferTarget[cls.code]} onClick={()=>moveClassOwner(cls.code,adminTransferTarget[cls.code])}>Tukar Guru</button></>:<span>View sahaja</span>}</div>):<div className="panel-empty">Guru ini belum mempunyai kelas.</div>}
+              </div>
+            </>}
+          </section>
+        </div>:null}
+
         {activeSection==="settings"?<section className="settings-stack">
           <section className="panel settings-panel"><div className="panel-title"><div><small>SISTEM</small><h2>GeoBoost v2.0</h2></div><button onClick={backup}>Backup JSON</button></div><div className="settings-grid"><div><span>Sumber data</span><b>{source==="firebase"?"Firebase pusat":"Peranti"}</b></div><div><span>Role</span><b>{teacherProfile?.role?.toUpperCase()||"-"}</b></div><div><span>Kelas aktif</span><b>{activeClasses.length}</b></div><div><span>Bank</span><b>{questions.length+customQuestions.filter(q=>q.active).length}</b></div></div><div className="settings-note"><strong>Backup</strong><p>Backup JSON merangkumi kelas, murid, rekod percubaan, soalan custom dan audit yang boleh dibaca semula jika diperlukan.</p></div></section>
           {isAdmin?<section className="panel"><div className="panel-title"><div><small>FIREBASE P1</small><h2>Keselamatan Guru ↔ Murid</h2></div><span>{firebaseRulesReady===true?"AKTIF":firebaseRulesReady===false?"PERLU AKTIF":"SEMAK"}</span></div><p className="class-help">Menerbitkan Firestore Rules untuk pemilikan kelas, ID murid unik, kod akses 6 digit dan pengesahan keputusan. Google mungkin meminta kebenaran Firebase sekali sahaja.</p><button className="primary" onClick={activateFirebaseP1} disabled={deployingRules}>{deployingRules?"Mengaktifkan...":firebaseRulesReady===true?"Terbitkan semula Rules P1":"Aktifkan Firebase P1"}</button></section>:null}
