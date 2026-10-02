@@ -4,9 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { chapters } from "@/lib/data";
 import { questions } from "@/lib/questions";
 import { ClassRecord, validateClassCode } from "@/lib/classroom";
-import { AttemptRecord, getLocalAttempts, getStudentCloudAttempts } from "@/lib/repository";
+import { AttemptRecord, getLocalAttempts, getStudentCloudAttempts, syncPendingAttempts, syncStudentProfile } from "@/lib/repository";
 import { clearStudentSession, getStudentSession, StudentSession } from "@/lib/session";
-import { signOutFirebaseUser } from "@/lib/firebase";
+import { firebaseConfigured, signOutFirebaseUser } from "@/lib/firebase";
+import { registerStudentPresence } from "@/lib/studentPresence";
 import { StudentBottomNav } from "@/components/StudentBottomNav";
 
 type Section = "utama"|"tugasan"|"latihan"|"prestasi"|"profil";
@@ -40,6 +41,33 @@ export function StudentPortal({ section }: { section: Section }) {
       const current=getStudentSession();
       if(!current){ window.location.replace("/murid"); return; }
       setStudent(current);
+
+      // Background repair: cloud sync retries automatically after login.
+      // Local session remains usable even when Firestore rules/network are temporarily unavailable.
+      if(firebaseConfigured){
+        void (async()=>{
+          try{
+            const result=await syncStudentProfile({
+              localStudentId:current.id,
+              name:current.name,
+              className:current.className,
+              classCode:current.classCode,
+            });
+            if(result.synced){
+              localStorage.removeItem("geoboost_cloud_profile_pending");
+              try{
+                await registerStudentPresence({
+                  classCode:current.classCode,
+                  studentId:current.id,
+                  studentName:current.name,
+                });
+              }catch{}
+              try{await syncPendingAttempts()}catch{}
+            }
+          }catch{}
+        })();
+      }
+
       const local=getLocalAttempts().filter(a=>a.studentId===current.id);
       let remote:AttemptRecord[]=[];
       try{ remote=await getStudentCloudAttempts(current.id); }catch{}
