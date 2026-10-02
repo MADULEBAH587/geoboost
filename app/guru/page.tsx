@@ -25,6 +25,7 @@ import {
 import {
   StudentAccessRecord, ensureStudentAccessCodes, removeStudentAccessCode,
 } from "@/lib/studentAccess";
+import { deployGeoBoostFirestoreRules } from "@/lib/firebaseRulesAdmin";
 
 type Source = "local"|"firebase";
 type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"bank"|"settings";
@@ -69,6 +70,8 @@ export default function TeacherPage(){
   const [authBusy,setAuthBusy]=useState(false);
   const [authUser,setAuthUser]=useState<{uid:string;email:string|null}|null>(null);
   const [authError,setAuthError]=useState("");
+  const [firebaseRulesReady,setFirebaseRulesReady]=useState<boolean|null>(null);
+  const [deployingRules,setDeployingRules]=useState(false);
   const [classFilter,setClassFilter]=useState("SEMUA");
   const [chapterFilter,setChapterFilter]=useState(0);
   const [newClassName,setNewClassName]=useState("");
@@ -106,7 +109,7 @@ export default function TeacherPage(){
 
   function clearTeacherData(){
     setTeacherProfile(null);setManagedClasses([]);setRegisteredStudents([]);setAttempts([]);
-    setCustomQuestions([]);setAuditLogs([]);setTeacherProfiles([]);setStudentAccessCodes([]);setLiveItems([]);setSource("local");
+    setCustomQuestions([]);setAuditLogs([]);setTeacherProfiles([]);setStudentAccessCodes([]);setLiveItems([]);setFirebaseRulesReady(null);setSource("local");
   }
 
   async function loadTeacherData(user:{email:string|null;uid:string}){
@@ -127,9 +130,14 @@ export default function TeacherPage(){
     setManagedClasses(classes);setRegisteredStudents(students);setAttempts(remote);
     setCustomQuestions(custom);setAuditLogs(audit);setTeacherProfiles(profiles);setSource("firebase");
     if(profile.role!=="viewer"){
-      const access=(await Promise.all(classes.map(item=>ensureStudentAccessCodes(item)))).flat();
-      setStudentAccessCodes(access);
-    }else setStudentAccessCodes([]);
+      try{
+        const access=(await Promise.all(classes.map(item=>ensureStudentAccessCodes(item)))).flat();
+        setStudentAccessCodes(access);setFirebaseRulesReady(true);
+      }catch(error:any){
+        console.error(error);setStudentAccessCodes([]);setFirebaseRulesReady(false);
+        setMessage("Firebase P1 belum diaktifkan sepenuhnya. Admin boleh aktifkan sekali di Tetapan.");
+      }
+    }else{setStudentAccessCodes([]);setFirebaseRulesReady(null)}
     const first=classes.find(c=>!c.archived)?.code||classes[0]?.code||"";
     setRosterClassCode(current=>current||first);setAssignmentClassCode(current=>current||first);
     setMessage("Berjaya memuat "+remote.length+" rekod, "+students.length+" profil murid dan "+classes.length+" kelas.");
@@ -328,6 +336,22 @@ export default function TeacherPage(){
     }catch{setMessage("Intervensi gagal ditetapkan.")}
   }
 
+  async function activateFirebaseP1(){
+    if(!isAdmin||deployingRules)return;
+    setDeployingRules(true);setMessage("Meminta kebenaran Firebase dan menerbitkan Firestore Rules P1...");
+    try{
+      const result=await deployGeoBoostFirestoreRules();
+      setFirebaseRulesReady(true);
+      await log("FIREBASE_RULES_P1",result.rulesetName);
+      setMessage("Firestore Rules P1 berjaya diterbitkan. Memuat semula data dan kod akses...");
+      if(authUser)await loadTeacherData(authUser);
+    }catch(error:any){
+      console.error(error);
+      setFirebaseRulesReady(false);
+      setMessage("Aktivasi Firebase P1 belum selesai: "+String(error?.message||"kebenaran Google/Firebase diperlukan."));
+    }finally{setDeployingRules(false)}
+  }
+
   async function saveRole(){
     if(!isAdmin||!teacherForm.uid.trim()||!teacherForm.name.trim())return;
     try{
@@ -485,6 +509,7 @@ export default function TeacherPage(){
 
         {activeSection==="settings"?<section className="settings-stack">
           <section className="panel settings-panel"><div className="panel-title"><div><small>SISTEM</small><h2>GeoBoost v2.0</h2></div><button onClick={backup}>Backup JSON</button></div><div className="settings-grid"><div><span>Sumber data</span><b>{source==="firebase"?"Firebase pusat":"Peranti"}</b></div><div><span>Role</span><b>{teacherProfile?.role?.toUpperCase()||"-"}</b></div><div><span>Kelas aktif</span><b>{activeClasses.length}</b></div><div><span>Bank</span><b>{questions.length+customQuestions.filter(q=>q.active).length}</b></div></div><div className="settings-note"><strong>Backup</strong><p>Backup JSON merangkumi kelas, murid, rekod percubaan, soalan custom dan audit yang boleh dibaca semula jika diperlukan.</p></div></section>
+          {isAdmin?<section className="panel"><div className="panel-title"><div><small>FIREBASE P1</small><h2>Keselamatan Guru ↔ Murid</h2></div><span>{firebaseRulesReady===true?"AKTIF":firebaseRulesReady===false?"PERLU AKTIF":"SEMAK"}</span></div><p className="class-help">Menerbitkan Firestore Rules untuk pemilikan kelas, ID murid unik, kod akses 6 digit dan pengesahan keputusan. Google mungkin meminta kebenaran Firebase sekali sahaja.</p><button className="primary" onClick={activateFirebaseP1} disabled={deployingRules}>{deployingRules?"Mengaktifkan...":firebaseRulesReady===true?"Terbitkan semula Rules P1":"Aktifkan Firebase P1"}</button></section>:null}
           {isAdmin?<section className="panel"><div className="panel-title"><div><small>ROLE GURU</small><h2>Admin / Guru / Viewer</h2></div></div><div className="teacher-role-form"><input value={teacherForm.uid} onChange={e=>setTeacherForm(f=>({...f,uid:e.target.value}))} placeholder="UID Firebase guru"/><input value={teacherForm.name} onChange={e=>setTeacherForm(f=>({...f,name:e.target.value}))} placeholder="Nama guru"/><select value={teacherForm.role} onChange={e=>setTeacherForm(f=>({...f,role:e.target.value as any}))}><option value="admin">Admin</option><option value="guru">Guru</option><option value="viewer">Viewer</option></select><button onClick={saveRole}>Simpan akses</button></div><div className="teacher-role-list">{teacherProfiles.map(t=><div key={t.uid}><b>{t.name}</b><span>{t.role}</span><small>{t.uid}</small></div>)}</div></section>:null}
           <section className="panel"><div className="panel-title"><div><small>AUDIT LOG</small><h2>Aktiviti pentadbiran</h2></div><span>{auditLogs.length}</span></div><div className="audit-list">{auditLogs.slice(0,40).map(a=><div key={a.id}><b>{a.action}</b><span>{a.detail}</span><small>{a.by} · {new Date(a.createdAt).toLocaleString("ms-MY")}</small></div>)}</div></section>
         </section>:null}
