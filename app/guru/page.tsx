@@ -568,24 +568,63 @@ export default function TeacherPage(){
   }
 
   if(!authUser){
-    return <main className="auth-shell"><section className="auth-card">{gateBrand}<span className="eyebrow dark">AKSES GURU</span><h1>Log masuk guru</h1><p>Gunakan akaun Google guru yang telah diberi kebenaran untuk membuka GeoBoost Control Center.</p>{authError?<div className="teacher-message">{authError}</div>:null}<button className="primary full" onClick={connectTeacher} disabled={authBusy}>{authBusy?"Membuka Google…":"Masuk dengan Google"}</button><small className="auth-note">Dashboard, data murid, analitik dan pengurusan kelas hanya dipaparkan selepas akaun disahkan.</small><a className="launch-button full center" href="/">← Paparan utama</a></section></main>;
+    return <main className="auth-shell"><section className="auth-card teacher-auth-card">
+      {gateBrand}
+      <span className="eyebrow dark">{authMode==="login"?"AKSES GURU":"DAFTAR GURU"}</span>
+      <h1>{authMode==="login"?"Log masuk guru":"Daftar akaun guru"}</h1>
+      <p>{authMode==="login"
+        ?"Masuk menggunakan email dan kata laluan GeoBoost."
+        :"Guru boleh daftar sendiri. Akaun hanya boleh digunakan selepas diluluskan oleh admin."}</p>
+      {authError?<div className="teacher-message">{authError}</div>:null}
+      {message?<div className="teacher-message">{message}</div>:null}
+      {authMode==="login"?<form className="student-form" onSubmit={e=>{e.preventDefault();void connectTeacher()}}>
+        <label>Email<input type="email" autoComplete="email" value={loginEmail} onChange={e=>setLoginEmail(e.target.value)} placeholder="nama@email.com" required/></label>
+        <label>Kata laluan<input type="password" autoComplete="current-password" value={loginPassword} onChange={e=>setLoginPassword(e.target.value)} placeholder="••••••••" required/></label>
+        <button className="primary full" type="submit" disabled={authBusy||!loginEmail.trim()||!loginPassword}>{authBusy?"Mengesahkan...":"Masuk →"}</button>
+        <button className="auth-text-button" type="button" onClick={resetTeacherPassword} disabled={authBusy}>Lupa kata laluan?</button>
+      </form>:<form className="student-form" onSubmit={e=>{e.preventDefault();void registerTeacher()}}>
+        <label>Nama penuh<input value={registerName} onChange={e=>setRegisterName(e.target.value)} placeholder="Contoh: Cikgu Benno" required/></label>
+        <label>Email<input type="email" autoComplete="email" value={registerEmail} onChange={e=>setRegisterEmail(e.target.value)} placeholder="nama@email.com" required/></label>
+        <label>Kata laluan<input type="password" autoComplete="new-password" minLength={6} value={registerPassword} onChange={e=>setRegisterPassword(e.target.value)} placeholder="Minimum 6 aksara" required/></label>
+        <label>Sahkan kata laluan<input type="password" autoComplete="new-password" minLength={6} value={registerConfirm} onChange={e=>setRegisterConfirm(e.target.value)} placeholder="Taip semula kata laluan" required/></label>
+        <button className="primary full" type="submit" disabled={authBusy||registerPassword.length<6}>{authBusy?"Mendaftar...":"Daftar & Hantar Untuk Kelulusan →"}</button>
+      </form>}
+      <div className="teacher-auth-switch"><span>{authMode==="login"?"Belum ada akaun?":"Sudah ada akaun?"}</span><button onClick={()=>{setAuthMode(authMode==="login"?"register":"login");setAuthError("");setMessage("")}}>{authMode==="login"?"Daftar guru":"Log masuk"}</button></div>
+      <small className="auth-note">Akaun guru baharu berstatus <b>PENDING</b> sehingga diluluskan admin. Guru yang telah diluluskan boleh mencipta dan mengurus kelas sendiri.</small>
+      <button className="legacy-admin-link" type="button" onClick={connectLegacyAdmin} disabled={authBusy}>Admin lama Google? Migrasi sekali sahaja</button>
+      <a className="launch-button full center" href="/">← Paparan utama</a>
+    </section></main>;
   }
 
   if(!teacherProfile||!teacherProfile.active){
-    const inactive=Boolean(teacherProfile&&!teacherProfile.active);
-    return <main className="auth-shell"><section className="auth-card">{gateBrand}<span className="eyebrow dark">PENGESAHAN AKSES</span><h1>{inactive?"Akses dinyahaktifkan":"Sediakan Admin GeoBoost"}</h1><p>{authError||message||(inactive?"Akaun ini telah dinyahaktifkan oleh admin.":"Jika ini akaun pemilik projek Firebase, GeoBoost boleh menyediakan akaun ADMIN dan menerbitkan Firestore Rules P1 secara automatik.")}</p><div className="teacher-bootstrap"><div><small>UID GURU</small><code>{teacherUid||authUser.uid}</code><span>{teacherEmail||authUser.email||"Akaun Google"}</span></div><button onClick={async()=>{await navigator.clipboard.writeText(teacherUid||authUser.uid);setMessage("UID disalin.")}}>Salin UID</button></div>{!inactive?<button className="primary full" onClick={bootstrapFirstAdmin} disabled={deployingRules}>{deployingRules?"Mengaktifkan Firebase P1...":"Aktifkan Admin + Firebase P1"}</button>:null}<small className="auth-note">{!inactive?"Google akan meminta kebenaran projek Firebase sekali sahaja. Selepas diluluskan, setup admin, rules keselamatan dan migrasi kelas diteruskan automatik.":"Hubungi admin GeoBoost untuk mengaktifkan semula akaun ini."}</small><button className="launch-button full" onClick={disconnectTeacher}>Log keluar / guna akaun lain</button></section></main>;
+    const status=teacherProfile?.status||"pending";
+    const title=!teacherProfile?"Profil belum tersedia":status==="pending"?"Menunggu pengesahan admin":status==="rejected"?"Permohonan ditolak":"Akses dinyahaktifkan";
+    return <main className="auth-shell"><section className="auth-card">
+      {gateBrand}<span className="eyebrow dark">STATUS AKAUN GURU</span><h1>{title}</h1>
+      <p>{authError||message||(!teacherProfile
+        ?"Profil GeoBoost belum dijumpai untuk akaun ini."
+        :status==="pending"
+          ?"Pendaftaran telah diterima. Admin akan melihat permohonan anda di Pengurusan Guru."
+          :status==="rejected"
+            ?"Permohonan ini telah ditolak. Hubungi admin jika perlu semakan semula."
+            :"Akaun ini dinyahaktifkan sementara oleh admin.")}</p>
+      <div className="teacher-bootstrap"><div><small>AKAUN</small><b>{teacherProfile?.name||"Guru"}</b><span>{teacherEmail||authUser.email||""}</span></div><span className={"teacher-status "+status}>{status.toUpperCase()}</span></div>
+      {!teacherProfile?<button className="legacy-admin-link full" onClick={bootstrapFirstAdmin} disabled={deployingRules}>{deployingRules?"Menyediakan admin...":"Pemilik projek? Pulihkan Admin GeoBoost"}</button>:null}
+      <small className="auth-note">Selepas admin meluluskan akaun, log masuk semula atau refresh halaman ini untuk membuka Control Center.</small>
+      <button className="launch-button full" onClick={disconnectTeacher}>Log keluar / guna akaun lain</button>
+    </section></main>;
   }
 
   return <main className="teacher-app">
     <aside className="teacher-sidebar">
       <a className="teacher-side-brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>CONTROL CENTER</small></span></a>
-      <nav>{NAV.map(item=><button key={item.id} className={activeSection===item.id?"active":""} onClick={()=>setActiveSection(item.id)}><span>{item.icon}</span>{item.label}</button>)}</nav>
-      <div className="teacher-side-account"><span className={"source-pill "+source}>{source==="firebase"?"☁️ Firebase":"📱 Peranti"}</span><small>{teacherEmail||"Belum login"}{teacherProfile?" · "+teacherProfile.role.toUpperCase():""}</small>{firebaseConfigured?(source==="firebase"?<button onClick={disconnectTeacher}>Log keluar</button>:<button onClick={connectTeacher}>Masuk Google Guru</button>):null}<a href="/">← Paparan utama</a></div>
+      <nav>{navItems.map(item=><button key={item.id} className={activeSection===item.id?"active":""} onClick={()=>setActiveSection(item.id)}><span>{item.icon}</span>{item.label}</button>)}</nav>
+      <div className="teacher-side-account"><span className={"source-pill "+source}>{source==="firebase"?"☁️ Firebase":"📱 Peranti"}</span><small>{teacherEmail||"Belum login"}{teacherProfile?" · "+teacherProfile.role.toUpperCase():""}</small>{firebaseConfigured?<button onClick={disconnectTeacher}>Log keluar</button>:null}<a href="/">← Paparan utama</a></div>
     </aside>
 
     <div className="teacher-main">
-      <header className="teacher-mobile-nav"><a className="brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>GURU</small></span></a><select value={activeSection} onChange={e=>setActiveSection(e.target.value as TeacherSection)}>{NAV.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select></header>
-      <section className="teacher-head"><span className="eyebrow dark">PANEL GURU · v2.0</span><h1>{NAV.find(x=>x.id===activeSection)?.label}</h1><p>Control Center GeoBoost untuk kelas, tugasan, live monitoring, intervensi, analitik, laporan dan bank soalan.</p>{!canEdit&&source==="firebase"?<div className="teacher-message">👁️ Role VIEWER aktif — paparan sahaja, fungsi edit disekat pada UI.</div>:null}{message?<div className="teacher-message">{message}</div>:null}{teacherUid&&source!=="firebase"?<div className="teacher-bootstrap"><div><small>UID UNTUK AKTIFKAN ADMIN</small><code>{teacherUid}</code><span>{teacherEmail}</span></div><button onClick={async()=>{await navigator.clipboard.writeText(teacherUid);setMessage("UID disalin.")}}>Salin UID</button></div>:null}</section>
+      <header className="teacher-mobile-nav"><a className="brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>GURU</small></span></a><select value={activeSection} onChange={e=>setActiveSection(e.target.value as TeacherSection)}>{navItems.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select></header>
+      <section className="teacher-head"><span className="eyebrow dark">PANEL GURU · v2.0</span><h1>{navItems.find(x=>x.id===activeSection)?.label||"GeoBoost Guru"}</h1><p>Control Center GeoBoost untuk kelas, tugasan, live monitoring, intervensi, analitik, laporan dan bank soalan.</p>{!canEdit&&source==="firebase"?<div className="teacher-message">👁️ Role VIEWER aktif — paparan sahaja, fungsi edit disekat pada UI.</div>:null}{message?<div className="teacher-message">{message}</div>:null}{teacherUid&&source!=="firebase"?<div className="teacher-bootstrap"><div><small>UID UNTUK AKTIFKAN ADMIN</small><code>{teacherUid}</code><span>{teacherEmail}</span></div><button onClick={async()=>{await navigator.clipboard.writeText(teacherUid);setMessage("UID disalin.")}}>Salin UID</button></div>:null}</section>
 
       <section className="teacher-content">
         {activeSection==="dashboard"?<>
