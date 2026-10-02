@@ -124,8 +124,11 @@ export default function TeacherPage(){
       return;
     }
 
-    const [remote,classes,students,custom,audit,profiles]=await Promise.all([
-      getRemoteAttempts(),listClasses(profile.role),getRemoteStudents(),getCustomQuestions(true),getAuditLogs(),profile.role==="admin"?listTeacherProfiles():Promise.resolve([]),
+    const classes=await listClasses(profile.role);
+    const classCodes=classes.map(item=>item.code);
+    const allowAll=profile.role==="admin";
+    const [remote,students,custom,audit,profiles]=await Promise.all([
+      getRemoteAttempts(classCodes,allowAll),getRemoteStudents(classCodes,allowAll),getCustomQuestions(true),getAuditLogs(),allowAll?listTeacherProfiles():Promise.resolve([]),
     ]);
     setManagedClasses(classes);setRegisteredStudents(students);setAttempts(remote);
     setCustomQuestions(custom);setAuditLogs(audit);setTeacherProfiles(profiles);setSource("firebase");
@@ -161,9 +164,10 @@ export default function TeacherPage(){
   },[]);
 
   useEffect(()=>{
-    if(source!=="firebase")return;
-    return watchLiveProgress(setLiveItems);
-  },[source]);
+    if(source!=="firebase"||!teacherProfile)return;
+    const classCodes=managedClasses.map(item=>item.code);
+    return watchLiveProgress(setLiveItems,classCodes,teacherProfile.role==="admin");
+  },[source,teacherProfile,managedClasses]);
 
   async function connectTeacher(){
     setAuthBusy(true);setAuthError("");setMessage("");
