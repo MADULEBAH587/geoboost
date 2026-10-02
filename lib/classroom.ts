@@ -11,6 +11,9 @@ export type ClassAssignment = {
   dueDate: string;
   active: boolean;
   createdAt: number;
+  questionIds?: string[];
+  maxAttempts?: number;
+  targetStudentIds?: string[];
 };
 
 export type ClassRecord = {
@@ -21,6 +24,8 @@ export type ClassRecord = {
   studentNames: string[];
   openChapters: number[];
   assignments: ClassAssignment[];
+  academicYear: string;
+  archived: boolean;
 };
 
 const ALL_CHAPTERS = [1,2,3,4,5,6,7,8,9,10];
@@ -52,10 +57,13 @@ function cleanAssignments(value: unknown): ClassAssignment[] {
       id: String(item.id),
       title: String(item.title),
       chapter,
-      questionCount: Math.min(20, Math.max(5, Number(item.questionCount || 20))),
+      questionCount: Math.min(30, Math.max(1, Number(item.questionCount || 20))),
       dueDate: String(item.dueDate || ""),
       active: item.active !== false,
       createdAt: Number(item.createdAt || Date.now()),
+      questionIds: Array.isArray(item.questionIds) ? item.questionIds.map(String).filter(Boolean) : [],
+      maxAttempts: Math.min(10, Math.max(1, Number(item.maxAttempts || 3))),
+      targetStudentIds: Array.isArray(item.targetStudentIds) ? item.targetStudentIds.map(String).filter(Boolean) : [],
     }];
   }).sort((a,b)=>b.createdAt-a.createdAt);
 }
@@ -73,6 +81,8 @@ function classFromData(id: string, data: Record<string, unknown>): ClassRecord {
     studentNames: [...new Set(names)].sort((a, b) => a.localeCompare(b, "ms")),
     openChapters: [...new Set(rawOpen)].sort((a,b)=>a-b),
     assignments: cleanAssignments(data.assignments),
+    academicYear: String(data.academicYear || new Date().getFullYear()),
+    archived: data.archived === true,
   };
 }
 
@@ -86,7 +96,7 @@ export async function validateClassCode(code: string): Promise<ClassRecord | nul
   const snapshot = await getDoc(doc(services.db, "classes", clean));
   if (!snapshot.exists()) return null;
   const data = snapshot.data() as Record<string, unknown>;
-  if (data.active === false) return null;
+  if (data.active === false || data.archived === true) return null;
   return classFromData(snapshot.id, data);
 }
 
@@ -97,7 +107,7 @@ export async function listClasses(): Promise<ClassRecord[]> {
   return snapshot.docs.map((item) => classFromData(item.id, item.data() as Record<string, unknown>));
 }
 
-export async function saveClass(input: { name: string; code: string }) {
+export async function saveClass(input: { name: string; code: string; academicYear?: string }) {
   const services = getFirebaseServices();
   if (!services) throw new Error("Firebase belum dikonfigurasi");
   const code = normalizeClassCode(input.code);
@@ -113,10 +123,12 @@ export async function saveClass(input: { name: string; code: string }) {
     studentNames: current?.studentNames || [],
     openChapters: current?.openChapters || ALL_CHAPTERS,
     assignments: current?.assignments || [],
+    academicYear: input.academicYear || current?.academicYear || String(new Date().getFullYear()),
+    archived: current?.archived || false,
     updatedAt: serverTimestamp(),
   };
   await setDoc(ref, payload, { merge: true });
-  return { id: code, ...payload, updatedAt: undefined } as unknown as ClassRecord;
+  return classFromData(code, payload as unknown as Record<string, unknown>);
 }
 
 export async function saveClassRoster(classCode: string, names: string[]) {
@@ -176,10 +188,13 @@ export async function saveAssignment(classCode: string, input: Omit<ClassAssignm
     id: input.id || crypto.randomUUID(),
     title: input.title.trim(),
     chapter: Number(input.chapter),
-    questionCount: Math.min(20, Math.max(5, Number(input.questionCount || 20))),
+    questionCount: Math.min(30, Math.max(1, Number(input.questionCount || 20))),
     dueDate: input.dueDate || "",
     active: input.active !== false,
     createdAt: input.createdAt || Date.now(),
+    questionIds: Array.isArray(input.questionIds) ? [...new Set(input.questionIds.map(String))] : [],
+    maxAttempts: Math.min(10, Math.max(1, Number(input.maxAttempts || 3))),
+    targetStudentIds: Array.isArray(input.targetStudentIds) ? [...new Set(input.targetStudentIds.map(String))] : [],
   };
   const next = [assignment, ...record.assignments.filter((item)=>item.id!==assignment.id)].sort((a,b)=>b.createdAt-a.createdAt);
   await setDoc(ref, { assignments: next, updatedAt: serverTimestamp() }, { merge: true });
@@ -197,6 +212,14 @@ export async function deleteAssignment(classCode: string, assignmentId: string) 
   const next = record.assignments.filter((item)=>item.id!==assignmentId);
   await setDoc(ref, { assignments: next, updatedAt: serverTimestamp() }, { merge: true });
   return next;
+}
+
+export async function setClassArchived(classCode: string, archived: boolean) {
+  const services = getFirebaseServices();
+  if (!services) throw new Error("Firebase belum dikonfigurasi");
+  const code = normalizeClassCode(classCode);
+  await setDoc(doc(services.db, "classes", code), { archived, active: !archived, updatedAt: serverTimestamp() }, { merge: true });
+  return archived;
 }
 
 export async function removeClass(code: string) {
