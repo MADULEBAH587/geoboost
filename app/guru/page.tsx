@@ -22,7 +22,7 @@ import {
 } from "@/lib/customQuestions";
 import {
   AuditEntry, TeacherProfile, getAuditLogs, getTeacherProfile, listTeacherProfiles,
-  registerTeacherRequest, saveTeacherProfile, touchTeacherLastSeen, writeAudit,
+  registerTeacherRequest, saveTeacherProfile, touchTeacherLastSeen, watchTeacherProfiles, writeAudit,
 } from "@/lib/teacherAdmin";
 import { bootstrapGeoBoostAdmin, deployGeoBoostFirestoreRules, deployGeoBoostMultiTeacher } from "@/lib/firebaseRulesAdmin";
 import { StudentPresence, watchStudentPresence } from "@/lib/studentPresence";
@@ -206,6 +206,11 @@ export default function TeacherPage(){
     const stopPresence=watchStudentPresence(setStudentPresence,classCodes,teacherProfile.role==="admin");
     return ()=>{stopLive();stopPresence()};
   },[source,teacherProfile,managedClasses]);
+
+  useEffect(()=>{
+    if(source!=="firebase"||teacherProfile?.role!=="admin")return;
+    return watchTeacherProfiles(setTeacherProfiles);
+  },[source,teacherProfile?.role]);
 
   async function connectTeacher(){
     if(!loginEmail.trim()||!loginPassword)return;
