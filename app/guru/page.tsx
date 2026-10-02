@@ -61,6 +61,10 @@ export default function TeacherPage(){
   const [message,setMessage]=useState("");
   const [teacherEmail,setTeacherEmail]=useState("");
   const [teacherUid,setTeacherUid]=useState("");
+  const [authReady,setAuthReady]=useState(false);
+  const [authBusy,setAuthBusy]=useState(false);
+  const [authUser,setAuthUser]=useState<{uid:string;email:string|null}|null>(null);
+  const [authError,setAuthError]=useState("");
   const [classFilter,setClassFilter]=useState("SEMUA");
   const [chapterFilter,setChapterFilter]=useState(0);
   const [newClassName,setNewClassName]=useState("");
@@ -96,13 +100,27 @@ export default function TeacherPage(){
     setAuditLogs(await getAuditLogs());
   }
 
+  function clearTeacherData(){
+    setTeacherProfile(null);setManagedClasses([]);setRegisteredStudents([]);setAttempts([]);
+    setCustomQuestions([]);setAuditLogs([]);setTeacherProfiles([]);setLiveItems([]);setSource("local");
+  }
+
   async function loadTeacherData(user:{email:string|null;uid:string}){
-    setTeacherEmail(user.email||"Guru");setTeacherUid(user.uid);
+    setTeacherEmail(user.email||"Guru");setTeacherUid(user.uid);setAuthError("");
     const profile=await getTeacherProfile(user.uid);
+    setTeacherProfile(profile);
+
+    if(!profile||!profile.active){
+      setManagedClasses([]);setRegisteredStudents([]);setAttempts([]);setCustomQuestions([]);
+      setAuditLogs([]);setTeacherProfiles([]);setLiveItems([]);setSource("local");
+      setMessage(profile&&!profile.active?"Akses akaun guru ini telah dinyahaktifkan.":"Akaun Google berjaya disahkan tetapi akses guru belum diaktifkan.");
+      return;
+    }
+
     const [remote,classes,students,custom,audit,profiles]=await Promise.all([
-      getRemoteAttempts(),listClasses(),getRemoteStudents(),getCustomQuestions(true),getAuditLogs(),profile?.role==="admin"?listTeacherProfiles():Promise.resolve([]),
+      getRemoteAttempts(),listClasses(),getRemoteStudents(),getCustomQuestions(true),getAuditLogs(),profile.role==="admin"?listTeacherProfiles():Promise.resolve([]),
     ]);
-    setTeacherProfile(profile);setManagedClasses(classes);setRegisteredStudents(students);setAttempts(remote);
+    setManagedClasses(classes);setRegisteredStudents(students);setAttempts(remote);
     setCustomQuestions(custom);setAuditLogs(audit);setTeacherProfiles(profiles);setSource("firebase");
     const first=classes.find(c=>!c.archived)?.code||classes[0]?.code||"";
     setRosterClassCode(current=>current||first);setAssignmentClassCode(current=>current||first);
@@ -110,12 +128,18 @@ export default function TeacherPage(){
   }
 
   useEffect(()=>{
-    setAttempts(getLocalAttempts().filter(a=>a.studentId!=="demo"));
+    if(!firebaseConfigured){setAuthReady(true);return;}
     const stop=watchFirebaseAuth(user=>{
-      if(user&&!user.isAnonymous)loadTeacherData(user).catch((error:any)=>{
-        console.error(error);setTeacherEmail(user.email||"Guru");setTeacherUid(user.uid);setSource("local");
-        setMessage("Akaun Google dikesan tetapi akses pusat belum tersedia."+(error?.code?" ("+error.code+")":""));
-      });
+      setAuthReady(false);setAuthError("");
+      if(user&&!user.isAnonymous){
+        setAuthUser({uid:user.uid,email:user.email});
+        loadTeacherData(user).catch((error:any)=>{
+          console.error(error);clearTeacherData();setTeacherEmail(user.email||"Guru");setTeacherUid(user.uid);
+          setAuthError("Akaun Google dikesan tetapi data pusat gagal dimuat."+(error?.code?" ("+error.code+")":""));
+        }).finally(()=>setAuthReady(true));
+      }else{
+        setAuthUser(null);setTeacherEmail("");setTeacherUid("");clearTeacherData();setMessage("");setAuthReady(true);
+      }
     });
     return stop;
   },[]);
@@ -126,13 +150,18 @@ export default function TeacherPage(){
   },[source]);
 
   async function connectTeacher(){
-    setMessage("Menyambung ke Firebase...");
-    try{const user=await signInTeacherWithGoogle();if(user)await loadTeacherData(user);else setMessage("Log masuk Google tidak selesai.");}
-    catch(error:any){console.error(error);setMessage("Akses guru belum tersedia."+(error?.code?" ("+error.code+")":""))}
+    setAuthBusy(true);setAuthError("");setMessage("");
+    try{
+      const user=await signInTeacherWithGoogle();
+      if(!user){setAuthError("Log masuk Google tidak selesai.");setAuthReady(true);}
+    }catch(error:any){
+      console.error(error);setAuthError("Log masuk Google gagal."+(error?.code?" ("+error.code+")":""));setAuthReady(true);
+    }finally{setAuthBusy(false)}
   }
   async function disconnectTeacher(){
-    await signOutFirebaseUser();setTeacherEmail("");setTeacherUid("");setTeacherProfile(null);setSource("local");
-    setAttempts(getLocalAttempts().filter(a=>a.studentId!=="demo"));setManagedClasses([]);setRegisteredStudents([]);setCustomQuestions([]);setLiveItems([]);
+    setAuthReady(false);
+    await signOutFirebaseUser();
+    setAuthUser(null);setTeacherEmail("");setTeacherUid("");clearTeacherData();setMessage("");setAuthReady(true);
   }
 
   async function addClass(){
@@ -330,6 +359,24 @@ export default function TeacherPage(){
   });
 
   const filterBar=<div className="filter-bar"><label>Kelas<select value={classFilter} onChange={e=>setClassFilter(e.target.value)}>{classes.map(c=><option key={c}>{c}</option>)}</select></label><label>Bab<select value={chapterFilter} onChange={e=>setChapterFilter(Number(e.target.value))}><option value={0}>Semua Bab</option>{chapters.map(c=><option key={c.id} value={c.id}>Bab {c.id}</option>)}</select></label></div>;
+
+  const gateBrand=<div className="mini-brand"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>PANEL GURU</small></span></div>;
+
+  if(!firebaseConfigured){
+    return <main className="auth-shell"><section className="auth-card">{gateBrand}<span className="eyebrow dark">PANEL GURU</span><h1>Konfigurasi diperlukan</h1><p>Sambungan Firebase untuk log masuk guru belum tersedia. Semak konfigurasi projek sebelum menggunakan Control Center.</p><a className="launch-button active full center" href="/">← Paparan utama</a></section></main>;
+  }
+
+  if(!authReady){
+    return <main className="auth-shell"><section className="auth-card">{gateBrand}<span className="eyebrow dark">KESELAMATAN</span><h1>Menyemak sesi guru…</h1><p>GeoBoost sedang mengesahkan akaun dan akses guru.</p></section></main>;
+  }
+
+  if(!authUser){
+    return <main className="auth-shell"><section className="auth-card">{gateBrand}<span className="eyebrow dark">AKSES GURU</span><h1>Log masuk guru</h1><p>Gunakan akaun Google guru yang telah diberi kebenaran untuk membuka GeoBoost Control Center.</p>{authError?<div className="teacher-message">{authError}</div>:null}<button className="primary full" onClick={connectTeacher} disabled={authBusy}>{authBusy?"Membuka Google…":"Masuk dengan Google"}</button><small className="auth-note">Dashboard, data murid, analitik dan pengurusan kelas hanya dipaparkan selepas akaun disahkan.</small><a className="launch-button full center" href="/">← Paparan utama</a></section></main>;
+  }
+
+  if(!teacherProfile||!teacherProfile.active){
+    return <main className="auth-shell"><section className="auth-card">{gateBrand}<span className="eyebrow dark">PENGESAHAN AKSES</span><h1>{teacherProfile&&!teacherProfile.active?"Akses dinyahaktifkan":"Akses guru belum aktif"}</h1><p>{authError||message||"Akaun Google telah berjaya disahkan, tetapi akaun ini belum tersenarai sebagai guru aktif GeoBoost."}</p><div className="teacher-bootstrap"><div><small>UID GURU</small><code>{teacherUid||authUser.uid}</code><span>{teacherEmail||authUser.email||"Akaun Google"}</span></div><button onClick={async()=>{await navigator.clipboard.writeText(teacherUid||authUser.uid);setMessage("UID disalin.")}}>Salin UID</button></div><button className="launch-button active full" onClick={disconnectTeacher}>Log keluar / guna akaun lain</button></section></main>;
+  }
 
   return <main className="teacher-app">
     <aside className="teacher-sidebar">
