@@ -67,6 +67,32 @@ function teacherStatusLabel(status?:string){
   return "Aktif";
 }
 
+function auditActionLabel(action:string){
+  const labels:Record<string,string>={
+    KELAS_TAMBAH:"Kelas ditambah",KELAS_ARKIB:"Kelas diarkibkan",KELAS_AKTIF:"Kelas diaktifkan",
+    KELAS_PADAM:"Kelas dipadam",KELAS_TUKAR_GURU:"Guru kelas ditukar",AKSES_BAB:"Akses bab dikemas kini",
+    MURID_TAMBAH:"Murid ditambah",MURID_BUANG:"Murid dibuang",MURID_IMPORT:"Senarai murid dimasukkan",
+    MURID_RESET_SESI:"Akses peranti murid dikosongkan",TUGASAN_TAMBAH:"Tugasan ditambah",
+    TUGASAN_PADAM:"Tugasan dipadam",TUGASAN_STATUS:"Status tugasan diubah",PERCUBAAN_RESET:"Rekod percubaan dipadam",
+    SOALAN_SIMPAN:"Soalan disimpan",SOALAN_STATUS:"Status soalan diubah",SOALAN_PADAM:"Soalan dipadam",
+    INTERVENSI_ASSIGN:"Latihan pemulihan diberikan",GURU_LULUS:"Guru diluluskan",GURU_GANTUNG:"Akaun guru digantung",
+    GURU_TOLAK:"Permohonan guru ditolak",GURU_ROLE:"Jenis akses guru diubah",GURU_NAMA:"Nama guru diubah",
+    ADMIN_EDIT_MULA:"Suntingan pentadbir dibenarkan",ADMIN_PASSWORD:"Kata laluan pentadbir ditetapkan",
+    MULTI_GURU_AKTIF:"Tetapan akaun guru disemak",FIREBASE_RULES:"Tetapan sistem disemak",
+  };
+  return labels[action]||"Aktiviti pentadbiran";
+}
+function auditDetailLabel(detail:string){
+  return String(detail||"")
+    .replace(/\badmin\b/gi,"Pentadbir")
+    .replace(/\bviewer\b/gi,"Paparan Sahaja")
+    .replace(/\bguru\b/gi,"Guru")
+    .replace(/\bactive\b/gi,"Aktif")
+    .replace(/\bpending\b/gi,"Menunggu Kelulusan")
+    .replace(/\bsuspended\b/gi,"Digantung")
+    .replace(/\brejected\b/gi,"Ditolak");
+}
+
 export default function TeacherPage(){
   const [activeSection,setActiveSection]=useState<TeacherSection>("dashboard");
   const [mobileSidebarOpen,setMobileSidebarOpen]=useState(false);
@@ -964,10 +990,34 @@ export default function TeacherPage(){
         </div>:null}
 
         {activeSection==="settings"?<section className="settings-stack">
-          <section className="panel settings-panel"><div className="panel-title"><div><small>SISTEM</small><h2>GeoBoost v2.0</h2></div><button onClick={backup}>Backup JSON</button></div><div className="settings-grid"><div><span>Sumber data</span><b>{source==="firebase"?"Firebase pusat":"Peranti"}</b></div><div><span>Role</span><b>{teacherProfile?.role?.toUpperCase()||"-"}</b></div><div><span>Kelas aktif</span><b>{activeClasses.length}</b></div><div><span>Bank</span><b>{questions.length+customQuestions.filter(q=>q.active).length}</b></div></div><div className="settings-note"><strong>Backup</strong><p>Backup JSON merangkumi kelas, murid, rekod percubaan, soalan custom dan audit yang boleh dibaca semula jika diperlukan.</p></div></section>
-          {isAdmin?<section className="panel"><div className="panel-title"><div><small>SISTEM MULTI-GURU</small><h2>Email + Password & Rules</h2></div><span>{studentLoginMode==="double-confirm"?"AKTIF":"PERLU AKTIF"}</span></div><p className="class-help">Aktifkan sekali untuk membenarkan pendaftaran guru melalui Email + Password, kelulusan admin, pemilikan kelas dan login murid tanpa PIN individu.</p><div className="settings-action-row"><button className="primary" onClick={activateMultiTeacher} disabled={deployingRules}>{deployingRules?"Mengaktifkan...":studentLoginMode==="double-confirm"?"Selaraskan Semula Multi-Guru":"Aktifkan Multi-Guru"}</button><button onClick={activateFirebaseP1} disabled={deployingRules}>Terbitkan Rules sahaja</button></div></section>:null}
-          {isAdmin?<section className="panel"><div className="panel-title"><div><small>AKAUN ADMIN</small><h2>Login Email + Password</h2></div></div><p className="class-help">Jika akaun admin asal masih menggunakan Google, tetapkan kata laluan sekali supaya selepas ini admin juga boleh masuk menggunakan Email + Password.</p><div className="admin-password-setup"><input type="password" minLength={6} value={adminNewPassword} onChange={e=>setAdminNewPassword(e.target.value)} placeholder="Kata laluan baharu · min 6 aksara"/><button onClick={setAdminPassword} disabled={adminNewPassword.length<6}>Tetapkan Password Admin</button></div><small className="auth-note">Email admin: {teacherEmail}</small></section>:null}
-          <section className="panel"><div className="panel-title"><div><small>AUDIT LOG</small><h2>Aktiviti pentadbiran</h2></div><span>{auditLogs.length}</span></div><div className="audit-list">{auditLogs.slice(0,40).map(a=><div key={a.id}><b>{a.action}</b><span>{a.detail}</span><small>{a.by} · {new Date(a.createdAt).toLocaleString("ms-MY")}</small></div>)}</div></section>
+          <section className="panel settings-panel">
+            <div className="panel-title"><div><small>TETAPAN AKAUN</small><h2>Maklumat & Salinan Data</h2></div><button onClick={backup}>Simpan Salinan Data</button></div>
+            <div className="settings-grid">
+              <div><span>Nama</span><b>{teacherProfile?.name||"Guru"}</b></div>
+              <div><span>Jenis Akses</span><b>{teacherRoleLabel(teacherProfile?.role)}</b></div>
+              <div><span>Kelas aktif</span><b>{activeClasses.length}</b></div>
+              <div><span>Bank Soalan</span><b>{questions.length+customQuestions.filter(q=>q.active).length}</b></div>
+            </div>
+            <div className="settings-note"><strong>Salinan Data</strong><p>Simpan salinan kelas, murid, rekod percubaan, soalan tambahan dan aktiviti pentadbiran untuk rujukan.</p></div>
+          </section>
+
+          {isAdmin?<section className="panel">
+            <div className="panel-title"><div><small>STATUS SISTEM</small><h2>{studentLoginMode==="double-confirm"?"Sistem Berfungsi Dengan Baik":"Tetapan Perlu Disemak"}</h2></div><span>{studentLoginMode==="double-confirm"?"BAIK":"SEMAK"}</span></div>
+            <p className="class-help">Gunakan semakan ini jika pendaftaran guru, kemasukan murid atau penyimpanan rekod tidak berjalan seperti biasa.</p>
+            <div className="settings-action-row"><button className="primary" onClick={activateMultiTeacher} disabled={deployingRules}>{deployingRules?"Menyemak...":"Semak Semula Sistem"}</button></div>
+          </section>:null}
+
+          {isAdmin?<section className="panel">
+            <div className="panel-title"><div><small>AKAUN PENTADBIR</small><h2>Kata Laluan Pentadbir</h2></div></div>
+            <p className="class-help">Tetapkan kata laluan untuk memastikan akaun pentadbir boleh digunakan dengan selamat.</p>
+            <div className="admin-password-setup"><input type="password" minLength={6} value={adminNewPassword} onChange={e=>setAdminNewPassword(e.target.value)} placeholder="Kata laluan baharu · minimum 6 aksara"/><button onClick={setAdminPassword} disabled={adminNewPassword.length<6}>Tetapkan Kata Laluan</button></div>
+            <small className="auth-note">Email: {teacherEmail}</small>
+          </section>:null}
+
+          <section className="panel">
+            <div className="panel-title"><div><small>REKOD AKTIVITI</small><h2>Aktiviti Pentadbiran</h2></div><span>{auditLogs.length}</span></div>
+            <div className="audit-list">{auditLogs.slice(0,40).map(a=><div key={a.id}><b>{auditActionLabel(a.action)}</b><span>{auditDetailLabel(a.detail)}</span><small>{a.by} · {new Date(a.createdAt).toLocaleString("ms-MY")}</small></div>)}</div>
+          </section>
         </section>:null}
       </section>
     </div>
