@@ -309,7 +309,7 @@ export default function TeacherPage(){
   async function resetTeacherPassword(){
     if(!loginEmail.trim()){setAuthError("Masukkan email guru dahulu.");return}
     setAuthBusy(true);setAuthError("");
-    try{await sendTeacherPasswordReset(loginEmail);setMessage("Link reset kata laluan telah dihantar ke "+loginEmail+".");}
+    try{await sendTeacherPasswordReset(loginEmail);setMessage("Pautan tetapkan semula kata laluan telah dihantar ke "+loginEmail+".");}
     catch(error:any){console.error(error);setAuthError("Kata laluan belum dapat ditetapkan semula. Cuba semula.")}
     finally{setAuthBusy(false)}
   }
