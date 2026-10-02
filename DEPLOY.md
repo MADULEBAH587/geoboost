@@ -38,5 +38,8 @@ Fail rules dan indexes masih disimpan dalam folder `firebase/`. Jika setup dalam
 ```bash
 npx firebase-tools login
 npx firebase-tools use --add
-npx firebase-tools deploy --config firebase/firebase.json --only firestore:rules,firestore:indexes,storage
+npx firebase-tools deploy --config firebase/firebase.json --only firestore:rules,firestore:indexes
 ```
+
+## Nota Visual
+Nota Visual menggunakan koleksi Firestore `settings` yang sedia ada untuk media tambahan dan tidak memerlukan Firebase Storage atau rules baharu. Kandungan terbina dalam Bab 1–10 berada terus dalam kod aplikasi.

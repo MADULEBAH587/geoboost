@@ -68,3 +68,10 @@ npm run qa
 npm run build
 ```
 `bank:check` mengesahkan jumlah 390, ID unik, prompt unik, jawapan sah dan agihan setiap bab. `production:check` mengesahkan fail production utama, aset PWA dan pengacakan pilihan jawapan.
+
+## Nota Visual
+- Nota visual Bab 1–10: Nota Pantas, Poster, Slide dan Peta/Rajah.
+- Murid boleh menjejak bahagian yang telah dilihat dan terus ke latihan selepas lengkap.
+- Panel guru mempunyai pengurusan Nota Visual untuk poster, imej, slide dan rajah tambahan.
+- Imej tambahan dimampatkan kepada WebP (maksimum 480 KB setiap imej) dan disimpan dalam Firestore sedia ada; Firebase Cloud Storage tidak digunakan.
+- Had dalaman pustaka media tambahan ditetapkan kepada 100 MB untuk memastikan penggunaan kekal ringan.

@@ -28,17 +28,18 @@ import { bootstrapGeoBoostAdmin, deployGeoBoostFirestoreRules, deployGeoBoostMul
 import { StudentPresence, resetStudentPresence, watchStudentPresence } from "@/lib/studentPresence";
 import { StudentAccessRecord, ensureStudentAccessCodes, removeStudentAccessCode } from "@/lib/studentAccess";
 import { getStudentLoginMode, type StudentLoginMode } from "@/lib/systemConfig";
+import { VisualNotesAdmin } from "@/components/VisualNotesAdmin";
 import { endAdminEditSession, startAdminEditSession } from "@/lib/adminDelegation";
 
 type Source = "local"|"firebase";
-type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"bank"|"teachers"|"settings";
+type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"notes"|"bank"|"teachers"|"settings";
 
 const NAV:{id:TeacherSection;icon:string;label:string}[]=[
   {id:"dashboard",icon:"▦",label:"Ringkasan"},{id:"classes",icon:"🏫",label:"Kelas"},
   {id:"students",icon:"👥",label:"Murid"},{id:"assignments",icon:"📝",label:"Tugasan"},
   {id:"live",icon:"🟢",label:"Aktiviti Semasa"},{id:"interventions",icon:"🎯",label:"Pemulihan"},
   {id:"analytics",icon:"📊",label:"Analitik"},{id:"reports",icon:"🖨️",label:"Laporan"},
-  {id:"bank",icon:"🗂️",label:"Bank Soalan"},{id:"teachers",icon:"🧑‍🏫",label:"Pengurusan Guru"},
+  {id:"notes",icon:"📚",label:"Nota Visual"},{id:"bank",icon:"🗂️",label:"Bank Soalan"},{id:"teachers",icon:"🧑‍🏫",label:"Pengurusan Guru"},
   {id:"settings",icon:"⚙️",label:"Tetapan"},
 ];
 
@@ -947,6 +948,8 @@ export default function TeacherPage(){
           <div className="report-summary"><div><span>Murid</span><b>{stats.students}</b></div><div><span>Percubaan</span><b>{stats.completed}</b></div><div><span>Purata</span><b>{stats.avg}%</b></div><div><span>≥60%</span><b>{stats.passRate}%</b></div></div>
           {filtered.length?<table className="report-table"><thead><tr><th>Nama</th><th>Kelas</th><th>Bab / Aktiviti</th><th>Markah</th><th>%</th><th>Tarikh</th><th className="no-print">Tindakan</th></tr></thead><tbody>{filtered.map(a=><tr key={a.id}><td>{a.studentName}</td><td>{a.className}</td><td>{a.chapter?"Bab "+a.chapter:a.mode}</td><td>{a.score}/{a.total}</td><td>{a.percentage}%</td><td>{new Date(a.completedAt).toLocaleDateString("ms-MY")}</td><td className="no-print"><button className="reset-attempt" disabled={!canEdit} onClick={()=>resetAttempt(a.id)}>Padam Rekod</button></td></tr>)}</tbody></table>:<div className="panel-empty">Tiada rekod.</div>}
         </section>:null}
+
+        {activeSection==="notes"?<VisualNotesAdmin canEdit={canEdit}/>:null}
 
         {activeSection==="bank"?<section className="panel bank-manager">
           <div className="panel-title"><div><small>BANK SOALAN</small><h2>{questions.length} soalan asal + {customQuestions.filter(q=>q.active).length} soalan tambahan</h2></div><span>{bankSelection.length} dipilih</span></div>
