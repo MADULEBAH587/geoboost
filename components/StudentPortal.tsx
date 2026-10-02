@@ -91,6 +91,15 @@ export function StudentPortal({ section }: { section: Section }) {
     return [...map.entries()].sort((a,b)=>b[1]-a[1]).slice(0,6);
   },[own]);
 
+  const subtopicMastery=useMemo(()=>{
+    const map=new Map<string,{correct:number,total:number}>();
+    own.forEach(a=>a.responses?.forEach(r=>{
+      const cur=map.get(r.subtopic)||{correct:0,total:0};
+      cur.total++; if(r.correct)cur.correct++; map.set(r.subtopic,cur);
+    }));
+    return [...map.entries()].map(([topic,v])=>({topic,total:v.total,percentage:v.total?Math.round(v.correct/v.total*100):0})).sort((a,b)=>a.percentage-b.percentage);
+  },[own]);
+
   const weakChapter=useMemo(()=>{
     const scored=byChapter.filter(ch=>ch.tries>0).sort((a,b)=>a.best-b.best);
     return scored[0]||null;
@@ -174,7 +183,7 @@ export function StudentPortal({ section }: { section: Section }) {
           <div className="student-mode-grid"><a href="/pantas"><span>⚡</span><h3>Latih Tubi Pantas</h3><p>Gabungkan bab yang telah dibuka.</p></a><a href="/pemulihan"><span>🎯</span><h3>Pemulihan</h3><p>Soalan berdasarkan kelemahan anda.</p></a><a href="/uasa"><span>🏆</span><h3>Cabaran UASA</h3><p>Simulasi tanpa jawapan segera.</p></a><a href="/ulang-salah"><span>🔁</span><h3>Soalan Lemah</h3><p>Ulang bank soalan yang pernah salah.</p></a></div>
           <div className="student-section-head"><div><small>BAB 1–10</small><h2>Latihan Bab</h2></div></div>
           <div className="student-chapter-compact full">{byChapter.map(ch=>{const locked=classRecord?!classRecord.openChapters.includes(ch.id):false;return <a key={ch.id} className={locked?"locked":""} href={locked?"#":"/bab/"+ch.id}><span>{ch.icon}</span><div><small>BAB {ch.id}</small><b>{ch.title}</b><i>{locked?"Dikunci guru":ch.tries?ch.label:"Belum cuba"}</i></div><strong>{locked?"🔒":ch.best+"%"}</strong></a>})}</div>
-          {bookmarks.length?<div className="student-notice">🔖 Anda mempunyai <b>{bookmarks.length}</b> soalan disimpan untuk ulang kaji.</div>:null}
+          {bookmarks.length?<a className="student-notice bookmark-notice" href="/bookmark">🔖 Anda mempunyai <b>{bookmarks.length}</b> soalan disimpan. Tekan untuk ulang sekarang →</a>:null}
         </>:null}
 
         {section==="prestasi"?<>
@@ -183,6 +192,7 @@ export function StudentPortal({ section }: { section: Section }) {
           <section className="student-performance-panel"><div className="student-section-head"><div><small>TREND</small><h2>10 latihan terakhir</h2></div></div><div className="student-trend">{own.slice(0,10).reverse().map((a,i)=><div key={a.id}><span style={{height:Math.max(8,a.percentage)+"%"}}></span><small>{a.percentage}%</small><i>{i+1}</i></div>)}</div></section>
           <section className="student-performance-panel"><div className="student-section-head"><div><small>MASTERY</small><h2>Penguasaan Setiap Bab</h2></div></div><div className="mastery-list">{byChapter.map(ch=><div key={ch.id}><span>{ch.icon}</span><div><b>Bab {ch.id} · {ch.title}</b><div><i style={{width:ch.best+"%"}} /></div><small>{ch.label} · {ch.tries} percubaan</small></div><strong>{ch.best}%</strong></div>)}</div></section>
           <section className="student-performance-panel"><div className="student-section-head"><div><small>FOKUS</small><h2>Subtopik Perlu Pengukuhan</h2></div></div>{weakTopics.length?<div className="student-weak-list">{weakTopics.map(([topic,count])=><div key={topic}><b>{topic}</b><span>{count} kesalahan</span></div>)}</div>:<div className="student-empty">Belum cukup data. Lengkapkan latihan dahulu.</div>}</section>
+          <section className="student-performance-panel"><div className="student-section-head"><div><small>MASTERY SUBTOPIK</small><h2>Penguasaan Terperinci</h2></div></div>{subtopicMastery.length?<div className="subtopic-mastery-list">{subtopicMastery.map(item=><div key={item.topic}><div><b>{item.topic}</b><small>{item.total} jawapan direkodkan</small></div><div className="subtopic-track"><i style={{width:item.percentage+"%"}} /></div><strong>{item.percentage}%</strong></div>)}</div>:<div className="student-empty">Belum cukup data.</div>}</section>
         </>:null}
 
         {section==="profil"?<>
