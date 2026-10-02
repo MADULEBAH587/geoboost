@@ -1,6 +1,6 @@
 "use client";
 
-import { doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc, collection } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import { ensureAnonymousFirebaseUser, getFirebaseServices } from "./firebase";
 
 export type ClassRecord = {
@@ -115,4 +115,11 @@ export async function removeRosterStudent(classCode: string, name: string) {
   const next = current.filter((item) => normalizeStudentName(item) !== target);
   await setDoc(ref, { studentNames: next, updatedAt: serverTimestamp() }, { merge: true });
   return next;
+}
+
+
+export async function removeClass(code: string) {
+  const services = getFirebaseServices();
+  if (!services) throw new Error("Firebase belum dikonfigurasi");
+  await deleteDoc(doc(services.db, "classes", normalizeClassCode(code)));
 }
