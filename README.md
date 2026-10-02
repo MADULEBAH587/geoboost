@@ -75,3 +75,5 @@ npm run build
 - Panel guru mempunyai pengurusan Nota Visual untuk poster, imej, slide dan rajah tambahan.
 - Imej tambahan dimampatkan kepada WebP (maksimum 480 KB setiap imej) dan disimpan dalam Firestore sedia ada; Firebase Cloud Storage tidak digunakan.
 - Had dalaman pustaka media tambahan ditetapkan kepada 100 MB untuk memastikan penggunaan kekal ringan.
+
+<!-- Production trigger: Nota Visual -->
