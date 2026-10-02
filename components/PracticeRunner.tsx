@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Question } from "@/lib/questions";
 import { buildQuestionSession, type SessionMix, standardMix } from "@/lib/questionEngine";
 import { getStudentSession } from "@/lib/session";
-import { saveAttempt, saveLiveProgress, type AttemptResponse } from "@/lib/repository";
+import { getLocalAttempts, saveAttempt, saveLiveProgress, type AttemptResponse } from "@/lib/repository";
 import { validateClassCode } from "@/lib/classroom";
 import { GeoStimulus, stimulusForQuestion } from "@/components/GeoStimulus";
 import { HotspotChoice, isHotspotQuestion } from "@/components/HotspotChoice";
@@ -43,6 +43,7 @@ export function PracticeRunner({
   const [resumed,setResumed]=useState(false);
   const [accessDenied,setAccessDenied]=useState(false);
   const [bookmarked,setBookmarked]=useState(false);
+  const [improvement,setImprovement]=useState<number|null>(null);
   const startedAt=useRef(Date.now());
   const label=useMemo(()=>eyebrow||mode.toUpperCase(),[eyebrow,mode]);
   const saveKey=studentId ? "geoboost_resume_"+studentId+"_"+mode.replace(/[^a-z0-9]+/gi,"_")+"_"+title.replace(/[^a-z0-9]+/gi,"_").slice(0,50) : "";
@@ -149,9 +150,14 @@ export function PracticeRunner({
     const wrongSubtopics=[...new Set(finalResponses.filter(a=>!a.correct).map(a=>a.subtopic))];
     const uniqueChapters=[...new Set(session.map(q=>q.chapter))];
     const chapter=uniqueChapters.length===1?uniqueChapters[0]:0;
+    const currentPercentage=Math.round(score/session.length*100);
+    if(student){
+      const previous=getLocalAttempts().find(a=>a.studentId===student.id && a.mode===mode && (chapter===0 || a.chapter===chapter));
+      setImprovement(previous ? currentPercentage-previous.percentage : null);
+    }
     const result=await saveAttempt({
       id:crypto.randomUUID(),studentId:student?.id||"demo",studentName:student?.name||"Murid Demo",className:student?.className||"Demo",classCode:student?.classCode||"",
-      chapter,label:title,mode,score,total:session.length,percentage:Math.round(score/session.length*100),durationSeconds,wrongSubtopics,responses:finalResponses,completedAt:Date.now()
+      chapter,label:title,mode,score,total:session.length,percentage:currentPercentage,durationSeconds,wrongSubtopics,responses:finalResponses,completedAt:Date.now()
     });
 
     if(student){
@@ -179,6 +185,7 @@ export function PracticeRunner({
     return <main className="quiz-shell result-shell"><section className="result-card">
       <span className="result-icon">{percentage>=80?"🏆":percentage>=60?"⭐":"🎯"}</span><span className="eyebrow dark">{label} SELESAI</span><h2 className="result-title">{title}</h2><h1>{percentage}%</h1><p>{score} daripada {session.length} jawapan betul.</p>
       <div className="result-stats"><div><small>XP sesi</small><b>{score*10}</b></div><div><small>Mudah</small><b>{mastery(easy)}%</b></div><div><small>Sederhana</small><b>{mastery(medium)}%</b></div><div><small>KBAT</small><b>{mastery(kbat)}%</b></div></div>
+      {improvement!==null?<div className={"sync-banner "+(improvement>=0?"online":"offline")}>{improvement>0?"📈 Naik "+improvement+"% berbanding percubaan terdahulu":improvement===0?"➡️ Sama seperti percubaan terdahulu":"📉 Turun "+Math.abs(improvement)+"% — cuba Pemulihan Pintar"}</div>:null}
       {uncertain>0?<div className="sync-banner offline">🤔 {uncertain} jawapan ditanda “Saya tak pasti” — sesuai untuk ulang kaji.</div>:null}
       {guest?<div className="sync-banner offline">👤 Mod tetamu · masuk sebagai murid untuk menyimpan markah.</div>:<div className={"sync-banner "+(synced?"online":"offline")}>{synced?"☁️ Rekod diselaraskan ke Firebase":"📱 Rekod selamat pada peranti · akan cuba sync semula"}</div>}
       {wrong.length>0?<div className="recovery-box"><span>🎯</span><div><small>Cadangan pemulihan</small><strong>{wrong.join(", ")}</strong></div></div>:null}
