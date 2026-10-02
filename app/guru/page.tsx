@@ -32,12 +32,29 @@ export default function TeacherPage() {
   const [newClassName, setNewClassName] = useState("");
   const [newClassCode, setNewClassCode] = useState("");
 
+  async function loadTeacherData(user: { email: string | null; uid: string }) {
+    setTeacherEmail(user.email || "Guru");
+    setTeacherUid(user.uid);
+    const remote = await getRemoteAttempts();
+    const remoteClasses = await listClasses();
+    setManagedClasses(remoteClasses);
+    setAttempts(remote);
+    setSource("firebase");
+    setMessage(`Berjaya memuat ${remote.length} rekod pusat.`);
+  }
+
   useEffect(() => {
     setAttempts(getLocalAttempts().filter(a=>a.studentId!=="demo"));
     const stop = watchFirebaseAuth((user) => {
       if (user && !user.isAnonymous) {
-        setTeacherEmail(user.email || "Guru");
-        setTeacherUid(user.uid);
+        loadTeacherData(user).catch((error: any) => {
+          console.error(error);
+          setTeacherEmail(user.email || "Guru");
+          setTeacherUid(user.uid);
+          setSource("local");
+          const detail = error?.code ? ` (${error.code})` : "";
+          setMessage(`Akaun Google dikesan tetapi akses pusat belum tersedia.${detail}`);
+        });
       }
     });
     return stop;
@@ -47,12 +64,8 @@ export default function TeacherPage() {
     setMessage("Menyambung ke Firebase...");
     try {
       const user = await signInTeacherWithGoogle();
-      if (!user) { setMessage("Log masuk Google sedang dibuka. Selepas kembali ke GeoBoost, UID guru akan dipaparkan."); return; }
-      setTeacherEmail(user.email || "Guru"); setTeacherUid(user.uid);
-      const remote = await getRemoteAttempts();
-      const remoteClasses = await listClasses();
-      setManagedClasses(remoteClasses);
-      setAttempts(remote); setSource("firebase"); setMessage(`Berjaya memuat ${remote.length} rekod pusat.`);
+      if (!user) { setMessage("Log masuk Google tidak selesai."); return; }
+      await loadTeacherData(user);
     } catch (error: any) {
       console.error(error);
       const detail = error?.code ? ` (${error.code})` : "";
