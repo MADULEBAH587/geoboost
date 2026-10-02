@@ -134,7 +134,7 @@ export async function getRemoteAttempts(): Promise<AttemptRecord[]> {
     const data = snapshot.data() as Record<string, any>;
     if (data.className === "__QA__" || data.mode === "qa") return [];
     const completedAt = data.completedAt?.toMillis?.() ?? data.completedAt ?? Date.now();
-    return {
+    return [{
       id: data.id || snapshot.id,
       studentId: data.localStudentId || data.studentId || "",
       studentName: data.studentName || "Murid",
