@@ -6,7 +6,7 @@ import { questions, Question } from "@/lib/questions";
 import { getCustomQuestions, mergeQuestionBanks } from "@/lib/customQuestions";
 import { validateClassCode, ClassAssignment } from "@/lib/classroom";
 import { getStudentSession } from "@/lib/session";
-import { getLocalAttempts } from "@/lib/repository";
+import { getLocalAttempts, getStudentCloudAttempts } from "@/lib/repository";
 
 export default function AssignmentPage() {
   const [bank,setBank]=useState<Question[]|null>(null);
@@ -25,7 +25,10 @@ export default function AssignmentPage() {
         const task=record?.assignments.find(a=>a.id===id);
         if(!record||!task||!task.active){setBlocked("Tugasan ini tidak lagi aktif.");setBank([]);return}
         if(task.targetStudentIds?.length && !task.targetStudentIds.includes(student.id)){setBlocked("Tugasan ini tidak ditetapkan kepada anda.");setBank([]);return}
-        const tries=getLocalAttempts().filter(a=>a.studentId===student.id && a.mode==="tugasan:"+task.id).length;
+        const local=getLocalAttempts().filter(a=>a.studentId===student.id && a.mode==="tugasan:"+task.id);
+        let remote=await getStudentCloudAttempts(student.id);
+        remote=remote.filter(a=>a.mode==="tugasan:"+task.id);
+        const tries=new Set([...local,...remote].map(a=>a.id)).size;
         if(tries>=(task.maxAttempts||3)){setBlocked("Anda telah mencapai had "+(task.maxAttempts||3)+" percubaan untuk tugasan ini.");setBank([]);return}
         const custom=await getCustomQuestions();
         const merged=mergeQuestionBanks(questions,custom);
