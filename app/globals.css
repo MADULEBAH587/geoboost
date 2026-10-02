@@ -120,3 +120,5 @@ button:disabled{cursor:not-allowed;opacity:.48}
 
 @media(max-width:900px){.teacher-management-grid{grid-template-columns:1fr}.teacher-admin-list{max-height:360px}.teacher-detail-meta{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){.teacher-admin-list>button{grid-template-columns:1fr auto}.teacher-admin-list>button>b{grid-column:1/-1}.teacher-detail-meta{grid-template-columns:1fr 1fr}.admin-edit-banner{grid-template-columns:1fr}.admin-reauth-box{grid-template-columns:1fr}.teacher-control-row{grid-template-columns:1fr}.teacher-owned-class{grid-template-columns:1fr}.teacher-owned-class select,.teacher-owned-class button{width:100%}.duplicate-session-box>div{grid-template-columns:1fr auto}.duplicate-session-box small{grid-column:1/-1}.admin-password-setup{display:grid;grid-template-columns:1fr}.admin-password-setup input{min-width:0;width:100%}}
+
+.missing-profile-actions{display:grid;gap:9px;margin:14px 0}.missing-profile-actions label{display:grid;gap:5px;font-size:9px;font-weight:900;color:#64748b}.missing-profile-actions input{width:100%;border:1px solid #cbd5e1;background:#f8fafc;border-radius:10px;padding:10px 11px;color:#0f172a}
