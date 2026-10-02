@@ -208,14 +208,39 @@ export default function TeacherPage(){
     const link=window.location.origin+"/murid?class="+encodeURIComponent(code);await navigator.clipboard.writeText(link);setMessage("Link kelas "+code+" disalin.");
   }
 
-  function updateRosterState(code:string,studentNames:string[]){patchClass(code,{studentNames})}
+  async function updateRosterState(code:string,studentRoster:ClassStudent[]){
+    patchClass(code,{studentRoster,studentNames:studentRoster.map(student=>student.name)});
+    const current=managedClasses.find(item=>item.code===code);
+    if(current){
+      const access=await ensureStudentAccessCodes({...current,studentRoster,studentNames:studentRoster.map(student=>student.name)});
+      setStudentAccessCodes(all=>[...all.filter(item=>item.classCode!==code),...access]);
+    }
+  }
   async function addStudentToRoster(name=manualStudentName){
     if(!canEdit||!rosterClassCode||!name.trim())return;
-    try{const names=await addRosterStudent(rosterClassCode,name);updateRosterState(rosterClassCode,names);setManualStudentName("");await log("MURID_TAMBAH",normalizeStudentName(name)+" · "+rosterClassCode);setMessage("Murid ditambah.");}catch{setMessage("Nama murid tidak dapat ditambah.")}
+    try{
+      const roster=await addRosterStudent(rosterClassCode,name);
+      await updateRosterState(rosterClassCode,roster);setManualStudentName("");
+      await log("MURID_TAMBAH",normalizeStudentName(name)+" · "+rosterClassCode);setMessage("Murid ditambah dan kod akses dijana.");
+    }catch{setMessage("Nama murid tidak dapat ditambah.")}
   }
-  async function removeStudentFromRoster(name:string){
-    if(!canEdit||!confirm("Buang "+name+" daripada senarai login?"))return;
-    try{updateRosterState(rosterClassCode,await removeRosterStudent(rosterClassCode,name));await log("MURID_BUANG",name+" · "+rosterClassCode);}catch{setMessage("Nama murid tidak dapat dibuang.")}
+  async function removeStudentFromRoster(student:ClassStudent){
+    if(!canEdit||!confirm("Buang "+student.name+" daripada senarai login?"))return;
+    try{
+      const roster=await removeRosterStudent(rosterClassCode,student.id);
+      await removeStudentAccessCode(rosterClassCode,student.id);
+      await updateRosterState(rosterClassCode,roster);
+      await log("MURID_BUANG",student.name+" · "+rosterClassCode);
+    }catch{setMessage("Nama murid tidak dapat dibuang.")}
+  }
+  async function copyAccessCodes(){
+    if(!rosterClass)return;
+    const rows=rosterClass.studentRoster.map((student,index)=>{
+      const access=studentAccessCodes.find(item=>item.classCode===rosterClass.code&&item.studentId===student.id);
+      return (index+1)+". "+student.name+" — "+(access?.pin||"BELUM DIJANA");
+    });
+    await navigator.clipboard.writeText("GeoBoost "+rosterClass.name+" ("+rosterClass.code+")\n"+rows.join("\n"));
+    setMessage("Senarai kod akses "+rosterClass.code+" disalin.");
   }
   async function importStudents(event:ChangeEvent<HTMLInputElement>){
     const file=event.target.files?.[0];event.target.value="";if(!file||!rosterClassCode||!canEdit)return;
@@ -226,9 +251,15 @@ export default function TeacherPage(){
       const header=rows[first].map(cell=>String(cell).trim().toLowerCase());let col=header.findIndex(cell=>["nama","nama murid","nama pelajar","name","student","student name"].includes(cell));let start=first;
       if(col>=0)start=first+1;else col=0;
       const imported=rows.slice(start).map(row=>normalizeStudentName(String(row[col]||""))).filter(name=>name.length>=2);
-      const current=managedClasses.find(x=>x.code===rosterClassCode)?.studentNames||[];
-      const saved=await saveClassRoster(rosterClassCode,[...new Set([...current,...imported])]);
-      updateRosterState(rosterClassCode,saved);await log("MURID_IMPORT",imported.length+" nama · "+rosterClassCode);setMessage("Import selesai: "+saved.length+" nama unik.");
+      const current=[...(managedClasses.find(x=>x.code===rosterClassCode)?.studentNames||[])];
+      const baseline=new Map<string,number>();current.forEach(name=>baseline.set(name,(baseline.get(name)||0)+1));
+      const seen=new Map<string,number>();
+      imported.forEach(name=>{
+        const n=(seen.get(name)||0)+1;seen.set(name,n);
+        if(n>(baseline.get(name)||0)){current.push(name);baseline.set(name,(baseline.get(name)||0)+1)}
+      });
+      const saved=await saveClassRoster(rosterClassCode,current);
+      await updateRosterState(rosterClassCode,saved);await log("MURID_IMPORT",imported.length+" nama · "+rosterClassCode);setMessage("Import selesai: "+saved.length+" rekod murid dengan ID unik.");
     }catch(e){console.error(e);setMessage("Import gagal. Gunakan Excel/CSV dengan kolum Nama.");}finally{setImporting(false)}
   }
 
