@@ -28,7 +28,7 @@ export default function Home(){
 
     <section className="public-section public-steps">
       <div className="public-section-title"><span className="eyebrow dark">MUDAH UNTUK MURID</span><h2>Tiga langkah sahaja</h2></div>
-      <div className="public-step-grid"><article><span>01</span><h3>Masukkan kod kelas</h3><p>Gunakan kod atau scan QR yang diberi guru.</p></article><article><span>02</span><h3>Pilih nama</h3><p>Cari nama daripada senarai kelas dan sahkan identiti anda dua kali.</p></article><article><span>03</span><h3>Terus belajar</h3><p>Lihat tugasan, sambung latihan dan pantau prestasi sendiri.</p></article></div>
+      <div className="public-step-grid"><article><span>01</span><h3>Masukkan kod kelas</h3><p>Gunakan kod atau scan QR yang diberi guru.</p></article><article><span>02</span><h3>Pilih nama</h3><p>Cari nama daripada senarai kelas dan sahkan identiti anda sebelum masuk.</p></article><article><span>03</span><h3>Terus belajar</h3><p>Lihat tugasan, sambung latihan dan pantau prestasi sendiri.</p></article></div>
     </section>
 
     <section className="public-section public-features">
