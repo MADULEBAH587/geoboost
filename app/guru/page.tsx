@@ -8,34 +8,35 @@ import {
   getRemoteAttempts, getRemoteStudents, watchLiveProgress,
 } from "@/lib/repository";
 import {
-  firebaseConfigured, signInTeacherWithGoogle, signOutFirebaseUser, watchFirebaseAuth,
+  firebaseConfigured, linkCurrentTeacherPassword, reauthenticateTeacher, registerTeacherWithEmail,
+  sendTeacherPasswordReset, signInTeacherWithEmail, signInTeacherWithGoogle,
+  signOutFirebaseUser, watchFirebaseAuth,
 } from "@/lib/firebase";
 import {
   ClassRecord, ClassStudent, addRosterStudent, deleteAssignment, listClasses, normalizeStudentName,
   removeClass, removeRosterStudent, saveAssignment, saveClass, saveClassRoster,
-  setClassArchived, setOpenChapters,
+  setClassArchived, setOpenChapters, transferClassOwner,
 } from "@/lib/classroom";
 import {
   CustomQuestion, archiveCustomQuestion, deleteCustomQuestion, getCustomQuestions, saveCustomQuestion,
 } from "@/lib/customQuestions";
 import {
   AuditEntry, TeacherProfile, getAuditLogs, getTeacherProfile, listTeacherProfiles,
-  saveTeacherProfile, writeAudit,
+  registerTeacherRequest, saveTeacherProfile, touchTeacherLastSeen, writeAudit,
 } from "@/lib/teacherAdmin";
-import {
-  StudentAccessRecord, ensureStudentAccessCodes, removeStudentAccessCode,
-} from "@/lib/studentAccess";
-import { bootstrapGeoBoostAdmin, deployGeoBoostFirestoreRules } from "@/lib/firebaseRulesAdmin";
+import { bootstrapGeoBoostAdmin, deployGeoBoostFirestoreRules, deployGeoBoostMultiTeacher } from "@/lib/firebaseRulesAdmin";
+import { StudentPresence, watchStudentPresence } from "@/lib/studentPresence";
 
 type Source = "local"|"firebase";
-type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"bank"|"settings";
+type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"bank"|"teachers"|"settings";
 
 const NAV:{id:TeacherSection;icon:string;label:string}[]=[
   {id:"dashboard",icon:"▦",label:"Ringkasan"},{id:"classes",icon:"🏫",label:"Kelas"},
   {id:"students",icon:"👥",label:"Murid"},{id:"assignments",icon:"📝",label:"Tugasan"},
   {id:"live",icon:"🟢",label:"Live Monitoring"},{id:"interventions",icon:"🎯",label:"Intervensi"},
   {id:"analytics",icon:"📊",label:"Analitik"},{id:"reports",icon:"🖨️",label:"Laporan"},
-  {id:"bank",icon:"🗂️",label:"Bank Soalan"},{id:"settings",icon:"⚙️",label:"Tetapan"},
+  {id:"bank",icon:"🗂️",label:"Bank Soalan"},{id:"teachers",icon:"🧑‍🏫",label:"Pengurusan Guru"},
+  {id:"settings",icon:"⚙️",label:"Tetapan"},
 ];
 
 function downloadText(filename:string,text:string,type="application/json"){
@@ -61,7 +62,7 @@ export default function TeacherPage(){
   const [auditLogs,setAuditLogs]=useState<AuditEntry[]>([]);
   const [teacherProfiles,setTeacherProfiles]=useState<TeacherProfile[]>([]);
   const [teacherProfile,setTeacherProfile]=useState<TeacherProfile|null>(null);
-  const [studentAccessCodes,setStudentAccessCodes]=useState<StudentAccessRecord[]>([]);
+  const [studentPresence,setStudentPresence]=useState<StudentPresence[]>([]);
   const [source,setSource]=useState<Source>("local");
   const [message,setMessage]=useState("");
   const [teacherEmail,setTeacherEmail]=useState("");
@@ -70,8 +71,20 @@ export default function TeacherPage(){
   const [authBusy,setAuthBusy]=useState(false);
   const [authUser,setAuthUser]=useState<{uid:string;email:string|null}|null>(null);
   const [authError,setAuthError]=useState("");
+  const [authMode,setAuthMode]=useState<"login"|"register">("login");
+  const [loginEmail,setLoginEmail]=useState("");
+  const [loginPassword,setLoginPassword]=useState("");
+  const [registerName,setRegisterName]=useState("");
+  const [registerEmail,setRegisterEmail]=useState("");
+  const [registerPassword,setRegisterPassword]=useState("");
+  const [registerConfirm,setRegisterConfirm]=useState("");
   const [firebaseRulesReady,setFirebaseRulesReady]=useState<boolean|null>(null);
   const [deployingRules,setDeployingRules]=useState(false);
+  const [adminTeacherUid,setAdminTeacherUid]=useState("");
+  const [adminEditUntil,setAdminEditUntil]=useState(0);
+  const [adminEditPassword,setAdminEditPassword]=useState("");
+  const [adminNewPassword,setAdminNewPassword]=useState("");
+  const [adminTransferTarget,setAdminTransferTarget]=useState<Record<string,string>>({});
   const [classFilter,setClassFilter]=useState("SEMUA");
   const [chapterFilter,setChapterFilter]=useState(0);
   const [newClassName,setNewClassName]=useState("");
@@ -96,8 +109,10 @@ export default function TeacherPage(){
     prompt:"",a:"",b:"",c:"",d:"",answer:"A",explanation:"",
   });
 
-  const canEdit=teacherProfile?.role!=="viewer";
   const isAdmin=teacherProfile?.role==="admin";
+  const adminEditActive=Boolean(adminTeacherUid&&Date.now()<adminEditUntil);
+  const canEdit=teacherProfile?.role!=="viewer";
+  const navItems=isAdmin?NAV:NAV.filter(item=>item.id!=="teachers");
 
   function patchClass(code:string,patch:Partial<ClassRecord>){
     setManagedClasses(current=>current.map(item=>item.code===code?{...item,...patch}:item));
