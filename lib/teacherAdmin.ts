@@ -4,12 +4,17 @@ import { addDoc, collection, doc, getDoc, getDocs, orderBy, query, serverTimesta
 import { getFirebaseServices } from "./firebase";
 
 export type TeacherRole = "admin" | "guru" | "viewer";
+export type TeacherStatus = "pending" | "active" | "suspended" | "rejected";
 export type TeacherProfile = {
   uid: string;
   name: string;
   role: TeacherRole;
   active: boolean;
+  status?: TeacherStatus;
   email?: string;
+  createdAt?: number;
+  updatedAt?: number;
+  lastSeenAt?: number;
 };
 
 export type AuditEntry = {
@@ -22,30 +27,49 @@ export type AuditEntry = {
 
 const LOCAL_AUDIT_KEY = "geoboost_teacher_audit";
 
+function timestamp(value:any){
+  return value?.toMillis?.() ?? (typeof value==="number" ? value : undefined);
+}
+
+function profileFromData(uid:string,data:Record<string,any>,fallbackEmail=""):TeacherProfile{
+  const hasRole=["admin","guru","viewer"].includes(data.role);
+  const role=(hasRole ? data.role : "admin") as TeacherRole;
+  const rawStatus=["pending","active","suspended","rejected"].includes(data.status)
+    ? data.status as TeacherStatus
+    : (data.active===false ? "suspended" : "active");
+  const active=rawStatus==="active" && data.active!==false;
+  return {
+    uid,
+    name:String(data.name||"Guru"),
+    role,
+    active,
+    status:rawStatus,
+    email:String(data.email||fallbackEmail||""),
+    createdAt:timestamp(data.createdAt),
+    updatedAt:timestamp(data.updatedAt),
+    lastSeenAt:timestamp(data.lastSeenAt),
+  };
+}
+
 export async function getTeacherProfile(uid: string): Promise<TeacherProfile | null> {
   const services=getFirebaseServices();
   if(!services) return null;
   const snap=await getDoc(doc(services.db,"teachers",uid));
   if(!snap.exists()) return null;
   const data=snap.data() as Record<string,any>;
-  const hasRole=["admin","guru","viewer"].includes(data.role);
-  const role=(hasRole ? data.role : "admin") as TeacherRole;
-  const profile:TeacherProfile={
-    uid,
-    name:String(data.name||"Guru"),
-    role,
-    active:data.active!==false,
-    email:String(data.email||services.auth.currentUser?.email||""),
-  };
+  const profile=profileFromData(uid,data,services.auth.currentUser?.email||"");
 
-  // Legacy teacher records created before roles/active existed are upgraded in-place.
-  if(!hasRole || typeof data.active!=="boolean"){
+  // Preserve the original administrator created before status/role fields existed.
+  const hasRole=["admin","guru","viewer"].includes(data.role);
+  const hasStatus=["pending","active","suspended","rejected"].includes(data.status);
+  if(!hasRole || !hasStatus || typeof data.active!=="boolean"){
     try{
       await setDoc(doc(services.db,"teachers",uid),{
         name:profile.name,
         email:profile.email||"",
-        role,
-        active:true,
+        role:profile.role,
+        status:profile.status||"active",
+        active:profile.active,
         updatedAt:serverTimestamp(),
       },{merge:true});
     }catch{}
@@ -53,14 +77,34 @@ export async function getTeacherProfile(uid: string): Promise<TeacherProfile | n
   return profile;
 }
 
+export async function registerTeacherRequest(input:{uid:string;name:string;email:string}){
+  const services=getFirebaseServices();
+  if(!services)throw new Error("Firebase belum dikonfigurasi");
+  const name=input.name.trim();
+  const email=input.email.trim().toLowerCase();
+  if(!name||!email)throw new Error("Nama dan email diperlukan");
+  await setDoc(doc(services.db,"teachers",input.uid),{
+    name,
+    email,
+    role:"guru",
+    status:"pending",
+    active:false,
+    createdAt:serverTimestamp(),
+    updatedAt:serverTimestamp(),
+  },{merge:false});
+  return {uid:input.uid,name,email,role:"guru" as const,status:"pending" as const,active:false};
+}
+
 export async function saveTeacherProfile(profile: TeacherProfile) {
   const services=getFirebaseServices();
   if(!services) throw new Error("Firebase belum dikonfigurasi");
+  const status=(profile.status || (profile.active ? "active" : "suspended")) as TeacherStatus;
   await setDoc(doc(services.db,"teachers",profile.uid),{
     name:profile.name,
     email:profile.email||"",
     role:profile.role,
-    active:profile.active,
+    status,
+    active:status==="active",
     updatedAt:serverTimestamp(),
   },{merge:true});
 }
@@ -70,12 +114,18 @@ export async function listTeacherProfiles(): Promise<TeacherProfile[]> {
   if(!services) return [];
   try{
     const snap=await getDocs(collection(services.db,"teachers"));
-    return snap.docs.map(d=>{
-      const data=d.data() as Record<string,any>;
-      const role=(["admin","guru","viewer"].includes(data.role) ? data.role : "admin") as TeacherRole;
-      return {uid:d.id,name:String(data.name||"Guru"),role,active:data.active!==false,email:String(data.email||"")};
-    });
+    const rank:Record<TeacherStatus,number>={pending:0,active:1,suspended:2,rejected:3};
+    return snap.docs.map(d=>profileFromData(d.id,d.data() as Record<string,any>))
+      .sort((a,b)=>(rank[a.status||"active"]-rank[b.status||"active"])||a.name.localeCompare(b.name,"ms"));
   }catch{return []}
+}
+
+export async function touchTeacherLastSeen(uid:string){
+  const services=getFirebaseServices();
+  if(!services)return;
+  try{
+    await setDoc(doc(services.db,"teachers",uid),{lastSeenAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
+  }catch{}
 }
 
 function addLocalAudit(entry: Omit<AuditEntry,"id"|"createdAt">) {
