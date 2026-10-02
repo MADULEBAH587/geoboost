@@ -77,30 +77,45 @@ export default function StudentLoginPage() {
         pendingRoster:false,
       };
 
+      // Identiti murid disahkan oleh roster kelas. Simpan sesi dahulu supaya
+      // kegagalan sync awan tidak pernah menghalang murid masuk ke GeoBoost.
+      saveStudentSession(session);
+
       if(firebaseConfigured){
-        const result=await syncStudentProfile({
-          localStudentId:selectedStudent.id,
-          name:selectedStudent.name,
-          className:classRecord.name,
-          classCode:classRecord.code,
-        });
-        if(!result.synced){
-          const permission=String(result.errorCode||"").includes("permission-denied");
-          setNote(permission
-            ?"Akses Firebase untuk login murid belum diselaraskan. Admin perlu terbitkan semula Rules sekali."
-            :"Profil murid belum dapat diselaraskan. Cuba semula.");
-          setSaving(false);
-          return;
+        try{
+          const result=await syncStudentProfile({
+            localStudentId:selectedStudent.id,
+            name:selectedStudent.name,
+            className:classRecord.name,
+            classCode:classRecord.code,
+          });
+          if(result.synced){
+            localStorage.removeItem("geoboost_cloud_profile_pending");
+            try{
+              await registerStudentPresence({
+                classCode:classRecord.code,
+                studentId:selectedStudent.id,
+                studentName:selectedStudent.name,
+              });
+            }catch(error){console.warn("Student presence sync pending",error)}
+            try{await syncPendingAttempts()}catch{}
+          }else{
+            localStorage.setItem("geoboost_cloud_profile_pending",JSON.stringify({
+              ...session,
+              errorCode:result.errorCode||"sync-pending",
+              savedAt:Date.now(),
+            }));
+          }
+        }catch(error:any){
+          console.warn("Student cloud sync deferred",error);
+          localStorage.setItem("geoboost_cloud_profile_pending",JSON.stringify({
+            ...session,
+            errorCode:String(error?.code||error?.message||"sync-pending"),
+            savedAt:Date.now(),
+          }));
         }
-        await registerStudentPresence({
-          classCode:classRecord.code,
-          studentId:selectedStudent.id,
-          studentName:selectedStudent.name,
-        });
-        await syncPendingAttempts();
       }
 
-      saveStudentSession(session);
       router.push("/murid/utama");
     }catch(error:any){
       console.error(error);
