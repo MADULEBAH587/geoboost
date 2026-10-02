@@ -25,7 +25,7 @@ import {
   registerTeacherRequest, saveTeacherProfile, touchTeacherLastSeen, watchTeacherProfiles, writeAudit,
 } from "@/lib/teacherAdmin";
 import { bootstrapGeoBoostAdmin, deployGeoBoostFirestoreRules, deployGeoBoostMultiTeacher } from "@/lib/firebaseRulesAdmin";
-import { StudentPresence, watchStudentPresence } from "@/lib/studentPresence";
+import { StudentPresence, resetStudentPresence, watchStudentPresence } from "@/lib/studentPresence";
 import { StudentAccessRecord, ensureStudentAccessCodes, removeStudentAccessCode } from "@/lib/studentAccess";
 import { getStudentLoginMode, type StudentLoginMode } from "@/lib/systemConfig";
 import { endAdminEditSession, startAdminEditSession } from "@/lib/adminDelegation";
@@ -57,6 +57,7 @@ function pct(list:number[]){return list.length?Math.round(list.reduce((s,v)=>s+v
 
 export default function TeacherPage(){
   const [activeSection,setActiveSection]=useState<TeacherSection>("dashboard");
+  const [mobileSidebarOpen,setMobileSidebarOpen]=useState(false);
   const [attempts,setAttempts]=useState<AttemptRecord[]>([]);
   const [registeredStudents,setRegisteredStudents]=useState<RegisteredStudent[]>([]);
   const [managedClasses,setManagedClasses]=useState<ClassRecord[]>([]);
@@ -99,6 +100,10 @@ export default function TeacherPage(){
   const [manualStudentName,setManualStudentName]=useState("");
   const [importing,setImporting]=useState(false);
   const [selectedStudentKey,setSelectedStudentKey]=useState("");
+  const [studentSearch,setStudentSearch]=useState("");
+  const [studentStatusFilter,setStudentStatusFilter]=useState<"all"|"logged"|"new"|"intervention"|"duplicate">("all");
+  const [studentAddOpen,setStudentAddOpen]=useState(false);
+  const [mobileStudentProfile,setMobileStudentProfile]=useState(false);
   const [assignmentClassCode,setAssignmentClassCode]=useState("");
   const [assignmentTitle,setAssignmentTitle]=useState("");
   const [assignmentChapter,setAssignmentChapter]=useState(1);
