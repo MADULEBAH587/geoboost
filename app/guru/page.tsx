@@ -409,26 +409,89 @@ export default function TeacherPage(){
 
   async function activateFirebaseP1(){
     if(!isAdmin||deployingRules)return;
-    setDeployingRules(true);setMessage("Meminta kebenaran Firebase dan menerbitkan Firestore Rules P1...");
+    setDeployingRules(true);setMessage("Menerbitkan semula Firestore Rules...");
     try{
       const result=await deployGeoBoostFirestoreRules();
       setFirebaseRulesReady(true);
-      await log("FIREBASE_RULES_P1",result.rulesetName);
-      setMessage("Firestore Rules P1 berjaya diterbitkan. Memuat semula data dan kod akses...");
+      await log("FIREBASE_RULES",result.rulesetName);
+      setMessage("Firestore Rules berjaya diterbitkan.");
       if(authUser)await loadTeacherData(authUser);
     }catch(error:any){
-      console.error(error);
-      setFirebaseRulesReady(false);
-      setMessage("Aktivasi Firebase P1 belum selesai: "+String(error?.message||"kebenaran Google/Firebase diperlukan."));
+      console.error(error);setFirebaseRulesReady(false);
+      setMessage("Rules belum dapat diterbitkan: "+String(error?.message||"kebenaran Google/Firebase diperlukan."));
     }finally{setDeployingRules(false)}
   }
 
-  async function saveRole(){
-    if(!isAdmin||!teacherForm.uid.trim()||!teacherForm.name.trim())return;
+  async function activateMultiTeacher(){
+    if(!isAdmin||deployingRules)return;
+    setDeployingRules(true);setMessage("Mengaktifkan Email + Password, multi-guru dan Firestore Rules...");
     try{
-      await saveTeacherProfile({uid:teacherForm.uid.trim(),name:teacherForm.name.trim(),role:teacherForm.role,active:true});
-      setTeacherProfiles(await listTeacherProfiles());await log("GURU_ROLE",teacherForm.name+" · "+teacherForm.role);setTeacherForm({uid:"",name:"",role:"guru"});setMessage("Akses guru disimpan.");
-    }catch{setMessage("Perubahan role memerlukan Firestore Rules v2 diterbitkan.")}
+      const result=await deployGeoBoostMultiTeacher();
+      setFirebaseRulesReady(true);
+      await log("MULTI_GURU_AKTIF",result.rulesetName);
+      setMessage("Sistem Multi-Guru aktif. Pendaftaran Email + Password dan Rules baharu telah diterbitkan.");
+      if(authUser)await loadTeacherData(authUser);
+    }catch(error:any){
+      console.error(error);setFirebaseRulesReady(false);
+      setMessage("Aktivasi Multi-Guru belum selesai: "+String(error?.message||"kebenaran pemilik projek Firebase diperlukan."));
+    }finally{setDeployingRules(false)}
+  }
+
+  async function setAdminPassword(){
+    if(!isAdmin||adminNewPassword.length<6){setMessage("Kata laluan admin mesti sekurang-kurangnya 6 aksara.");return}
+    try{
+      await linkCurrentTeacherPassword(adminNewPassword);
+      setAdminNewPassword("");
+      await log("ADMIN_PASSWORD","Email + Password dipautkan pada akaun admin.");
+      setMessage("Kata laluan admin siap. Selepas ini Bos boleh login menggunakan email + password.");
+    }catch(error:any){
+      setMessage("Kata laluan belum dapat ditetapkan: "+String(error?.message||""));
+    }
+  }
+
+  async function beginAdminEdit(){
+    if(!isAdmin||!adminTeacherUid||!adminEditPassword)return;
+    try{
+      await reauthenticateTeacher(adminEditPassword);
+      setAdminEditUntil(Date.now()+15*60*1000);setAdminEditPassword("");
+      const target=teacherProfiles.find(t=>t.uid===adminTeacherUid);
+      await log("ADMIN_EDIT_MULA",(target?.name||adminTeacherUid)+" · 15 minit");
+      setMessage("Mode Edit Admin aktif selama 15 minit untuk "+(target?.name||"guru dipilih")+".");
+    }catch(error:any){
+      setMessage("Pengesahan admin gagal. Semak kata laluan.");
+    }
+  }
+
+  function leaveAdminEdit(){
+    setAdminEditUntil(0);setAdminEditPassword("");
+    setMessage("Mode Edit Admin ditutup. Kembali ke Mode Lihat.");
+  }
+
+  async function updateTeacherAccess(target:TeacherProfile,patch:Partial<TeacherProfile>,action:string){
+    if(!isAdmin||adminTeacherUid!==target.uid||!adminEditActive||Date.now()>=adminEditUntil){
+      setMessage("Aktifkan Mode Edit dan sahkan kata laluan admin dahulu.");return;
+    }
+    const next={...target,...patch};
+    try{
+      await saveTeacherProfile(next);
+      setTeacherProfiles(await listTeacherProfiles());
+      await log(action,target.name+" · "+String(next.status||"active")+" · "+next.role);
+      setMessage("Akaun "+target.name+" berjaya dikemas kini.");
+    }catch(error:any){setMessage("Akaun guru gagal dikemas kini: "+String(error?.message||""))}
+  }
+
+  async function moveClassOwner(classCode:string,newOwnerUid:string){
+    if(!isAdmin||!adminTeacherUid||!adminEditActive||Date.now()>=adminEditUntil){
+      setMessage("Aktifkan Mode Edit guru dahulu.");return;
+    }
+    const target=teacherProfiles.find(t=>t.uid===newOwnerUid);
+    if(!target||target.status!=="active"){setMessage("Pilih guru aktif sebagai pemilik baharu.");return}
+    try{
+      await transferClassOwner(classCode,newOwnerUid);
+      patchClass(classCode,{ownerTeacherId:newOwnerUid});
+      await log("KELAS_TUKAR_GURU",classCode+" → "+target.name);
+      setMessage("Kelas "+classCode+" kini di bawah "+target.name+".");
+    }catch(error:any){setMessage("Pemilik kelas gagal ditukar: "+String(error?.message||""))}
   }
 
   function backup(){
