@@ -28,6 +28,7 @@ import { bootstrapGeoBoostAdmin, deployGeoBoostFirestoreRules, deployGeoBoostMul
 import { StudentPresence, watchStudentPresence } from "@/lib/studentPresence";
 import { StudentAccessRecord, ensureStudentAccessCodes, removeStudentAccessCode } from "@/lib/studentAccess";
 import { getStudentLoginMode, type StudentLoginMode } from "@/lib/systemConfig";
+import { endAdminEditSession, startAdminEditSession } from "@/lib/adminDelegation";
 
 type Source = "local"|"firebase";
 type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"bank"|"teachers"|"settings";
@@ -516,7 +517,8 @@ export default function TeacherPage(){
     if(!isAdmin||!adminTeacherUid||!adminEditPassword)return;
     try{
       await reauthenticateTeacher(adminEditPassword);
-      setAdminEditUntil(Date.now()+15*60*1000);setAdminEditPassword("");
+      const expiresAt=await startAdminEditSession(adminTeacherUid,15);
+      setAdminEditUntil(expiresAt);setAdminEditPassword("");
       const target=teacherProfiles.find(t=>t.uid===adminTeacherUid);
       await log("ADMIN_EDIT_MULA",(target?.name||adminTeacherUid)+" · 15 minit");
       setMessage("Mode Edit Admin aktif selama 15 minit untuk "+(target?.name||"guru dipilih")+".");
@@ -525,7 +527,8 @@ export default function TeacherPage(){
     }
   }
 
-  function leaveAdminEdit(){
+  async function leaveAdminEdit(){
+    await endAdminEditSession();
     setAdminEditUntil(0);setAdminEditPassword("");
     setMessage("Mode Edit Admin ditutup. Kembali ke Mode Lihat.");
   }
