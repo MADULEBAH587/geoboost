@@ -163,7 +163,8 @@ service cloud.firestore {
     }
 
     match /studentClaims/{studentUid} {
-      allow read: if isTeacher();
+      allow read: if isAdmin()
+        || (isTeacher() && canReadClass(resource.data.classCode));
       allow create, update: if isStudent(studentUid)
         && request.resource.data.keys().hasOnly(['classCode','studentId','pin','createdAt'])
         && request.resource.data.classCode is string
@@ -225,7 +226,8 @@ service cloud.firestore {
     }
 
     match /teachers/{teacherId} {
-      allow read: if isTeacher() || (signedIn() && request.auth.uid == teacherId);
+      allow get: if isAdmin() || (signedIn() && request.auth.uid == teacherId);
+      allow list: if isAdmin();
       allow create: if isAdmin();
       allow update: if isAdmin()
         || (
