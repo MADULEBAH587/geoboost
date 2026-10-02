@@ -8,12 +8,20 @@ service cloud.firestore {
     function isTeacher() {
       return signedIn()
         && exists(/databases/$(database)/documents/teachers/$(request.auth.uid))
-        && teacherDoc().data.active != false;
+        && (
+          !teacherDoc().data.keys().hasAll(["active"])
+          || teacherDoc().data.active != false
+        );
     }
     function teacherRole() {
       return !isTeacher()
         ? "none"
-        : (teacherDoc().data.role in ["admin","guru","viewer"] ? teacherDoc().data.role : "admin");
+        : (
+          teacherDoc().data.keys().hasAll(["role"])
+          && teacherDoc().data.role in ["admin","guru","viewer"]
+            ? teacherDoc().data.role
+            : "admin"
+        );
     }
     function canEdit() {
       return isTeacher() && (teacherRole() == "admin" || teacherRole() == "guru");
@@ -27,10 +35,19 @@ service cloud.firestore {
     function classDoc(classCode) {
       return get(/databases/$(database)/documents/classes/$(classCode));
     }
-    function canManageClass(classCode) {
-      return canEdit()
+    function canReadClass(classCode) {
+      return isTeacher()
         && classExists(classCode)
-        && (isAdmin() || classDoc(classCode).data.ownerTeacherId == request.auth.uid);
+        && (
+          isAdmin()
+          || (
+            classDoc(classCode).data.keys().hasAll(["ownerTeacherId"])
+            && classDoc(classCode).data.ownerTeacherId == request.auth.uid
+          )
+        );
+    }
+    function canManageClass(classCode) {
+      return canEdit() && canReadClass(classCode);
     }
     function isStudent(studentId) {
       return signedIn() && request.auth.uid == studentId;
@@ -160,35 +177,46 @@ service cloud.firestore {
     }
 
     match /students/{studentId} {
-      allow read: if isTeacher() || isStudent(studentId);
+      allow read: if isStudent(studentId)
+        || isAdmin()
+        || (isTeacher() && canReadClass(resource.data.classCode));
       allow create, update: if isStudent(studentId) && validStudentProfile();
-      allow delete: if canEdit();
+      allow delete: if canEdit()
+        && (isAdmin() || canManageClass(resource.data.classCode));
     }
 
     match /attempts/{attemptId} {
       allow create: if signedIn() && validAttempt();
-      allow read: if isTeacher()
+      allow read: if isAdmin()
+        || (isTeacher() && canReadClass(resource.data.classCode))
         || (signedIn() && resource.data.studentId == request.auth.uid)
         || (hasStudentProfile() && resource.data.localStudentId == currentStudentLocalId());
       allow update: if signedIn()
         && resource.data.studentId == request.auth.uid
         && validAttempt();
-      allow delete: if canEdit();
+      allow delete: if canEdit()
+        && (isAdmin() || canManageClass(resource.data.classCode));
     }
 
     match /responses/{responseId} {
       allow create: if hasStudentProfile()
         && request.resource.data.studentId == request.auth.uid
         && request.resource.data.localStudentId == currentStudentLocalId();
-      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow read: if isAdmin()
+        || (isTeacher() && canReadClass(resource.data.classCode))
+        || (signedIn() && resource.data.studentId == request.auth.uid);
       allow update: if false;
-      allow delete: if canEdit();
+      allow delete: if canEdit()
+        && (isAdmin() || canManageClass(resource.data.classCode));
     }
 
     match /progress/{studentId} {
-      allow read: if isTeacher() || isStudent(studentId);
+      allow read: if isAdmin()
+        || (isTeacher() && canReadClass(resource.data.classCode))
+        || isStudent(studentId);
       allow create, update: if isStudent(studentId) && validProgress();
-      allow delete: if canEdit();
+      allow delete: if canEdit()
+        && (isAdmin() || canManageClass(resource.data.classCode));
     }
 
     match /settings/{docId} {
@@ -204,7 +232,7 @@ service cloud.firestore {
           signedIn()
           && request.auth.uid == teacherId
           && isTeacher()
-          && !(resource.data.role in ["admin","guru","viewer"])
+          && !resource.data.keys().hasAll(["role"])
           && request.resource.data.role == "admin"
           && request.resource.data.active == true
         );
