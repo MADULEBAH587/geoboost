@@ -83,7 +83,9 @@ function auditActionLabel(action:string){
   return labels[action]||"Aktiviti pentadbiran";
 }
 function auditDetailLabel(detail:string){
-  return String(detail||"")
+  const raw=String(detail||"");
+  if(/firebase|firestore|ruleset|projects\//i.test(raw))return "Semakan berjaya";
+  return raw
     .replace(/\badmin\b/gi,"Pentadbir")
     .replace(/\bviewer\b/gi,"Paparan Sahaja")
     .replace(/\bguru\b/gi,"Guru")
@@ -754,7 +756,7 @@ export default function TeacherPage(){
   const gateBrand=<div className="mini-brand"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>PANEL GURU</small></span></div>;
 
   if(!firebaseConfigured){
-    return <main className="auth-shell"><section className="auth-card">{gateBrand}<span className="eyebrow dark">PANEL GURU</span><h1>Konfigurasi diperlukan</h1><p>Perkhidmatan log masuk belum tersedia. Cuba semula kemudian atau hubungi pentadbir.</p><a className="launch-button active full center" href="/">← Paparan utama</a></section></main>;
+    return <main className="auth-shell"><section className="auth-card">{gateBrand}<span className="eyebrow dark">PANEL GURU</span><h1>Log masuk belum tersedia</h1><p>Perkhidmatan log masuk belum tersedia. Cuba semula kemudian atau hubungi pentadbir.</p><a className="launch-button active full center" href="/">← Paparan utama</a></section></main>;
   }
 
   if(!authReady){
