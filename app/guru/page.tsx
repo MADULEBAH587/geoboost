@@ -293,7 +293,7 @@ export default function TeacherPage(){
       await registerTeacherRequest({uid:user.uid,name:registerName,email:registerEmail});
       setAuthUser({uid:user.uid,email:user.email});
       await loadTeacherData(user);
-      setMessage("Pendaftaran berjaya. Tunggu admin meluluskan akaun anda.");
+      setMessage("Pendaftaran berjaya. Tunggu pentadbir meluluskan akaun anda.");
     }catch(error:any){
       console.error(error);
       const code=String(error?.code||"");
@@ -435,7 +435,7 @@ export default function TeacherPage(){
 
   async function importStudents(event:ChangeEvent<HTMLInputElement>){
     const file=event.target.files?.[0];event.target.value="";if(!file||!rosterClassCode)return;
-    if(!canManageClassCode(rosterClassCode)){setMessage("Import ke kelas guru lain memerlukan Mode Edit Admin.");return;}
+    if(!canManageClassCode(rosterClassCode)){setMessage("Memasukkan senarai ke kelas guru lain memerlukan kebenaran suntingan pentadbir.");return;}
     setImporting(true);
     try{
       const XLSX=await import("xlsx");const data=await file.arrayBuffer();const wb=XLSX.read(data,{type:"array"});const sheet=wb.Sheets[wb.SheetNames[0]];
@@ -531,7 +531,7 @@ export default function TeacherPage(){
     try{
       const result=await bootstrapGeoBoostAdmin();
       const user={uid:result.uid,email:result.email||null};
-      setAuthUser(user);setTeacherUid(result.uid);setTeacherEmail(result.email||"Admin GeoBoost");
+      setAuthUser(user);setTeacherUid(result.uid);setTeacherEmail(result.email||"Pentadbir GeoBoost");
       setFirebaseRulesReady(true);
       setMessage("Akses pentadbir berjaya disediakan. Memuatkan halaman guru...");
       await loadTeacherData(user);
@@ -573,11 +573,11 @@ export default function TeacherPage(){
   }
 
   async function setAdminPassword(){
-    if(!isAdmin||adminNewPassword.length<6){setMessage("Kata laluan admin mesti sekurang-kurangnya 6 aksara.");return}
+    if(!isAdmin||adminNewPassword.length<6){setMessage("Kata laluan pentadbir mesti sekurang-kurangnya 6 aksara.");return}
     try{
       await linkCurrentTeacherPassword(adminNewPassword);
       setAdminNewPassword("");
-      await log("ADMIN_PASSWORD","Email + Password dipautkan pada akaun admin.");
+      await log("ADMIN_PASSWORD","Kata laluan dipautkan pada akaun pentadbir.");
       setMessage("Kata laluan pentadbir berjaya ditetapkan.");
     }catch(error:any){
       console.error(error);setMessage("Kata laluan belum dapat ditetapkan. Cuba semula.");
@@ -768,7 +768,7 @@ export default function TeacherPage(){
       <h1>{authMode==="login"?"Log masuk guru":"Daftar akaun guru"}</h1>
       <p>{authMode==="login"
         ?"Masuk menggunakan email dan kata laluan GeoBoost."
-        :"Guru boleh daftar sendiri. Akaun hanya boleh digunakan selepas diluluskan oleh admin."}</p>
+        :"Guru boleh daftar sendiri. Akaun hanya boleh digunakan selepas diluluskan oleh pentadbir."}</p>
       {authError?<div className="teacher-message">{authError}</div>:null}
       {message?<div className="teacher-message">{message}</div>:null}
       {authMode==="login"?<form className="student-form" onSubmit={e=>{e.preventDefault();void connectTeacher()}}>
