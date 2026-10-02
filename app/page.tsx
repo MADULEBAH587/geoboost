@@ -15,8 +15,8 @@ export default function Home(){
         <span className="eyebrow">LATIHAN PENGUKUHAN INTERAKTIF GEOGRAFI</span>
         <h1>Belajar. Cuba.<br/><em>Kuasai Geografi.</em></h1>
         <p>GeoBoost menyusun latihan Bab 1–10, tugasan guru, pemulihan pintar, simulasi UASA dan rekod pencapaian dalam satu sistem yang mesra telefon.</p>
-        <div className="public-trust"><span>✓ {questions.length} soalan aktif</span><span>✓ Tugasan kelas</span><span>✓ Autosave</span><span>✓ Analitik prestasi</span></div>
-        <div className="byline">By Cikgu Zulhasif · v2.4</div>
+        <div className="public-trust"><span>✓ {questions.length} soalan aktif</span><span>✓ Tugasan kelas</span><span>✓ Simpan Automatik</span><span>✓ Analitik prestasi</span></div>
+        <div className="byline">By Cikgu Zulhasif</div>
       </div>
       <div className="public-login-panel">
         <span className="eyebrow dark">AKSES MURID</span><h2>Masuk kelas anda</h2><p>Masukkan kod kelas. Pilih nama. Terus belajar.</p>
@@ -33,11 +33,11 @@ export default function Home(){
 
     <section className="public-section public-features">
       <div className="public-section-title"><span className="eyebrow dark">DALAM SATU TEMPAT</span><h2>Apa yang murid dapat?</h2></div>
-      <div className="public-feature-grid"><article><span>📝</span><h3>Tugasan Guru</h3><p>Tugasan aktif, tarikh akhir dan rekod selesai.</p></article><article><span>📚</span><h3>Latihan Bab</h3><p>Bab 1–10 dengan aras Mudah, Sederhana dan KBAT.</p></article><article><span>🎯</span><h3>Pemulihan Pintar</h3><p>GeoBoost mengumpul soalan lemah untuk latihan semula.</p></article><article><span>📊</span><h3>Prestasi Saya</h3><p>Mastery bab, trend markah, XP dan subtopik lemah.</p></article><article><span>🏆</span><h3>Simulasi UASA</h3><p>Timer, semak semula dan keputusan selepas submit.</p></article><article><span>☁️</span><h3>Autosave</h3><p>Latihan belum siap boleh disambung tanpa bermula semula.</p></article></div>
+      <div className="public-feature-grid"><article><span>📝</span><h3>Tugasan Guru</h3><p>Tugasan aktif, tarikh akhir dan rekod selesai.</p></article><article><span>📚</span><h3>Latihan Bab</h3><p>Bab 1–10 dengan aras Mudah, Sederhana dan KBAT.</p></article><article><span>🎯</span><h3>Pemulihan Pintar</h3><p>GeoBoost mengumpul soalan lemah untuk latihan semula.</p></article><article><span>📊</span><h3>Prestasi Saya</h3><p>Penguasaan bab, perkembangan markah, Mata Ilmu dan subtopik lemah.</p></article><article><span>🏆</span><h3>Simulasi UASA</h3><p>Masa menjawab, semak semula dan keputusan selepas selesai.</p></article><article><span>☁️</span><h3>Simpan Automatik</h3><p>Latihan belum siap boleh disambung tanpa bermula semula.</p></article></div>
     </section>
 
     <section className="public-cta"><div><small>BANK GEOBOOST</small><b>{totalQuestionBank}</b><span>soalan Geografi Tingkatan 2</span></div><a className="primary" href="/murid">Mula GeoBoost →</a></section>
 
-    <footer><div className="footer-brand"><span className="brand-mark small">G</span><div><b>GeoBoost Tingkatan 2</b><small>Latihan Pengukuhan Interaktif Geografi</small></div></div><span>By Cikgu Zulhasif · v2.4</span></footer>
+    <footer><div className="footer-brand"><span className="brand-mark small">G</span><div><b>GeoBoost Tingkatan 2</b><small>Latihan Pengukuhan Interaktif Geografi</small></div></div><span>By Cikgu Zulhasif</span></footer>
   </main>;
 }
