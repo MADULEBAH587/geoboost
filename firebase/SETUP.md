@@ -65,8 +65,10 @@ Web App Firebase boleh ditetapkan melalui Vercel:
 - `NEXT_PUBLIC_FIREBASE_API_KEY`
 - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
 - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
-- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
 - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
 - `NEXT_PUBLIC_FIREBASE_APP_ID`
 
 Konfigurasi fallback projek production turut tersedia dalam `lib/firebase.ts`.
+
+## Nota Visual tanpa Cloud Storage
+GeoBoost tidak menggunakan Firebase Cloud Storage untuk Nota Visual. Poster, gambar dan slide tambahan dimampatkan di pelayar kepada WebP dan disimpan sebagai dokumen Firestore berasingan (`visualNoteAssets` + `visualNotePayloads`). Had dalaman aplikasi ialah 480 KB bagi setiap imej dan 100 MB bagi keseluruhan pustaka media tambahan.
