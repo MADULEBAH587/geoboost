@@ -36,7 +36,7 @@ type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"int
 const NAV:{id:TeacherSection;icon:string;label:string}[]=[
   {id:"dashboard",icon:"▦",label:"Ringkasan"},{id:"classes",icon:"🏫",label:"Kelas"},
   {id:"students",icon:"👥",label:"Murid"},{id:"assignments",icon:"📝",label:"Tugasan"},
-  {id:"live",icon:"🟢",label:"Live Monitoring"},{id:"interventions",icon:"🎯",label:"Intervensi"},
+  {id:"live",icon:"🟢",label:"Aktiviti Semasa"},{id:"interventions",icon:"🎯",label:"Pemulihan"},
   {id:"analytics",icon:"📊",label:"Analitik"},{id:"reports",icon:"🖨️",label:"Laporan"},
   {id:"bank",icon:"🗂️",label:"Bank Soalan"},{id:"teachers",icon:"🧑‍🏫",label:"Pengurusan Guru"},
   {id:"settings",icon:"⚙️",label:"Tetapan"},
@@ -54,6 +54,18 @@ function downloadCsv(attempts:AttemptRecord[]){
   downloadText("geoboost-laporan-"+new Date().toISOString().slice(0,10)+".csv","\ufeff"+rows.map(r=>r.map(esc).join(",")).join("\n"),"text/csv;charset=utf-8");
 }
 function pct(list:number[]){return list.length?Math.round(list.reduce((s,v)=>s+v,0)/list.length):0}
+
+function teacherRoleLabel(role?:string){
+  if(role==="admin")return "Pentadbir";
+  if(role==="viewer")return "Paparan Sahaja";
+  return "Guru";
+}
+function teacherStatusLabel(status?:string){
+  if(status==="pending")return "Menunggu Kelulusan";
+  if(status==="suspended")return "Digantung";
+  if(status==="rejected")return "Ditolak";
+  return "Aktif";
+}
 
 export default function TeacherPage(){
   const [activeSection,setActiveSection]=useState<TeacherSection>("dashboard");
@@ -156,12 +168,12 @@ export default function TeacherPage(){
       setAuditLogs([]);setTeacherProfiles([]);setStudentPresence([]);setLiveItems([]);setSource("local");
       const status=profile?.status||"pending";
       setMessage(!profile
-        ?"Akaun Auth berjaya tetapi profil guru belum tersedia."
+        ?"Profil guru belum tersedia."
         :status==="pending"
-          ?"Pendaftaran berjaya. Akaun sedang menunggu pengesahan admin."
+          ?"Pendaftaran berjaya. Akaun sedang menunggu kelulusan pentadbir."
           :status==="rejected"
-            ?"Permohonan akaun guru ini telah ditolak oleh admin."
-            :"Akses akaun guru ini telah dinyahaktifkan oleh admin.");
+            ?"Permohonan akaun guru ini telah ditolak oleh pentadbir."
+            :"Akses akaun guru ini telah dinyahaktifkan oleh pentadbir.");
       return;
     }
 
@@ -195,7 +207,7 @@ export default function TeacherPage(){
         setAuthUser({uid:user.uid,email:user.email});
         loadTeacherData(user).catch((error:any)=>{
           console.error(error);clearTeacherData();setTeacherEmail(user.email||"Guru");setTeacherUid(user.uid);
-          setAuthError("Akaun guru dikesan tetapi data pusat gagal dimuat."+(error?.code?" ("+error.code+")":""));
+          setAuthError("Maklumat akaun belum dapat dimuat. Cuba semula.");
         }).finally(()=>setAuthReady(true));
       }else{
         setAuthUser(null);setTeacherEmail("");setTeacherUid("");clearTeacherData();setMessage("");setAuthReady(true);
@@ -224,7 +236,7 @@ export default function TeacherPage(){
       void endAdminEditSession();
       setAdminEditUntil(0);
       setAdminEditPassword("");
-      setMessage("Mode Edit Admin tamat. Kembali ke Mode Lihat.");
+      setMessage("Tempoh suntingan tamat. Kembali ke paparan sahaja.");
     },delay);
     return ()=>window.clearTimeout(timer);
   },[adminEditUntil]);
@@ -240,8 +252,8 @@ export default function TeacherPage(){
       setAuthError(code.includes("invalid-credential")||code.includes("wrong-password")||code.includes("user-not-found")
         ?"Email atau kata laluan tidak betul."
         :code.includes("operation-not-allowed")
-          ?"Login Email + Password belum diaktifkan pada Firebase. Admin perlu aktifkan Sistem Multi-Guru sekali."
-          :"Log masuk gagal. "+String(error?.message||"Cuba semula."));
+          ?"Log masuk belum tersedia. Hubungi pentadbir."
+          :"Log masuk gagal. Cuba semula.");
       setAuthReady(true);
     }finally{setAuthBusy(false)}
   }
@@ -262,8 +274,8 @@ export default function TeacherPage(){
       setAuthError(code.includes("email-already-in-use")
         ?"Email ini sudah mempunyai akaun. Gunakan Log Masuk atau Lupa Password."
         :code.includes("operation-not-allowed")
-          ?"Pendaftaran Email + Password belum diaktifkan. Admin perlu aktifkan Sistem Multi-Guru sekali."
-          :"Pendaftaran gagal. "+String(error?.message||"Cuba semula."));
+          ?"Pendaftaran belum tersedia. Hubungi pentadbir."
+          :"Pendaftaran gagal. Cuba semula.");
       setAuthReady(true);
     }finally{setAuthBusy(false)}
   }
@@ -272,7 +284,7 @@ export default function TeacherPage(){
     if(!loginEmail.trim()){setAuthError("Masukkan email guru dahulu.");return}
     setAuthBusy(true);setAuthError("");
     try{await sendTeacherPasswordReset(loginEmail);setMessage("Link reset kata laluan telah dihantar ke "+loginEmail+".");}
-    catch(error:any){setAuthError("Reset kata laluan gagal. "+String(error?.message||""))}
+    catch(error:any){console.error(error);setAuthError("Kata laluan belum dapat ditetapkan semula. Cuba semula.")}
     finally{setAuthBusy(false)}
   }
 
@@ -282,9 +294,9 @@ export default function TeacherPage(){
     try{
       await registerTeacherRequest({uid:authUser.uid,name:registerName,email:authUser.email||teacherEmail||""});
       await loadTeacherData(authUser);
-      setMessage("Permohonan guru dihantar. Tunggu pengesahan admin.");
+      setMessage("Permohonan guru dihantar. Tunggu kelulusan pentadbir.");
     }catch(error:any){
-      setAuthError("Permohonan belum dapat dihantar: "+String(error?.message||""));
+      console.error(error);setAuthError("Permohonan belum dapat dihantar. Cuba semula.");
     }finally{setAuthBusy(false)}
   }
 
@@ -292,9 +304,9 @@ export default function TeacherPage(){
     setAuthBusy(true);setAuthError("");setMessage("");
     try{
       const user=await signInTeacherWithGoogle();
-      if(!user){setAuthError("Migrasi admin Google tidak selesai.");setAuthReady(true);}
+      if(!user){setAuthError("Pengesahan pentadbir tidak selesai.");setAuthReady(true);}
     }catch(error:any){
-      setAuthError("Migrasi admin Google gagal. "+String(error?.message||""));
+      console.error(error);setAuthError("Pengesahan pentadbir gagal. Cuba semula.");
       setAuthReady(true);
     }finally{setAuthBusy(false)}
   }
@@ -316,16 +328,16 @@ export default function TeacherPage(){
     }catch(e){console.error(e);setMessage("Kelas tidak dapat disimpan.")}
   }
   async function archiveClass(code:string,archived:boolean){
-    if(!canManageClassCode(code)){setMessage("Kelas guru lain memerlukan Mode Edit Admin.");return;}
+    if(!canManageClassCode(code)){setMessage("Kelas guru lain memerlukan kebenaran suntingan pentadbir.");return;}
     try{await setClassArchived(code,archived);patchClass(code,{archived,active:!archived});await log(archived?"KELAS_ARKIB":"KELAS_AKTIF",code);setMessage(archived?"Kelas diarkib.":"Kelas diaktifkan semula.");}catch{setMessage("Status kelas tidak dapat dikemas kini.")}
   }
   async function deleteClass(code:string){
-    if(!canManageClassCode(code)){setMessage("Kelas guru lain memerlukan Mode Edit Admin.");return;}
+    if(!canManageClassCode(code)){setMessage("Kelas guru lain memerlukan kebenaran suntingan pentadbir.");return;}
     if(!confirm("Padam kelas "+code+"? Gunakan Arkib jika data lama masih diperlukan."))return;
     try{await removeClass(code);setManagedClasses(c=>c.filter(x=>x.code!==code));await log("KELAS_PADAM",code);setMessage("Kelas dipadam.");}catch{setMessage("Kelas tidak dapat dipadam.")}
   }
   async function toggleChapter(code:string,chapter:number){
-    if(!canManageClassCode(code)){setMessage("Kelas guru lain memerlukan Mode Edit Admin.");return;}
+    if(!canManageClassCode(code)){setMessage("Kelas guru lain memerlukan kebenaran suntingan pentadbir.");return;}
     const item=managedClasses.find(c=>c.code===code);if(!item)return;
     const next=item.openChapters.includes(chapter)?item.openChapters.filter(id=>id!==chapter):[...item.openChapters,chapter].sort((a,b)=>a-b);
     try{patchClass(code,{openChapters:await setOpenChapters(code,next)});await log("AKSES_BAB",code+" Bab "+chapter);setMessage("Akses bab dikemas kini.");}catch{setMessage("Akses bab gagal dikemas kini.")}
@@ -339,7 +351,7 @@ export default function TeacherPage(){
     }catch{setMessage("QR tidak dapat dijana.")}
   }
   async function copyStudentLink(code:string){
-    const link=window.location.origin+"/murid?class="+encodeURIComponent(code);await navigator.clipboard.writeText(link);setMessage("Link kelas "+code+" disalin.");
+    const link=window.location.origin+"/murid?class="+encodeURIComponent(code);await navigator.clipboard.writeText(link);setMessage("Pautan kelas "+code+" disalin.");
   }
 
   async function updateRosterState(code:string,studentRoster:ClassStudent[]){
@@ -356,7 +368,7 @@ export default function TeacherPage(){
   }
   async function addStudentToRoster(name=manualStudentName){
     if(!rosterClassCode||!name.trim())return;
-    if(!canManageClassCode(rosterClassCode)){setMessage("Senarai murid guru lain memerlukan Mode Edit Admin.");return;}
+    if(!canManageClassCode(rosterClassCode)){setMessage("Senarai murid guru lain memerlukan kebenaran suntingan pentadbir.");return;}
     try{
       const roster=await addRosterStudent(rosterClassCode,name);
       await updateRosterState(rosterClassCode,roster);setManualStudentName("");
@@ -364,8 +376,8 @@ export default function TeacherPage(){
     }catch{setMessage("Nama murid tidak dapat ditambah.")}
   }
   async function removeStudentFromRoster(student:ClassStudent){
-    if(!canManageClassCode(rosterClassCode)){setMessage("Senarai murid guru lain memerlukan Mode Edit Admin.");return;}
-    if(!confirm("Buang "+student.name+" daripada senarai login?"))return;
+    if(!canManageClassCode(rosterClassCode)){setMessage("Senarai murid guru lain memerlukan kebenaran suntingan pentadbir.");return;}
+    if(!confirm("Buang "+student.name+" daripada senarai kelas?"))return;
     try{
       const roster=await removeRosterStudent(rosterClassCode,student.id);
       if(studentLoginMode==="legacy-pin"){
@@ -376,13 +388,13 @@ export default function TeacherPage(){
     }catch{setMessage("Nama murid tidak dapat dibuang.")}
   }
   async function clearStudentSession(student:ClassStudent){
-    if(!rosterClassCode||!canManageClassCode(rosterClassCode)){setMessage("Reset sesi memerlukan akses edit kelas.");return}
+    if(!rosterClassCode||!canManageClassCode(rosterClassCode)){setMessage("Tindakan ini memerlukan kebenaran mengubah kelas.");return}
     try{
       await resetStudentPresence(rosterClassCode,student.id);
       setStudentPresence(current=>current.filter(item=>!(item.classCode===rosterClassCode&&item.studentId===student.id)));
       await log("MURID_RESET_SESI",student.name+" · "+rosterClassCode);
-      setMessage("Sesi aktif "+student.name+" telah direset.");
-    }catch(error){console.error(error);setMessage("Sesi murid tidak dapat direset.")}
+      setMessage("Akses peranti "+student.name+" telah dikosongkan.");
+    }catch(error){console.error(error);setMessage("Akses peranti murid tidak dapat dikosongkan.")}
   }
 
   async function copyLegacyAccessCodes(){
@@ -413,13 +425,13 @@ export default function TeacherPage(){
         if(n>(baseline.get(name)||0)){current.push(name);baseline.set(name,(baseline.get(name)||0)+1)}
       });
       const saved=await saveClassRoster(rosterClassCode,current);
-      await updateRosterState(rosterClassCode,saved);await log("MURID_IMPORT",imported.length+" nama · "+rosterClassCode);setMessage("Import selesai: "+saved.length+" rekod murid dengan ID unik.");
+      await updateRosterState(rosterClassCode,saved);await log("MURID_IMPORT",imported.length+" nama · "+rosterClassCode);setMessage("Senarai murid berjaya dimasukkan: "+saved.length+" murid.");
     }catch(e){console.error(e);setMessage("Import gagal. Gunakan Excel/CSV dengan kolum Nama.");}finally{setImporting(false)}
   }
 
   async function createAssignment(extra?:{questionIds?:string[];targetStudentIds?:string[];title?:string;chapter?:number;count?:number}){
     if(!assignmentClassCode)return;
-    if(!canManageClassCode(assignmentClassCode)){setMessage("Tugasan kelas guru lain memerlukan Mode Edit Admin.");return;}
+    if(!canManageClassCode(assignmentClassCode)){setMessage("Tugasan kelas guru lain memerlukan kebenaran suntingan pentadbir.");return;}
     const title=extra?.title||assignmentTitle;if(!title.trim())return;
     try{
       const ids=extra?.questionIds||[];
@@ -432,21 +444,21 @@ export default function TeacherPage(){
     }catch(e){console.error(e);setMessage("Tugasan tidak dapat disimpan.")}
   }
   async function removeAssignmentItem(classCode:string,id:string){
-    if(!canManageClassCode(classCode)){setMessage("Tugasan guru lain memerlukan Mode Edit Admin.");return;}
+    if(!canManageClassCode(classCode)){setMessage("Tugasan guru lain memerlukan kebenaran suntingan pentadbir.");return;}
     if(!confirm("Padam tugasan ini?"))return;
     try{patchClass(classCode,{assignments:await deleteAssignment(classCode,id)});await log("TUGASAN_PADAM",id);}catch{setMessage("Tugasan gagal dipadam.")}
   }
   async function toggleAssignmentActive(classCode:string,id:string){
-    if(!canManageClassCode(classCode)){setMessage("Tugasan guru lain memerlukan Mode Edit Admin.");return;}
+    if(!canManageClassCode(classCode)){setMessage("Tugasan guru lain memerlukan kebenaran suntingan pentadbir.");return;}
     const item=managedClasses.find(c=>c.code===classCode)?.assignments.find(a=>a.id===id);if(!item)return;
     try{patchClass(classCode,{assignments:await saveAssignment(classCode,{...item,active:!item.active})});await log("TUGASAN_STATUS",item.title+" -> "+(!item.active));}catch{setMessage("Status tugasan gagal.")}
   }
 
   async function resetAttempt(id:string){
     const record=attempts.find(item=>item.id===id);
-    if(record?.classCode&&!canManageClassCode(record.classCode)){setMessage("Rekod kelas guru lain memerlukan Mode Edit Admin.");return;}
-    if(!canEdit||!confirm("Reset rekod percubaan ini daripada data pusat?"))return;
-    try{await deleteRemoteAttempt(id);setAttempts(a=>a.filter(x=>x.id!==id));await log("PERCUBAAN_RESET",id);setMessage("Rekod pusat dipadam. Murid boleh membuat percubaan baharu.");}catch{setMessage("Rekod tidak dapat direset.")}
+    if(record?.classCode&&!canManageClassCode(record.classCode)){setMessage("Rekod kelas guru lain memerlukan kebenaran suntingan pentadbir.");return;}
+    if(!canEdit||!confirm("Padam rekod percubaan ini? Murid boleh membuat percubaan baharu selepas rekod dipadam."))return;
+    try{await deleteRemoteAttempt(id);setAttempts(a=>a.filter(x=>x.id!==id));await log("PERCUBAAN_RESET",id);setMessage("Rekod dipadam. Murid boleh membuat percubaan baharu.");}catch{setMessage("Rekod tidak dapat dipadam.")}
   }
 
   async function saveQuestion(){
@@ -456,7 +468,7 @@ export default function TeacherPage(){
     try{
       await saveCustomQuestion({id:questionForm.id||undefined,chapter:questionForm.chapter,subtopic:questionForm.subtopic,difficulty:questionForm.difficulty,type:questionForm.type,prompt:questionForm.prompt,options:opts,answer,explanation:questionForm.explanation,custom:true,active:true});
       setCustomQuestions(await getCustomQuestions(true));setQuestionForm({id:"",chapter:bankChapter,subtopic:bankChapter+".1",difficulty:"medium",type:"mcq",prompt:"",a:"",b:"",c:"",d:"",answer:"A",explanation:""});
-      await log("SOALAN_SIMPAN",questionForm.id||"Soalan custom baharu");setMessage("Soalan custom disimpan.");
+      await log("SOALAN_SIMPAN",questionForm.id||"Soalan tambahan baharu");setMessage("Soalan tambahan disimpan.");
     }catch(e:any){setMessage(e?.message||"Soalan gagal disimpan.")}
   }
   function editQuestion(q:CustomQuestion){
@@ -466,7 +478,7 @@ export default function TeacherPage(){
     if(!canEdit)return;await archiveCustomQuestion(id,active);setCustomQuestions(await getCustomQuestions(true));await log("SOALAN_STATUS",id+" -> "+active);
   }
   async function removeQuestion(id:string){
-    if(!canEdit||!confirm("Padam soalan custom "+id+"?"))return;await deleteCustomQuestion(id);setCustomQuestions(await getCustomQuestions(true));setBankSelection(s=>s.filter(x=>x!==id));await log("SOALAN_PADAM",id);
+    if(!canEdit||!confirm("Padam soalan tambahan "+id+"?"))return;await deleteCustomQuestion(id);setCustomQuestions(await getCustomQuestions(true));setBankSelection(s=>s.filter(x=>x!==id));await log("SOALAN_PADAM",id);
   }
   function makeWorksheet(){
     if(!bankSelection.length){setMessage("Pilih sekurang-kurangnya satu soalan.");return}
@@ -474,7 +486,7 @@ export default function TeacherPage(){
   }
 
   async function createIntervention(student:RegisteredStudent){
-    if(!canManageClassCode(student.classCode)){setMessage("Intervensi kelas guru lain memerlukan Mode Edit Admin.");return;}
+    if(!canManageClassCode(student.classCode)){setMessage("Pemulihan kelas guru lain memerlukan kebenaran suntingan pentadbir.");return;}
     const own=attempts.filter(a=>a.studentId===student.localStudentId||(a.studentName===student.name&&a.className===student.className));
     const groups=new Map<number,number[]>();own.filter(a=>a.chapter>0).forEach(a=>groups.set(a.chapter,[...(groups.get(a.chapter)||[]),a.percentage]));
     const weak=[...groups.entries()].sort((a,b)=>pct(a[1])-pct(b[1]))[0]?.[0]||1;
@@ -484,53 +496,53 @@ export default function TeacherPage(){
       const due=new Date();due.setDate(due.getDate()+7);
       const next=await saveAssignment(cls.code,{title:"Pemulihan · "+student.name,chapter:weak,questionCount:10,dueDate:due.toISOString().slice(0,10),active:true,questionIds:[],maxAttempts:3,targetStudentIds:[student.localStudentId]});
       patchClass(cls.code,{assignments:next});await log("INTERVENSI_ASSIGN",student.name+" · Bab "+weak);setMessage("Pemulihan Bab "+weak+" ditetapkan kepada "+student.name+".");
-    }catch{setMessage("Intervensi gagal ditetapkan.")}
+    }catch{setMessage("Latihan pemulihan gagal ditetapkan.")}
   }
 
   async function bootstrapFirstAdmin(){
     if(deployingRules)return;
-    setDeployingRules(true);setAuthError("");setMessage("Menyediakan Admin GeoBoost dan Firebase P1...");
+    setDeployingRules(true);setAuthError("");setMessage("Menyediakan akses pentadbir...");
     try{
       const result=await bootstrapGeoBoostAdmin();
       const user={uid:result.uid,email:result.email||null};
       setAuthUser(user);setTeacherUid(result.uid);setTeacherEmail(result.email||"Admin GeoBoost");
       setFirebaseRulesReady(true);
-      setMessage("Admin dan Firestore Rules P1 berjaya diaktifkan. Memuat Control Center...");
+      setMessage("Akses pentadbir berjaya disediakan. Memuatkan halaman guru...");
       await loadTeacherData(user);
     }catch(error:any){
       console.error(error);
       setFirebaseRulesReady(false);
-      setAuthError("Aktivasi admin belum selesai: "+String(error?.message||"akaun Google ini memerlukan kebenaran pemilik projek Firebase."));
+      setAuthError("Penyediaan akses pentadbir belum selesai. Sila semak kebenaran akaun dan cuba semula.");
     }finally{setDeployingRules(false)}
   }
 
   async function activateFirebaseP1(){
     if(!isAdmin||deployingRules)return;
-    setDeployingRules(true);setMessage("Menerbitkan semula Firestore Rules...");
+    setDeployingRules(true);setMessage("Menyemak semula sistem...");
     try{
       const result=await deployGeoBoostFirestoreRules();
       setFirebaseRulesReady(true);
       await log("FIREBASE_RULES",result.rulesetName);
-      setMessage("Firestore Rules berjaya diterbitkan.");
+      setMessage("Semakan sistem selesai.");
       if(authUser)await loadTeacherData(authUser);
     }catch(error:any){
       console.error(error);setFirebaseRulesReady(false);
-      setMessage("Rules belum dapat diterbitkan: "+String(error?.message||"kebenaran Google/Firebase diperlukan."));
+      setMessage("Semakan sistem belum dapat diselesaikan. Cuba semula.");
     }finally{setDeployingRules(false)}
   }
 
   async function activateMultiTeacher(){
     if(!isAdmin||deployingRules)return;
-    setDeployingRules(true);setMessage("Mengaktifkan Email + Password, multi-guru dan Firestore Rules...");
+    setDeployingRules(true);setMessage("Menyediakan fungsi akaun guru...");
     try{
       const result=await deployGeoBoostMultiTeacher();
       setFirebaseRulesReady(true);
       await log("MULTI_GURU_AKTIF",result.rulesetName);
-      setMessage("Sistem Multi-Guru aktif. Pendaftaran Email + Password dan Rules baharu telah diterbitkan.");
+      setMessage("Fungsi akaun guru sudah tersedia.");
       if(authUser)await loadTeacherData(authUser);
     }catch(error:any){
       console.error(error);setFirebaseRulesReady(false);
-      setMessage("Aktivasi Multi-Guru belum selesai: "+String(error?.message||"kebenaran pemilik projek Firebase diperlukan."));
+      setMessage("Penyediaan fungsi akaun guru belum selesai. Cuba semula.");
     }finally{setDeployingRules(false)}
   }
 
@@ -540,9 +552,9 @@ export default function TeacherPage(){
       await linkCurrentTeacherPassword(adminNewPassword);
       setAdminNewPassword("");
       await log("ADMIN_PASSWORD","Email + Password dipautkan pada akaun admin.");
-      setMessage("Kata laluan admin siap. Selepas ini Bos boleh login menggunakan email + password.");
+      setMessage("Kata laluan pentadbir berjaya ditetapkan.");
     }catch(error:any){
-      setMessage("Kata laluan belum dapat ditetapkan: "+String(error?.message||""));
+      console.error(error);setMessage("Kata laluan belum dapat ditetapkan. Cuba semula.");
     }
   }
 
@@ -554,21 +566,21 @@ export default function TeacherPage(){
       setAdminEditUntil(expiresAt);setAdminEditPassword("");
       const target=teacherProfiles.find(t=>t.uid===adminTeacherUid);
       await log("ADMIN_EDIT_MULA",(target?.name||adminTeacherUid)+" · 15 minit");
-      setMessage("Mode Edit Admin aktif selama 15 minit untuk "+(target?.name||"guru dipilih")+".");
+      setMessage("Suntingan pentadbir dibenarkan selama 15 minit untuk "+(target?.name||"guru dipilih")+".");
     }catch(error:any){
-      setMessage("Pengesahan admin gagal. Semak kata laluan.");
+      setMessage("Pengesahan pentadbir gagal. Semak kata laluan.");
     }
   }
 
   async function leaveAdminEdit(){
     await endAdminEditSession();
     setAdminEditUntil(0);setAdminEditPassword("");
-    setMessage("Mode Edit Admin ditutup. Kembali ke Mode Lihat.");
+    setMessage("Suntingan pentadbir ditutup. Kembali ke paparan sahaja.");
   }
 
   async function updateTeacherAccess(target:TeacherProfile,patch:Partial<TeacherProfile>,action:string){
     if(!isAdmin||adminTeacherUid!==target.uid||!adminEditActive||Date.now()>=adminEditUntil){
-      setMessage("Aktifkan Mode Edit dan sahkan kata laluan admin dahulu.");return;
+      setMessage("Benarkan suntingan dan sahkan kata laluan pentadbir dahulu.");return;
     }
     const next={...target,...patch};
     try{
@@ -576,12 +588,12 @@ export default function TeacherPage(){
       setTeacherProfiles(await listTeacherProfiles());
       await log(action,target.name+" · "+String(next.status||"active")+" · "+next.role);
       setMessage("Akaun "+target.name+" berjaya dikemas kini.");
-    }catch(error:any){setMessage("Akaun guru gagal dikemas kini: "+String(error?.message||""))}
+    }catch(error:any){console.error(error);setMessage("Akaun guru gagal dikemas kini. Cuba semula.")}
   }
 
   async function moveClassOwner(classCode:string,newOwnerUid:string){
     if(!isAdmin||!adminTeacherUid||!adminEditActive||Date.now()>=adminEditUntil){
-      setMessage("Aktifkan Mode Edit guru dahulu.");return;
+      setMessage("Benarkan suntingan guru dahulu.");return;
     }
     const target=teacherProfiles.find(t=>t.uid===newOwnerUid);
     if(!target||target.status!=="active"){setMessage("Pilih guru aktif sebagai pemilik baharu.");return}
@@ -590,7 +602,7 @@ export default function TeacherPage(){
       patchClass(classCode,{ownerTeacherId:newOwnerUid});
       await log("KELAS_TUKAR_GURU",classCode+" → "+target.name);
       setMessage("Kelas "+classCode+" kini di bawah "+target.name+".");
-    }catch(error:any){setMessage("Pemilik kelas gagal ditukar: "+String(error?.message||""))}
+    }catch(error:any){console.error(error);setMessage("Guru kelas gagal ditukar. Cuba semula.")}
   }
 
   function backup(){
