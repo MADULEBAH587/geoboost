@@ -121,8 +121,8 @@ export default function StudentLoginPage() {
       console.error(error);
       const permission=String(error?.code||"").includes("permission-denied");
       setNote(permission
-        ?"Nama ini belum dibenarkan untuk kelas tersebut. Minta guru semak senarai nama."
-        :"Pengesahan murid gagal. Semak Internet dan cuba semula.");
+        ?"Nama ini belum dapat disahkan. Minta guru semak senarai kelas."
+        :"Maklumat belum dapat disimpan. Cuba semula.");
       setConfirmStage(0);setSaving(false);
     }
   }
@@ -136,7 +136,7 @@ export default function StudentLoginPage() {
   return <main className="auth-shell student-login-shell">
     <section className="auth-card student-login-card">
       <a href="/" className="mini-brand"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>TINGKATAN 2</small></span></a>
-      <span className="eyebrow dark">AKSES MURID · v2.2</span>
+      <span className="eyebrow dark">AKSES MURID</span>
       <h1>Masuk GeoBoost</h1>
       <p>Masukkan <b>kod kelas</b>, pilih nama anda dan buat <b>dua pengesahan ringkas</b>. Tiada PIN atau akaun murid diperlukan.</p>
 
@@ -160,7 +160,7 @@ export default function StudentLoginPage() {
 
       {existing?<button className="student-logout" type="button" onClick={logout}>Keluar murid tersimpan / guna nama lain</button>:null}
       {note?<small className="auth-note">{note}</small>:null}
-      <small className="auth-note">☁️ {firebaseConfigured?"Firebase aktif · login murid tanpa PIN":"Mod peranti"}</small>
+      
     </section>
   </main>;
 }
