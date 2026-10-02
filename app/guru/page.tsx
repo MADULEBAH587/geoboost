@@ -661,6 +661,7 @@ export default function TeacherPage(){
           <div className="panel-title"><div><small>LIVE MONITORING</small><h2>Aktiviti kelas sekarang</h2></div><span>{currentLive.length}</span></div>
           <p className="class-help">Status berubah apabila murid bergerak ke soalan seterusnya. Rekod lebih 30 minit tidak dianggap aktif.</p>
           {currentLive.length?<div className="live-grid">{currentLive.map(item=><div key={item.uid}><span className={"live-dot "+item.status}/><div><strong>{item.studentName}</strong><small>{item.className} · {item.title}</small></div><b>{item.status==="complete"?"Selesai":item.current+"/"+item.total}</b><em>{item.total?Math.round(item.current/item.total*100):0}%</em></div>)}</div>:<div className="panel-empty">Tiada murid aktif dalam 30 minit terakhir.</div>}
+          {duplicateSessions.length?<div className="duplicate-session-box"><strong>⚠️ Sesi nama berganda dikesan</strong><p>Nama berikut baru digunakan pada lebih daripada satu peranti. Semak jika perlu.</p>{duplicateSessions.slice(0,12).map(item=><div key={item.id}><span>{item.studentName}</span><small>{managedClasses.find(c=>c.code===item.classCode)?.name||item.classCode}</small><b>2+ peranti</b></div>)}</div>:null}
         </section>:null}
 
         {activeSection==="interventions"?<section className="panel intervention-panel">
