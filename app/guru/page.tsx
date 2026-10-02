@@ -795,11 +795,87 @@ export default function TeacherPage(){
           <div className="class-cards">{managedClasses.map(item=><article key={item.code} className={"class-admin-card "+(item.archived?"archived":"")}><div className="class-admin-head"><div><strong>{item.name}</strong><small>{item.code} · {item.academicYear} · {item.studentNames.length} murid · {item.openChapters.length}/10 bab</small></div><div className="class-actions"><button onClick={()=>showQr(item)}>QR</button><button onClick={()=>copyStudentLink(item.code)}>Salin link</button><button onClick={()=>archiveClass(item.code,!item.archived)} disabled={!canManageClassCode(item.code)}>{item.archived?"Aktifkan":"Arkib"}</button><button className="danger" onClick={()=>deleteClass(item.code)} disabled={!canManageClassCode(item.code)}>Padam</button></div></div>{!item.archived?<div className="chapter-access-grid">{chapters.map(ch=><button key={ch.id} className={item.openChapters.includes(ch.id)?"open":"closed"} disabled={!canManageClassCode(item.code)} onClick={()=>toggleChapter(item.code,ch.id)}><span>Bab {ch.id}</span><b>{item.openChapters.includes(ch.id)?"Dibuka":"Ditutup"}</b></button>)}</div>:<div className="archive-banner">📦 Kelas ini diarkib dan tidak boleh digunakan untuk login murid.</div>}</article>)}</div>
         </section>:null}
 
-        {activeSection==="students"?<section className="panel roster-manager">
-          <div className="panel-title"><div><small>PENGURUSAN MURID</small><h2>Senarai & profil murid</h2></div><span>{studentDirectory.length}</span></div>
-          {!activeClasses.length?<div className="panel-empty">Cipta atau aktifkan kelas dahulu.</div>:<><div className="roster-toolbar"><label>Kelas<select value={rosterClassCode} onChange={e=>setRosterClassCode(e.target.value)}>{activeClasses.map(c=><option key={c.code} value={c.code}>{c.name} · {c.code}</option>)}</select></label><div className="roster-add"><input value={manualStudentName} onChange={e=>setManualStudentName(e.target.value)} placeholder="Nama penuh murid"/><button onClick={()=>addStudentToRoster()} disabled={!canManageClassCode(rosterClassCode)||!manualStudentName.trim()}>Tambah manual</button></div><label className="import-button">{importing?"Mengimport...":"Import Excel / CSV"}<input type="file" accept=".xlsx,.xls,.csv,.txt" disabled={!canManageClassCode(rosterClassCode)||importing} onChange={importStudents}/></label>{studentLoginMode==="legacy-pin"?<button onClick={copyLegacyAccessCodes} disabled={!rosterClass?.studentRoster.length}>Salin Kod Akses Sementara</button>:null}</div>
-          {selfAddedNotRoster.length?<div className="self-added-box"><strong>Nama ditambah sendiri oleh murid</strong><p>Semak dan masukkan ke dropdown rasmi kelas.</p>{selfAddedNotRoster.map(s=><div key={s.uid}><span>{s.name}</span><button disabled={!canManageClassCode(rosterClassCode)} onClick={()=>addStudentToRoster(s.name)}>Masuk Senarai</button></div>)}</div>:null}
-          <div className="student-admin-layout"><div>{rosterClass?.studentRoster.length?<div className="roster-list">{rosterClass.studentRoster.map((student,index)=>{const profile=selfRegistered.find(s=>s.localStudentId===student.id);const presence=studentPresence.find(item=>item.classCode===rosterClassCode&&item.studentId===student.id);const access=studentAccessCodes.find(item=>item.classCode===rosterClassCode&&item.studentId===student.id);const key=profile?.localStudentId||student.id;return <div key={student.id} className={selectedStudentKey===key?"selected":""}><span>{index+1}</span><strong onClick={()=>profile&&setSelectedStudentKey(key)}>{student.name}</strong><small>{presence?.duplicate?"⚠️ Sesi berganda · ":""}{studentLoginMode==="legacy-pin"&&access?.pin?"Kod sementara "+access.pin+" · ":""}{profile?"Pernah masuk":"Belum masuk"}</small><button disabled={!canManageClassCode(rosterClassCode)} onClick={()=>removeStudentFromRoster(student)}>Buang</button></div>})}</div>:<div className="panel-empty">Belum ada nama.</div>}</div><div className="student-profile-card">{selectedStudent?<><small>PROFIL MURID</small><h3>{selectedStudent.name}</h3><p>{selectedStudent.className} · {selectedStudentAttempts.length} percubaan</p><div className="profile-metrics"><div><span>Purata</span><b>{pct(selectedStudentAttempts.map(a=>a.percentage))}%</b></div><div><span>Terbaik</span><b>{selectedStudentAttempts.length?Math.max(...selectedStudentAttempts.map(a=>a.percentage)):0}%</b></div></div>{selectedStudentAttempts.slice(0,7).map(a=><div className="profile-attempt" key={a.id}><span>{a.chapter?"Bab "+a.chapter:a.mode}</span><b>{a.percentage}%</b></div>)}<button className="intervention-button" disabled={!canManageClassCode(selectedStudent.classCode)} onClick={()=>createIntervention(selectedStudent)}>🎯 Assign Pemulihan</button></>:<><small>PROFIL MURID</small><h3>Pilih murid</h3><p>Klik nama murid yang pernah masuk GeoBoost.</p></>}</div></div></>}
+        {activeSection==="students"?<section className="panel roster-manager student-manager-v2">
+          <div className="student-manager-head">
+            <div><small>PENGURUSAN MURID</small><h2>Senarai & profil murid</h2><p>Pilih kelas, cari murid dan klik nama untuk lihat prestasi lengkap.</p></div>
+            <label>Kelas<select value={rosterClassCode} onChange={e=>{setRosterClassCode(e.target.value);setSelectedStudentKey("");setMobileStudentProfile(false)}}>{activeClasses.map(c=><option key={c.code} value={c.code}>{c.name} · {c.code}</option>)}</select></label>
+          </div>
+
+          {!activeClasses.length?<div className="panel-empty">Cipta atau aktifkan kelas dahulu.</div>:<>
+            <div className="student-class-stats">
+              <div><span>Jumlah Murid</span><b>{studentClassStats.total}</b></div>
+              <div><span>Pernah Masuk</span><b>{studentClassStats.logged}</b></div>
+              <div><span>Belum Masuk</span><b>{studentClassStats.new}</b></div>
+              <div className={studentClassStats.duplicate?"warn":""}><span>Sesi Berganda</span><b>{studentClassStats.duplicate}</b></div>
+            </div>
+
+            <div className="student-toolbar-v2">
+              <div className="student-search-box"><span>⌕</span><input value={studentSearch} onChange={e=>setStudentSearch(e.target.value)} placeholder="Cari nama murid..."/></div>
+              <button className="student-add-button" onClick={()=>setStudentAddOpen(true)} disabled={!canManageClassCode(rosterClassCode)}>+ Tambah Murid</button>
+              <label className="student-import-button">{importing?"Mengimport...":"⇧ Import Excel / CSV"}<input type="file" accept=".xlsx,.xls,.csv,.txt" disabled={!canManageClassCode(rosterClassCode)||importing} onChange={importStudents}/></label>
+            </div>
+
+            <div className="student-filter-pills">
+              {[
+                ["all","Semua",studentClassStats.total],
+                ["logged","Pernah Masuk",studentClassStats.logged],
+                ["new","Belum Masuk",studentClassStats.new],
+                ["intervention","Perlu Intervensi",studentRosterRows.filter(row=>row.needsIntervention).length],
+                ["duplicate","Sesi Berganda",studentClassStats.duplicate],
+              ].map(([id,label,count])=><button key={String(id)} className={studentStatusFilter===id?"active":""} onClick={()=>setStudentStatusFilter(id as typeof studentStatusFilter)}>{label}<b>{count}</b></button>)}
+            </div>
+
+            <div className={"student-admin-layout modern "+(mobileStudentProfile?"show-profile":"")}>
+              <div className="student-roster-pane">
+                <div className="student-list-head"><span>#</span><span>Nama Murid</span><span>Status</span><span>Prestasi</span><span>Aktiviti</span><span/></div>
+                <div className="student-roster-modern">
+                  {visibleStudentRows.length?visibleStudentRows.map(row=><div key={row.student.id} className={"student-row-modern "+(selectedStudentKey===row.student.id?"selected":"")} onClick={()=>{setSelectedStudentKey(row.student.id);setMobileStudentProfile(true)}}>
+                    <span className="student-index">{row.index+1}</span>
+                    <div className="student-name-cell"><strong>{row.student.name}</strong><small>{rosterClass?.name} · {rosterClass?.code}</small></div>
+                    <div className="student-status-cell">{row.duplicate?<span className="status-chip duplicate">⚠ 2+ sesi</span>:row.logged?<span className="status-chip logged">● Pernah masuk</span>:<span className="status-chip new">○ Belum masuk</span>}</div>
+                    <div className="student-performance-cell"><b>{row.attempts.length?row.average+"%":"—"}</b><small>{row.attempts.length} percubaan</small></div>
+                    <div className="student-activity-cell">{row.lastActivity?<><b>{new Date(row.lastActivity).toLocaleDateString("ms-MY")}</b><small>{new Date(row.lastActivity).toLocaleTimeString("ms-MY",{hour:"2-digit",minute:"2-digit"})}</small></>:<span>—</span>}</div>
+                    <button className="student-row-arrow" aria-label={"Buka profil "+row.student.name}>›</button>
+                  </div>):<div className="panel-empty">Tiada murid sepadan dengan carian atau penapis ini.</div>}
+                </div>
+              </div>
+
+              <aside className="student-profile-card student-profile-v2">
+                {selectedStudentRow&&selectedStudent?<>
+                  <button className="student-profile-back" onClick={()=>setMobileStudentProfile(false)}>← Senarai murid</button>
+                  <div className="student-profile-identity"><span>{selectedStudent.name.slice(0,1)}</span><div><small>PROFIL MURID</small><h3>{selectedStudent.name}</h3><p>{selectedStudent.className} · {selectedStudent.classCode}</p></div></div>
+                  <div className="student-profile-status">{selectedStudentRow.duplicate?<span className="status-chip duplicate">⚠ Sesi berganda dikesan</span>:selectedStudentRow.logged?<span className="status-chip logged">● Pernah masuk GeoBoost</span>:<span className="status-chip new">○ Belum pernah masuk</span>}</div>
+
+                  <div className="profile-metrics profile-metrics-v2">
+                    <div><span>Purata</span><b>{selectedStudentRow.attempts.length?selectedStudentRow.average+"%":"—"}</b></div>
+                    <div><span>Terbaik</span><b>{selectedStudentRow.attempts.length?selectedStudentRow.best+"%":"—"}</b></div>
+                    <div><span>Percubaan</span><b>{selectedStudentRow.attempts.length}</b></div>
+                  </div>
+
+                  <div className="student-profile-section"><div className="subsection-title"><strong>Prestasi Mengikut Bab</strong><span>{selectedChapterPerformance.length}</span></div>
+                    {selectedChapterPerformance.length?<div className="student-chapter-performance">{selectedChapterPerformance.map(item=><div key={item.id}><span>Bab {item.id}</span><div><i style={{width:item.avg+"%"}}/></div><b>{item.avg}%</b></div>)}</div>:<div className="student-empty-mini">Belum ada latihan bab direkodkan.</div>}
+                  </div>
+
+                  <div className="student-profile-section"><div className="subsection-title"><strong>Aktiviti Terkini</strong><span>{selectedStudentAttempts.length}</span></div>
+                    {selectedStudentAttempts.length?<div className="student-recent-attempts">{selectedStudentAttempts.slice(0,6).map(a=><div key={a.id}><div><b>{a.chapter?"Bab "+a.chapter:(a.label||"Latihan")}</b><small>{new Date(a.completedAt).toLocaleDateString("ms-MY")}</small></div><strong>{a.percentage}%</strong></div>)}</div>:<div className="student-empty-mini">Murid ini belum mempunyai rekod latihan.</div>}
+                  </div>
+
+                  {selectedStudentRow.duplicate?<div className="student-duplicate-action"><div><strong>⚠️ Lebih daripada satu peranti</strong><small>Reset sesi jika guru mahu kosongkan amaran login berganda.</small></div><button onClick={()=>clearStudentSession(selectedStudentRow.student)} disabled={!canManageClassCode(rosterClassCode)}>Reset Sesi Murid</button></div>:null}
+
+                  <div className="student-profile-actions">
+                    <button className="intervention-button" disabled={!canManageClassCode(selectedStudent.classCode)} onClick={()=>createIntervention(selectedStudent)}>🎯 Assign Pemulihan</button>
+                    <button className="student-remove-button" disabled={!canManageClassCode(rosterClassCode)} onClick={()=>removeStudentFromRoster(selectedStudentRow.student)}>Buang dari kelas</button>
+                  </div>
+                </>:<div className="student-profile-empty"><span>👤</span><h3>Pilih murid</h3><p>Klik mana-mana murid untuk melihat status login, prestasi dan aktiviti.</p></div>}
+              </aside>
+            </div>
+
+            {studentAddOpen?<div className="student-modal-backdrop" onMouseDown={()=>setStudentAddOpen(false)}><div className="student-modal" onMouseDown={e=>e.stopPropagation()}>
+              <div><small>TAMBAH MURID</small><h3>{rosterClass?.name}</h3><p>Nama akan terus dimasukkan ke senarai login kelas ini.</p></div>
+              <label>Nama penuh murid<input autoFocus value={manualStudentName} onChange={e=>setManualStudentName(e.target.value)} placeholder="Contoh: AHMAD BIN ALI" onKeyDown={async e=>{if(e.key==="Enter"&&manualStudentName.trim()){await addStudentToRoster();setStudentAddOpen(false)}}}/></label>
+              <div className="student-modal-actions"><button onClick={()=>{setStudentAddOpen(false);setManualStudentName("")}}>Batal</button><button className="primary" disabled={!manualStudentName.trim()} onClick={async()=>{await addStudentToRoster();setStudentAddOpen(false)}}>Tambah Murid</button></div>
+            </div></div>:null}
+          </>}
         </section>:null}
 
         {activeSection==="assignments"?<section className="panel assignment-manager">
