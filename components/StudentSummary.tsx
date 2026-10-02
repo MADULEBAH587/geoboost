@@ -43,9 +43,9 @@ export function StudentSummary() {
         <div className="guest-icon">👋</div>
         <small className="eyebrow dark">BELUM MASUK</small>
         <h2>Mulakan sebagai murid</h2>
-        <p>Masukkan kod kelas, kemudian pilih nama daripada senarai untuk merekodkan markah, XP dan latihan pemulihan.</p>
+        <p>Masukkan kod kelas, kemudian pilih nama daripada senarai untuk merekodkan markah, Mata Ilmu dan latihan pemulihan.</p>
         <a className="primary full center" href="/murid">Masuk Murid →</a>
-        <small className="guest-note">Firebase akan menyelaraskan rekod apabila konfigurasi projek disambungkan.</small>
+        
       </div>
     );
   }
@@ -62,7 +62,7 @@ export function StudentSummary() {
         <div className="overall-track"><span style={{width:avg+"%"}} /></div>
       </div>
       <div className="stat-grid">
-        <div><small>XP</small><b>{xp}</b><span>⭐</span></div>
+        <div><small>Mata Ilmu</small><b>{xp}</b><span>⭐</span></div>
         <div><small>Bab lulus</small><b>{completed}/10</b><span>✓</span></div>
         <div><small>Percubaan</small><b>{ownAttempts.length}</b><span>◎</span></div>
       </div>
