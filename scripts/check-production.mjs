@@ -18,7 +18,7 @@ const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"))
 const checks = {
   totalQuestions: total === 390,
   optionShuffle: engine.includes("options: shuffle(question.options)"),
-  version: pkg.version === "1.1.0",
+  version: pkg.version === "2.5.0",
 };
 
 if (missing.length || Object.values(checks).some((value) => !value)) {
