@@ -304,6 +304,18 @@ export async function setClassArchived(classCode: string, archived: boolean) {
   return archived;
 }
 
+export async function transferClassOwner(classCode:string,newTeacherId:string){
+  const { services }=teacherUid();
+  const code=normalizeClassCode(classCode);
+  const owner=String(newTeacherId||"").trim();
+  if(!owner)throw new Error("Guru baharu diperlukan");
+  const ref=doc(services.db,"classes",code);
+  const snapshot=await getDoc(ref);
+  if(!snapshot.exists())throw new Error("Kelas tidak dijumpai");
+  await setDoc(ref,{ownerTeacherId:owner,updatedAt:serverTimestamp()},{merge:true});
+  return owner;
+}
+
 export async function removeClass(code: string) {
   const { services } = teacherUid();
   await deleteDoc(doc(services.db, "classes", normalizeClassCode(code)));
