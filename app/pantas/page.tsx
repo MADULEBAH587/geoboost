@@ -21,7 +21,7 @@ export default function QuickSetupPage() {
 
   return (
     <main className="setup-shell">
-      <header className="topbar compact"><a className="brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>TINGKATAN 2</small></span></a><a className="back" href="/">← Dashboard</a></header>
+      <header className="topbar compact"><a className="brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>TINGKATAN 2</small></span></a><a className="back" href="/">← Utama</a></header>
       <section className="setup-card">
         <span className="eyebrow dark">⚡ LATIH TUBI PANTAS</span><h1>Pilih bab untuk digabungkan</h1><p>GeoBoost akan memilih soalan rawak daripada bab yang dipilih.</p>
         <div className="chapter-picks">{chapters.map(c=><button key={c.id} onClick={()=>toggle(c.id)} className={selected.includes(c.id)?"picked":""}><span>{c.icon}</span><div><small>BAB {c.id}</small><b>{c.title}</b></div><i>{selected.includes(c.id)?"✓":"+"}</i></button>)}</div>
