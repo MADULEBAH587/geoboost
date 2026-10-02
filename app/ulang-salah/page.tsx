@@ -19,6 +19,6 @@ export default function RetryWrongPage() {
   },[]);
 
   if(bank===null)return <main className="quiz-shell"><div className="empty-state"><h1>Memuatkan soalan...</h1></div></main>;
-  if(!bank.length)return <main className="quiz-shell"><div className="empty-state"><span className="result-icon">✅</span><h1>Tiada soalan lemah</h1><p>Soalan yang kerap salah akan dikumpulkan di sini secara automatik.</p><a className="primary" href="/murid/latihan">Kembali</a></div></main>;
-  return <PracticeRunner bank={bank} requested={Math.min(20,bank.length)} title="Bank Soalan Lemah Saya" eyebrow="ULANG SOALAN LEMAH" mode="ulang-salah" returnHref="/murid/latihan" />;
+  if(!bank.length)return <main className="quiz-shell"><div className="empty-state"><span className="result-icon">✅</span><h1>Tiada soalan untuk diulang</h1><p>Soalan yang pernah dijawab salah akan dikumpulkan di sini secara automatik.</p><a className="primary" href="/murid/latihan">Kembali</a></div></main>;
+  return <PracticeRunner bank={bank} requested={Math.min(20,bank.length)} title="Soalan Salah Saya" eyebrow="ULANG SOALAN SALAH" mode="ulang-salah" returnHref="/murid/latihan" />;
 }
