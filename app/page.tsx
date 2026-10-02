@@ -16,7 +16,7 @@ export default function Home(){
         <h1>Belajar. Cuba.<br/><em>Kuasai Geografi.</em></h1>
         <p>GeoBoost menyusun latihan Bab 1–10, tugasan guru, pemulihan pintar, simulasi UASA dan rekod pencapaian dalam satu sistem yang mesra telefon.</p>
         <div className="public-trust"><span>✓ {questions.length} soalan aktif</span><span>✓ Tugasan kelas</span><span>✓ Autosave</span><span>✓ Analitik prestasi</span></div>
-        <div className="byline">By Cikgu Zulhasif · v2.0</div>
+        <div className="byline">By Cikgu Zulhasif · v2.4</div>
       </div>
       <div className="public-login-panel">
         <span className="eyebrow dark">AKSES MURID</span><h2>Masuk kelas anda</h2><p>Masukkan kod kelas. Pilih nama. Terus belajar.</p>
@@ -38,6 +38,6 @@ export default function Home(){
 
     <section className="public-cta"><div><small>BANK GEOBOOST</small><b>{totalQuestionBank}</b><span>soalan Geografi Tingkatan 2</span></div><a className="primary" href="/murid">Mula GeoBoost →</a></section>
 
-    <footer><div className="footer-brand"><span className="brand-mark small">G</span><div><b>GeoBoost Tingkatan 2</b><small>Latihan Pengukuhan Interaktif Geografi</small></div></div><span>By Cikgu Zulhasif · v2.0</span></footer>
+    <footer><div className="footer-brand"><span className="brand-mark small">G</span><div><b>GeoBoost Tingkatan 2</b><small>Latihan Pengukuhan Interaktif Geografi</small></div></div><span>By Cikgu Zulhasif · v2.4</span></footer>
   </main>;
 }
