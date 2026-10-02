@@ -138,7 +138,7 @@ export default function StudentLoginPage() {
       <a href="/" className="mini-brand"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>TINGKATAN 2</small></span></a>
       <span className="eyebrow dark">AKSES MURID</span>
       <h1>Masuk GeoBoost</h1>
-      <p>Masukkan <b>kod kelas</b>, pilih nama anda dan buat <b>dua pengesahan ringkas</b>. Tiada PIN atau akaun murid diperlukan.</p>
+      <p>Masukkan <b>kod kelas</b>, pilih nama anda dan buat <b>dua pengesahan ringkas</b>.</p>
 
       {existing&&!classRecord?<div className="existing-student-card"><div><small>PERANTI INI</small><b>{existing.name}</b><span>{existing.className}</span></div><button onClick={()=>router.push("/murid/utama")}>Teruskan →</button></div>:null}
 
