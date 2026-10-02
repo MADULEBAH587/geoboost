@@ -25,7 +25,7 @@ import {
 import {
   StudentAccessRecord, ensureStudentAccessCodes, removeStudentAccessCode,
 } from "@/lib/studentAccess";
-import { deployGeoBoostFirestoreRules } from "@/lib/firebaseRulesAdmin";
+import { bootstrapGeoBoostAdmin, deployGeoBoostFirestoreRules } from "@/lib/firebaseRulesAdmin";
 
 type Source = "local"|"firebase";
 type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"bank"|"settings";
@@ -340,6 +340,23 @@ export default function TeacherPage(){
     }catch{setMessage("Intervensi gagal ditetapkan.")}
   }
 
+  async function bootstrapFirstAdmin(){
+    if(deployingRules)return;
+    setDeployingRules(true);setAuthError("");setMessage("Menyediakan Admin GeoBoost dan Firebase P1...");
+    try{
+      const result=await bootstrapGeoBoostAdmin();
+      const user={uid:result.uid,email:result.email||null};
+      setAuthUser(user);setTeacherUid(result.uid);setTeacherEmail(result.email||"Admin GeoBoost");
+      setFirebaseRulesReady(true);
+      setMessage("Admin dan Firestore Rules P1 berjaya diaktifkan. Memuat Control Center...");
+      await loadTeacherData(user);
+    }catch(error:any){
+      console.error(error);
+      setFirebaseRulesReady(false);
+      setAuthError("Aktivasi admin belum selesai: "+String(error?.message||"akaun Google ini memerlukan kebenaran pemilik projek Firebase."));
+    }finally{setDeployingRules(false)}
+  }
+
   async function activateFirebaseP1(){
     if(!isAdmin||deployingRules)return;
     setDeployingRules(true);setMessage("Meminta kebenaran Firebase dan menerbitkan Firestore Rules P1...");
@@ -442,7 +459,8 @@ export default function TeacherPage(){
   }
 
   if(!teacherProfile||!teacherProfile.active){
-    return <main className="auth-shell"><section className="auth-card">{gateBrand}<span className="eyebrow dark">PENGESAHAN AKSES</span><h1>{teacherProfile&&!teacherProfile.active?"Akses dinyahaktifkan":"Akses guru belum aktif"}</h1><p>{authError||message||"Akaun Google telah berjaya disahkan, tetapi akaun ini belum tersenarai sebagai guru aktif GeoBoost."}</p><div className="teacher-bootstrap"><div><small>UID GURU</small><code>{teacherUid||authUser.uid}</code><span>{teacherEmail||authUser.email||"Akaun Google"}</span></div><button onClick={async()=>{await navigator.clipboard.writeText(teacherUid||authUser.uid);setMessage("UID disalin.")}}>Salin UID</button></div><button className="launch-button active full" onClick={disconnectTeacher}>Log keluar / guna akaun lain</button></section></main>;
+    const inactive=Boolean(teacherProfile&&!teacherProfile.active);
+    return <main className="auth-shell"><section className="auth-card">{gateBrand}<span className="eyebrow dark">PENGESAHAN AKSES</span><h1>{inactive?"Akses dinyahaktifkan":"Sediakan Admin GeoBoost"}</h1><p>{authError||message||(inactive?"Akaun ini telah dinyahaktifkan oleh admin.":"Jika ini akaun pemilik projek Firebase, GeoBoost boleh menyediakan akaun ADMIN dan menerbitkan Firestore Rules P1 secara automatik.")}</p><div className="teacher-bootstrap"><div><small>UID GURU</small><code>{teacherUid||authUser.uid}</code><span>{teacherEmail||authUser.email||"Akaun Google"}</span></div><button onClick={async()=>{await navigator.clipboard.writeText(teacherUid||authUser.uid);setMessage("UID disalin.")}}>Salin UID</button></div>{!inactive?<button className="primary full" onClick={bootstrapFirstAdmin} disabled={deployingRules}>{deployingRules?"Mengaktifkan Firebase P1...":"Aktifkan Admin + Firebase P1"}</button>:null}<small className="auth-note">{!inactive?"Google akan meminta kebenaran projek Firebase sekali sahaja. Selepas diluluskan, setup admin, rules keselamatan dan migrasi kelas diteruskan automatik.":"Hubungi admin GeoBoost untuk mengaktifkan semula akaun ini."}</small><button className="launch-button full" onClick={disconnectTeacher}>Log keluar / guna akaun lain</button></section></main>;
   }
 
   return <main className="teacher-app">
