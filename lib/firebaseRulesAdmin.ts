@@ -23,6 +23,7 @@ async function getAdminOAuth(): Promise<AdminAuth> {
   const provider = new GoogleAuthProvider();
   provider.addScope("https://www.googleapis.com/auth/firebase");
   provider.addScope("https://www.googleapis.com/auth/datastore");
+  provider.addScope("https://www.googleapis.com/auth/cloud-platform");
   provider.setCustomParameters({ prompt:"consent select_account" });
   const result = await signInWithPopup(services.auth,provider);
   const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -48,6 +49,24 @@ async function api(url:string,token:string,init?:RequestInit) {
     throw error;
   }
   return data;
+}
+
+async function enableEmailPassword(token:string){
+  const url=
+    "https://identitytoolkit.googleapis.com/admin/v2/projects/"+
+    encodeURIComponent(PROJECT_ID)+
+    "/config?updateMask=signIn.email.enabled,signIn.email.passwordRequired";
+  await api(url,token,{
+    method:"PATCH",
+    body:JSON.stringify({
+      signIn:{
+        email:{
+          enabled:true,
+          passwordRequired:true,
+        },
+      },
+    }),
+  });
 }
 
 async function publishRules(token:string) {
@@ -106,7 +125,7 @@ async function publishRules(token:string) {
 async function upsertAdminTeacher(token:string,user:User) {
   const uid=user.uid;
   const params=new URLSearchParams();
-  ["name","email","role","active"].forEach(field=>params.append("updateMask.fieldPaths",field));
+  ["name","email","role","status","active"].forEach(field=>params.append("updateMask.fieldPaths",field));
   const url=
     "https://firestore.googleapis.com/v1/projects/"+encodeURIComponent(PROJECT_ID)+
     "/databases/(default)/documents/teachers/"+encodeURIComponent(uid)+"?"+params.toString();
@@ -117,6 +136,7 @@ async function upsertAdminTeacher(token:string,user:User) {
         name:{stringValue:user.displayName||user.email||"Admin GeoBoost"},
         email:{stringValue:user.email||""},
         role:{stringValue:"admin"},
+        status:{stringValue:"active"},
         active:{booleanValue:true},
       },
     }),
@@ -130,8 +150,9 @@ export async function deployGeoBoostFirestoreRules() {
   return {rulesetName};
 }
 
-export async function bootstrapGeoBoostAdmin() {
+export async function deployGeoBoostMultiTeacher() {
   const {token,user}=await getAdminOAuth();
+  await enableEmailPassword(token);
   const rulesetName=await publishRules(token);
   const uid=await upsertAdminTeacher(token,user);
   return {
@@ -139,5 +160,20 @@ export async function bootstrapGeoBoostAdmin() {
     email:user.email||"",
     name:user.displayName||user.email||"Admin GeoBoost",
     rulesetName,
+    emailPasswordEnabled:true,
+  };
+}
+
+export async function bootstrapGeoBoostAdmin() {
+  const {token,user}=await getAdminOAuth();
+  await enableEmailPassword(token);
+  const rulesetName=await publishRules(token);
+  const uid=await upsertAdminTeacher(token,user);
+  return {
+    uid,
+    email:user.email||"",
+    name:user.displayName||user.email||"Admin GeoBoost",
+    rulesetName,
+    emailPasswordEnabled:true,
   };
 }
