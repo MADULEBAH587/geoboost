@@ -613,13 +613,65 @@ export default function TeacherPage(){
 
   const rosterClass=managedClasses.find(c=>c.code===rosterClassCode)||null;
   const selfRegistered=registeredStudents.filter(s=>s.classCode===rosterClassCode);
-  const selfAddedNotRoster=selfRegistered.filter(student=>!rosterClass?.studentRoster.some(item=>item.id===student.localStudentId));
-  const studentDirectory=useMemo(()=>{
-    const map=new Map<string,RegisteredStudent>();registeredStudents.forEach(s=>{const key=s.localStudentId||s.name+"|"+s.classCode;if(!map.has(key))map.set(key,s)});
-    return[...map.entries()].sort((a,b)=>a[1].name.localeCompare(b[1].name,"ms"));
-  },[registeredStudents]);
-  const selectedStudent=studentDirectory.find(([key])=>key===selectedStudentKey)?.[1]||null;
-  const selectedStudentAttempts=selectedStudent?attempts.filter(a=>(selectedStudent.localStudentId&&a.studentId===selectedStudent.localStudentId)||(a.studentName===selectedStudent.name&&a.className===selectedStudent.className)):[];
+  const studentRosterRows=useMemo(()=>{
+    if(!rosterClass)return[];
+    return rosterClass.studentRoster.map((student,index)=>{
+      const profile=selfRegistered.find(item=>item.localStudentId===student.id)
+        || selfRegistered.find(item=>item.name===student.name);
+      const presence=studentPresence.find(item=>item.classCode===rosterClass.code&&item.studentId===student.id);
+      const own=attempts.filter(a=>
+        a.studentId===student.id
+        || (a.studentName===student.name&&(a.classCode===rosterClass.code||a.className===rosterClass.name))
+      );
+      const average=pct(own.map(a=>a.percentage));
+      const best=own.length?Math.max(...own.map(a=>a.percentage)):0;
+      const missingActive=(rosterClass.assignments||[]).filter(task=>
+        task.active
+        && (!task.targetStudentIds?.length||task.targetStudentIds.includes(student.id))
+        && !own.some(a=>a.mode==="tugasan:"+task.id)
+      ).length;
+      const lastActivity=Math.max(profile?.updatedAt||0,presence?.lastLoginMs||0,...own.map(a=>a.completedAt||0));
+      return{
+        index,student,profile,presence,attempts:own,average,best,missingActive,lastActivity,
+        logged:Boolean(profile),
+        duplicate:Boolean(presence?.duplicate&&presence.duplicateUntilMs>Date.now()),
+        needsIntervention:(own.length>0&&average<60)||missingActive>0,
+      };
+    });
+  },[rosterClass,selfRegistered,studentPresence,attempts]);
+
+  const visibleStudentRows=useMemo(()=>{
+    const q=normalizeStudentName(studentSearch);
+    return studentRosterRows.filter(row=>{
+      if(q&&!row.student.name.includes(q))return false;
+      if(studentStatusFilter==="logged"&&!row.logged)return false;
+      if(studentStatusFilter==="new"&&row.logged)return false;
+      if(studentStatusFilter==="intervention"&&!row.needsIntervention)return false;
+      if(studentStatusFilter==="duplicate"&&!row.duplicate)return false;
+      return true;
+    });
+  },[studentRosterRows,studentSearch,studentStatusFilter]);
+
+  const studentClassStats={
+    total:studentRosterRows.length,
+    logged:studentRosterRows.filter(row=>row.logged).length,
+    new:studentRosterRows.filter(row=>!row.logged).length,
+    duplicate:studentRosterRows.filter(row=>row.duplicate).length,
+  };
+  const selectedStudentRow=studentRosterRows.find(row=>row.student.id===selectedStudentKey)||null;
+  const selectedStudent:RegisteredStudent|null=selectedStudentRow&&rosterClass?{
+    uid:selectedStudentRow.profile?.uid||("roster:"+selectedStudentRow.student.id),
+    localStudentId:selectedStudentRow.student.id,
+    name:selectedStudentRow.student.name,
+    className:rosterClass.name,
+    classCode:rosterClass.code,
+    updatedAt:selectedStudentRow.profile?.updatedAt||selectedStudentRow.lastActivity||0,
+  }:null;
+  const selectedStudentAttempts=selectedStudentRow?.attempts||[];
+  const selectedChapterPerformance=chapters.map(ch=>{
+    const own=selectedStudentAttempts.filter(a=>a.chapter===ch.id);
+    return{id:ch.id,avg:pct(own.map(a=>a.percentage)),count:own.length};
+  }).filter(item=>item.count>0);
   const assignmentClass=managedClasses.find(c=>c.code===assignmentClassCode)||null;
 
   const interventionRows=useMemo(()=>registeredStudents.map(student=>{
