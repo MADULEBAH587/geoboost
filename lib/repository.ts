@@ -130,8 +130,9 @@ export async function getRemoteAttempts(): Promise<AttemptRecord[]> {
   const services = getFirebaseServices();
   if (!services) return [];
   const snap = await getDocs(query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(500)));
-  return snap.docs.map((snapshot) => {
+  return snap.docs.flatMap((snapshot) => {
     const data = snapshot.data() as Record<string, any>;
+    if (data.className === "__QA__" || data.mode === "qa") return [];
     const completedAt = data.completedAt?.toMillis?.() ?? data.completedAt ?? Date.now();
     return {
       id: data.id || snapshot.id,
@@ -150,6 +151,6 @@ export async function getRemoteAttempts(): Promise<AttemptRecord[]> {
       responses: Array.isArray(data.responses) ? data.responses : [],
       completedAt,
       firebaseSynced: true,
-    };
+    }];
   });
 }
