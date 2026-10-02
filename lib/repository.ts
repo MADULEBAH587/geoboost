@@ -12,6 +12,15 @@ export type AttemptResponse = {
   difficulty: "easy" | "medium" | "kbat";
 };
 
+export type RegisteredStudent = {
+  uid: string;
+  localStudentId: string;
+  name: string;
+  className: string;
+  classCode: string;
+  updatedAt: number;
+};
+
 export type AttemptRecord = {
   id: string;
   studentId: string;
@@ -152,5 +161,23 @@ export async function getRemoteAttempts(): Promise<AttemptRecord[]> {
       completedAt,
       firebaseSynced: true,
     }];
+  });
+}
+
+
+export async function getRemoteStudents(): Promise<RegisteredStudent[]> {
+  const services = getFirebaseServices();
+  if (!services) return [];
+  const snap = await getDocs(query(collection(services.db, "students"), orderBy("updatedAt", "desc"), limit(1000)));
+  return snap.docs.map((snapshot) => {
+    const data = snapshot.data() as Record<string, any>;
+    return {
+      uid: snapshot.id,
+      localStudentId: String(data.localStudentId || ""),
+      name: String(data.name || "Murid"),
+      className: String(data.className || "-"),
+      classCode: String(data.classCode || ""),
+      updatedAt: data.updatedAt?.toMillis?.() ?? data.updatedAt ?? Date.now(),
+    };
   });
 }
