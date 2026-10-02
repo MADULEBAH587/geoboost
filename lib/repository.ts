@@ -162,14 +162,18 @@ function fromAttemptDoc(snapshot: any): AttemptRecord {
   };
 }
 
-export async function getRemoteAttempts(): Promise<AttemptRecord[]> {
+export async function getRemoteAttempts(classCodes: string[] = [], allowAll = false): Promise<AttemptRecord[]> {
   const services = getFirebaseServices();
   if (!services) return [];
-  const snap = await getDocs(query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(1000)));
+  if (!allowAll && !classCodes.length) return [];
+  const source = allowAll
+    ? query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(1000))
+    : query(collection(services.db, "attempts"), where("classCode", "in", classCodes.slice(0,30)), limit(1000));
+  const snap = await getDocs(source);
   return snap.docs.flatMap(snapshot => {
     const item = fromAttemptDoc(snapshot);
     return item.className === "__QA__" || item.mode === "qa" ? [] : [item];
-  });
+  }).sort((a,b)=>b.completedAt-a.completedAt);
 }
 
 export async function getStudentCloudAttempts(localStudentId: string): Promise<AttemptRecord[]> {
@@ -189,10 +193,14 @@ export async function getStudentCloudAttempts(localStudentId: string): Promise<A
   return [...found.values()].sort((a,b)=>b.completedAt-a.completedAt);
 }
 
-export async function getRemoteStudents(): Promise<RegisteredStudent[]> {
+export async function getRemoteStudents(classCodes: string[] = [], allowAll = false): Promise<RegisteredStudent[]> {
   const services = getFirebaseServices();
   if (!services) return [];
-  const snap = await getDocs(query(collection(services.db, "students"), orderBy("updatedAt", "desc"), limit(1000)));
+  if (!allowAll && !classCodes.length) return [];
+  const source = allowAll
+    ? query(collection(services.db, "students"), orderBy("updatedAt", "desc"), limit(1000))
+    : query(collection(services.db, "students"), where("classCode", "in", classCodes.slice(0,30)), limit(1000));
+  const snap = await getDocs(source);
   return snap.docs.map(snapshot => {
     const data = snapshot.data() as Record<string, any>;
     return {
@@ -203,7 +211,7 @@ export async function getRemoteStudents(): Promise<RegisteredStudent[]> {
       classCode: String(data.classCode || ""),
       updatedAt: data.updatedAt?.toMillis?.() ?? data.updatedAt ?? Date.now(),
     };
-  });
+  }).sort((a,b)=>b.updatedAt-a.updatedAt);
 }
 
 export async function saveLiveProgress(input: Omit<LiveProgress,"uid"|"updatedAt">) {
@@ -218,10 +226,14 @@ export async function saveLiveProgress(input: Omit<LiveProgress,"uid"|"updatedAt
   }, { merge: true });
 }
 
-export function watchLiveProgress(callback: (items: LiveProgress[]) => void) {
+export function watchLiveProgress(callback: (items: LiveProgress[]) => void, classCodes: string[] = [], allowAll = false) {
   const services = getFirebaseServices();
   if (!services) return () => {};
-  return onSnapshot(collection(services.db,"progress"), snap => {
+  if (!allowAll && !classCodes.length) { callback([]); return () => {}; }
+  const source = allowAll
+    ? collection(services.db,"progress")
+    : query(collection(services.db,"progress"),where("classCode","in",classCodes.slice(0,30)));
+  return onSnapshot(source, snap => {
     const items = snap.docs.map(d => {
       const data=d.data() as Record<string,any>;
       return {
