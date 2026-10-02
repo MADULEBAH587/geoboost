@@ -389,12 +389,12 @@ export default function TeacherPage(){
   const currentLive=liveItems.filter(x=>now-x.updatedAt<30*60*1000);
   const bankItems=[...questions,...customQuestions.filter(q=>q.active)].filter(q=>q.chapter===bankChapter);
   const assignmentRows=(assignmentClass?.assignments||[]).map(item=>{
-    const roster=assignmentClass?.studentNames||[];
+    const roster=assignmentClass?.studentRoster||[];
     const related=attempts.filter(a=>(a.classCode===assignmentClass?.code||a.className===assignmentClass?.name)&&a.mode==="tugasan:"+item.id);
-    const completedNames=new Set(related.map(a=>normalizeStudentName(a.studentName)));
-    const completed=roster.filter(name=>completedNames.has(normalizeStudentName(name))).length;
+    const completedIds=new Set(related.map(a=>a.studentId));
+    const completed=roster.filter(student=>completedIds.has(student.id)).length;
     const avg=pct(related.map(a=>a.percentage));
-    return{item,completed,total:roster.length,avg,missing:roster.filter(name=>!completedNames.has(normalizeStudentName(name)))};
+    return{item,completed,total:roster.length,avg,missing:roster.filter(student=>!completedIds.has(student.id)).map(student=>student.name)};
   });
 
   const filterBar=<div className="filter-bar"><label>Kelas<select value={classFilter} onChange={e=>setClassFilter(e.target.value)}>{classes.map(c=><option key={c}>{c}</option>)}</select></label><label>Bab<select value={chapterFilter} onChange={e=>setChapterFilter(Number(e.target.value))}><option value={0}>Semua Bab</option>{chapters.map(c=><option key={c.id} value={c.id}>Bab {c.id}</option>)}</select></label></div>;
