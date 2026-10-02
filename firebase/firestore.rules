@@ -179,15 +179,12 @@ service cloud.firestore {
     // Legacy P1 access records are retained for migration/history, but no longer
     // participate in student login.
     match /studentAccess/{accessId} {
-      allow read, create, update, delete: if canEdit()
-        && (
-          isAdmin()
-          || (
-            request.method == "create"
-              ? ownsClass(request.resource.data.classCode)
-              : ownsClass(resource.data.classCode)
-          )
-        );
+      allow read: if canEdit()
+        && (isAdmin() || ownsClass(resource.data.classCode));
+      allow create: if canEdit()
+        && (isAdmin() || ownsClass(request.resource.data.classCode));
+      allow update, delete: if canEdit()
+        && (isAdmin() || ownsClass(resource.data.classCode));
     }
 
     match /studentClaims/{studentUid} {
