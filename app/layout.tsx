@@ -4,7 +4,7 @@ import { PWARegister } from "@/components/PWARegister";
 
 export const metadata: Metadata = {
   title: "GeoBoost Tingkatan 2 · By Cikgu Zulhasif",
-  description: "Latihan Pengukuhan Interaktif Geografi Tingkatan 2 untuk Bab 1 hingga Bab 10.",
+  description: "GeoBoost Tingkatan 2 untuk latihan, tugasan, pemulihan, UASA dan prestasi murid.",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [{ url: "/icon-192.png", sizes: "192x192", type: "image/png" }, { url: "/icon-512.png", sizes: "512x512", type: "image/png" }],
