@@ -34,8 +34,8 @@ export function StudentSummary() {
         <div className="guest-icon">👋</div>
         <small className="eyebrow dark">BELUM MASUK</small>
         <h2>Mulakan sebagai murid</h2>
-        <p>Masukkan nama dan kelas supaya markah, XP dan latihan pemulihan dapat direkodkan pada peranti ini.</p>
-        <a className="primary full center" href="/murid">Masuk / Daftar Murid →</a>
+        <p>Masukkan kod kelas, kemudian pilih nama daripada senarai untuk merekodkan markah, XP dan latihan pemulihan.</p>
+        <a className="primary full center" href="/murid">Masuk Murid →</a>
         <small className="guest-note">Firebase akan menyelaraskan rekod apabila konfigurasi projek disambungkan.</small>
       </div>
     );
