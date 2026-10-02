@@ -189,6 +189,7 @@ export async function bootstrapGeoBoostAdmin() {
   await enableEmailPassword(token);
   const rulesetName=await publishRules(token);
   const uid=await upsertAdminTeacher(token,user);
+  await setMultiTeacherConfig(token);
   return {
     uid,
     email:user.email||"",
