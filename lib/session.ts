@@ -3,7 +3,6 @@ export type StudentSession = {
   name: string;
   className: string;
   classCode: string;
-  pin: string;
   createdAt: number;
 };
 
@@ -13,7 +12,16 @@ export function getStudentSession(): StudentSession | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed?.id || !parsed?.name || !parsed?.className) return null;
+    return {
+      id: String(parsed.id),
+      name: String(parsed.name),
+      className: String(parsed.className),
+      classCode: String(parsed.classCode || ""),
+      createdAt: Number(parsed.createdAt || Date.now()),
+    };
   } catch {
     return null;
   }
