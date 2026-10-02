@@ -772,14 +772,15 @@ export default function TeacherPage(){
   }
 
   return <main className="teacher-app">
-    <aside className="teacher-sidebar">
-      <a className="teacher-side-brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>CONTROL CENTER</small></span></a>
-      <nav>{navItems.map(item=><button key={item.id} className={activeSection===item.id?"active":""} onClick={()=>setActiveSection(item.id)}><span>{item.icon}</span>{item.label}</button>)}</nav>
+    <aside className={"teacher-sidebar "+(mobileSidebarOpen?"mobile-open":"")}>
+      <div className="teacher-side-top"><a className="teacher-side-brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>CONTROL CENTER</small></span></a><button className="teacher-sidebar-close" onClick={()=>setMobileSidebarOpen(false)} aria-label="Tutup menu">×</button></div>
+      <nav>{navItems.map(item=><button key={item.id} className={activeSection===item.id?"active":""} onClick={()=>{setActiveSection(item.id);setMobileSidebarOpen(false)}}><span>{item.icon}</span>{item.label}{item.id==="students"&&studentClassStats.duplicate>0?<i>{studentClassStats.duplicate}</i>:null}{item.id==="teachers"&&pendingTeachers.length>0?<i>{pendingTeachers.length}</i>:null}</button>)}</nav>
       <div className="teacher-side-account"><span className={"source-pill "+source}>{source==="firebase"?"☁️ Firebase":"📱 Peranti"}</span><small>{teacherEmail||"Belum login"}{teacherProfile?" · "+teacherProfile.role.toUpperCase():""}</small>{firebaseConfigured?<button onClick={disconnectTeacher}>Log keluar</button>:null}<a href="/">← Paparan utama</a></div>
     </aside>
+    {mobileSidebarOpen?<button className="teacher-sidebar-backdrop" aria-label="Tutup menu" onClick={()=>setMobileSidebarOpen(false)}/>:null}
 
     <div className="teacher-main">
-      <header className="teacher-mobile-nav"><a className="brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>GURU</small></span></a><select value={activeSection} onChange={e=>setActiveSection(e.target.value as TeacherSection)}>{navItems.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select></header>
+      <header className="teacher-mobile-nav"><button className="teacher-menu-button" onClick={()=>setMobileSidebarOpen(true)} aria-label="Buka menu">☰</button><a className="brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>{navItems.find(item=>item.id===activeSection)?.label||"GURU"}</small></span></a><span className="teacher-mobile-role">{teacherProfile?.role?.toUpperCase()||"GURU"}</span></header>
       <section className="teacher-head"><span className="eyebrow dark">PANEL GURU · v2.0</span><h1>{navItems.find(x=>x.id===activeSection)?.label||"GeoBoost Guru"}</h1><p>Control Center GeoBoost untuk kelas, tugasan, live monitoring, intervensi, analitik, laporan dan bank soalan.</p>{isAdmin&&studentLoginMode!=="double-confirm"?<div className="multi-teacher-activation-banner"><div><strong>⚡ Naik taraf Multi-Guru belum diaktifkan</strong><span>Satu pengesahan Google diperlukan untuk hidupkan Email + Password guru, kelulusan admin dan login murid tanpa PIN.</span></div><button onClick={activateMultiTeacher} disabled={deployingRules}>{deployingRules?"Mengaktifkan...":"Aktifkan Sekarang"}</button></div>:null}{!canEdit&&source==="firebase"?<div className="teacher-message">👁️ Role VIEWER aktif — paparan sahaja, fungsi edit disekat pada UI.</div>:null}{message?<div className="teacher-message">{message}</div>:null}{teacherUid&&source!=="firebase"?<div className="teacher-bootstrap"><div><small>UID UNTUK AKTIFKAN ADMIN</small><code>{teacherUid}</code><span>{teacherEmail}</span></div><button onClick={async()=>{await navigator.clipboard.writeText(teacherUid);setMessage("UID disalin.")}}>Salin UID</button></div>:null}</section>
 
       <section className="teacher-content">
