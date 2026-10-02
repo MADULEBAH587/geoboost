@@ -1,6 +1,6 @@
 "use client";
 
-import { collection, doc, onSnapshot, query, runTransaction, serverTimestamp, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot, query, runTransaction, serverTimestamp, where } from "firebase/firestore";
 import { ensureAnonymousFirebaseUser, getFirebaseServices } from "./firebase";
 
 export type StudentPresence = {
@@ -55,6 +55,12 @@ export async function registerStudentPresence(input:{classCode:string;studentId:
     return {duplicate:duplicateUntilMs>now};
   });
   return result;
+}
+
+export async function resetStudentPresence(classCode:string,studentId:string){
+  const services=getFirebaseServices();
+  if(!services)throw new Error("Firebase belum dikonfigurasi");
+  await deleteDoc(doc(services.db,"studentPresence",presenceId(classCode,studentId)));
 }
 
 export function watchStudentPresence(
