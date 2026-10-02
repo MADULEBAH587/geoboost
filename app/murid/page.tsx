@@ -85,7 +85,10 @@ export default function StudentLoginPage() {
           classCode:classRecord.code,
         });
         if(!result.synced){
-          setNote("Profil murid belum dapat diselaraskan. Cuba semula.");
+          const permission=String(result.errorCode||"").includes("permission-denied");
+          setNote(permission
+            ?"Akses Firebase untuk login murid belum diselaraskan. Admin perlu terbitkan semula Rules sekali."
+            :"Profil murid belum dapat diselaraskan. Cuba semula.");
           setSaving(false);
           return;
         }
