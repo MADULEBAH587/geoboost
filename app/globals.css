@@ -279,3 +279,55 @@ button:disabled{cursor:not-allowed;opacity:.48}
 }
 
 /* GeoBoost teacher UI v2.3 production */
+
+
+/* ===== GeoBoost v2.4 mobile fit fixes ===== */
+@media(max-width:640px){
+  .public-topbar{padding:12px 14px;gap:8px}
+  .public-topbar .brand{min-width:0;gap:8px}
+  .public-topbar .brand-mark{width:38px;height:38px;border-radius:11px;flex:0 0 auto}
+  .public-topbar .brand>span:last-child{min-width:0}
+  .public-topbar .brand b{font-size:11px;letter-spacing:.07em;white-space:nowrap}
+  .public-topbar .brand small{font-size:7px;letter-spacing:.12em;white-space:nowrap}
+  .public-topbar .teacher-button{flex:0 0 auto;white-space:nowrap;padding:9px 10px;font-size:9px;border-radius:10px}
+
+  .public-hero{padding:30px 14px 36px;gap:24px}
+  .public-hero-copy{min-width:0}
+  .public-hero .eyebrow{font-size:8px;line-height:1.4;letter-spacing:.09em}
+  .public-hero h1{font-size:clamp(34px,10.8vw,44px);line-height:1.02;letter-spacing:-.045em;overflow-wrap:anywhere;margin:14px 0 16px}
+  .public-hero h1 em{display:inline}
+  .public-hero-copy>p{font-size:13px;line-height:1.58}
+  .public-trust{gap:6px;margin-top:18px}.public-trust span{font-size:8px;padding:6px 8px}
+  .byline{font-size:9px}
+
+  .public-login-panel{min-width:0;padding:20px;border-radius:20px}
+  .public-login-panel h2{font-size:26px;line-height:1.05}
+  .public-login-panel>p{font-size:11px;line-height:1.5}
+  .home-class-entry>div{grid-template-columns:minmax(0,1fr) auto;gap:6px}
+  .home-class-entry input{min-width:0;width:100%;font-size:14px;padding:12px}
+  .home-class-entry button{padding:0 11px;font-size:9px;white-space:nowrap}
+  .home-class-entry small{font-size:9px;line-height:1.45}
+  .dark-button{font-size:10px;padding-left:10px;padding-right:10px}
+
+  .public-section-title h2{font-size:clamp(27px,9vw,36px);overflow-wrap:anywhere}
+  .public-step-grid article,.public-feature-grid article{min-width:0}
+  .public-step-grid h3,.public-feature-grid h3{overflow-wrap:anywhere}
+  .public-cta{margin-left:14px;margin-right:14px;padding:18px;gap:14px}
+  .public-cta>div{min-width:0}.public-cta>div span{font-size:10px}
+  .public-cta .primary{white-space:normal;text-align:center}
+
+  .student-login-card{width:min(100%,calc(100vw - 22px));padding:22px 20px;border-radius:24px}
+  .student-login-card h1{font-size:clamp(34px,10vw,48px);line-height:1.02;overflow-wrap:anywhere}
+  .student-login-card>p{font-size:14px;line-height:1.55}
+  .student-confirm-name h2{font-size:clamp(28px,8vw,38px);overflow-wrap:anywhere}
+  .confirm-actions{grid-template-columns:1fr 1fr;gap:8px}
+  .confirm-actions button{min-width:0;padding-left:10px;padding-right:10px;font-size:clamp(12px,3.5vw,16px);white-space:normal}
+}
+@media(max-width:380px){
+  .public-topbar .brand b{font-size:10px}
+  .public-topbar .teacher-button{font-size:8px;padding:8px}
+  .public-hero h1{font-size:32px}
+  .home-class-entry>div{grid-template-columns:1fr}
+  .home-class-entry button{min-height:42px}
+  .confirm-actions{grid-template-columns:1fr}
+}
