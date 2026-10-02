@@ -145,13 +145,18 @@ export async function listClasses(role: "admin"|"guru"|"viewer" = "guru"): Promi
   for (const item of snapshot.docs) {
     let record = classFromData(item.id, item.data() as Record<string, unknown>);
     if (role === "admin" && !record.ownerTeacherId) {
-      await setDoc(doc(services.db, "classes", record.code), {
-        ownerTeacherId: uid,
-        studentRoster: record.studentRoster,
-        studentNames: record.studentNames,
-        updatedAt: serverTimestamp(),
-      }, { merge: true });
-      record = { ...record, ownerTeacherId: uid };
+      try {
+        await setDoc(doc(services.db, "classes", record.code), {
+          ownerTeacherId: uid,
+          studentRoster: record.studentRoster,
+          studentNames: record.studentNames,
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+        record = { ...record, ownerTeacherId: uid };
+      } catch {
+        // Old Firestore rules may still be active. Keep the class visible so
+        // the admin can deploy the P1 rules from Settings, then migrate on reload.
+      }
     }
     records.push(record);
   }
