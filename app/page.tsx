@@ -1,45 +1,43 @@
-import { StudentChapterGrid } from "@/components/StudentChapterGrid";
-import { ModeCard } from "@/components/ModeCard";
-import { StudentSummary } from "@/components/StudentSummary";
-import { chapters, totalQuestionBank } from "@/lib/data";
+import { HomeStudentGate } from "@/components/HomeStudentGate";
+import { totalQuestionBank } from "@/lib/data";
 import { questions } from "@/lib/questions";
 
-export default function Home() {
-  return (
-    <main>
-      <header className="topbar">
-        <a className="brand" href="#top" aria-label="GeoBoost Tingkatan 2"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>TINGKATAN 2</small></span></a>
-        <a className="teacher-button" href="/guru">Panel Guru</a>
-      </header>
+export default function Home(){
+  return <main className="public-home">
+    <header className="topbar public-topbar">
+      <a className="brand" href="/"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>TINGKATAN 2</small></span></a>
+      <a className="teacher-button" href="/guru">Panel Guru</a>
+    </header>
 
-      <section className="hero" id="top">
-        <div className="contour contour-a" /><div className="contour contour-b" />
-        <div className="hero-copy">
-          <span className="eyebrow">LATIHAN PENGUKUHAN INTERAKTIF GEOGRAFI</span>
-          <h1>Belajar. Cuba.<br/><em>Kuasai Geografi.</em></h1>
-          <p>Latihan Bab 1–10, pembetulan segera, pemulihan berasaskan subtopik dan rekod pencapaian dalam satu pengalaman yang mesra telefon.</p>
-          <div className="hero-actions"><a className="primary" href="#bab">Mula Latihan <span>→</span></a><a className="secondary" href="/murid">👤 Akses Murid</a></div>
-          <div className="byline">By Cikgu Zulhasif · v1.3</div>
-        </div>
-        <StudentSummary />
-      </section>
+    <section className="public-hero">
+      <div className="contour contour-a"/><div className="contour contour-b"/>
+      <div className="public-hero-copy">
+        <span className="eyebrow">LATIHAN PENGUKUHAN INTERAKTIF GEOGRAFI</span>
+        <h1>Belajar. Cuba.<br/><em>Kuasai Geografi.</em></h1>
+        <p>GeoBoost menyusun latihan Bab 1–10, tugasan guru, pemulihan pintar, simulasi UASA dan rekod pencapaian dalam satu sistem yang mesra telefon.</p>
+        <div className="public-trust"><span>✓ {questions.length} soalan aktif</span><span>✓ Tugasan kelas</span><span>✓ Autosave</span><span>✓ Analitik prestasi</span></div>
+        <div className="byline">By Cikgu Zulhasif · v2.0</div>
+      </div>
+      <div className="public-login-panel">
+        <span className="eyebrow dark">AKSES MURID</span><h2>Masuk kelas anda</h2><p>Masukkan kod kelas. Pilih nama. Terus belajar.</p>
+        <HomeStudentGate/>
+        <div className="public-login-divider"><span>atau</span></div>
+        <a className="secondary dark-button full center" href="/murid">Buka halaman Akses Murid</a>
+      </div>
+    </section>
 
-      <section className="section modes">
-        <div className="section-heading"><div><span className="eyebrow dark">PILIH CARA BELAJAR</span><h2>Mod GeoBoost</h2></div><p>Latihan Bab, Latih Tubi Pantas, Cabaran UASA dan Pemulihan kini aktif.</p></div>
-        <div className="mode-grid">
-          <ModeCard icon="📚" title="Latihan Bab" tag="AKTIF" text="Pilih Bab 1–10 dan jawab set rawak dengan maklum balas segera." href="#bab" />
-          <ModeCard icon="⚡" title="Latih Tubi Pantas" tag="AKTIF" text="Gabungkan beberapa bab dalam satu set 10–20 soalan." href="/pantas" />
-          <ModeCard icon="🏆" title="Cabaran UASA" tag="AKTIF" text="Set campuran semua bab dengan aras mudah, sederhana dan KBAT." href="/uasa" />
-          <ModeCard icon="🎯" title="Pemulihan" tag="AKTIF" text="Bina set khusus daripada subtopik yang pernah dijawab salah." href="/pemulihan" />
-        </div>
-      </section>
+    <section className="public-section public-steps">
+      <div className="public-section-title"><span className="eyebrow dark">MUDAH UNTUK MURID</span><h2>Tiga langkah sahaja</h2></div>
+      <div className="public-step-grid"><article><span>01</span><h3>Masukkan kod kelas</h3><p>Gunakan kod atau scan QR yang diberi guru.</p></article><article><span>02</span><h3>Pilih nama</h3><p>Cari nama daripada senarai kelas. Tiada PIN diperlukan.</p></article><article><span>03</span><h3>Terus belajar</h3><p>Lihat tugasan, sambung latihan dan pantau prestasi sendiri.</p></article></div>
+    </section>
 
-      <section className="section chapter-section" id="bab">
-        <div className="section-heading"><div><span className="eyebrow dark">BAB 1–10</span><h2>Pilih bab</h2></div><p>{questions.length} soalan aktif · sasaran bank {totalQuestionBank}.</p></div>
-        <StudentChapterGrid chapters={chapters} />
-      </section>
+    <section className="public-section public-features">
+      <div className="public-section-title"><span className="eyebrow dark">DALAM SATU TEMPAT</span><h2>Apa yang murid dapat?</h2></div>
+      <div className="public-feature-grid"><article><span>📝</span><h3>Tugasan Guru</h3><p>Tugasan aktif, tarikh akhir dan rekod selesai.</p></article><article><span>📚</span><h3>Latihan Bab</h3><p>Bab 1–10 dengan aras Mudah, Sederhana dan KBAT.</p></article><article><span>🎯</span><h3>Pemulihan Pintar</h3><p>GeoBoost mengumpul soalan lemah untuk latihan semula.</p></article><article><span>📊</span><h3>Prestasi Saya</h3><p>Mastery bab, trend markah, XP dan subtopik lemah.</p></article><article><span>🏆</span><h3>Simulasi UASA</h3><p>Timer, semak semula dan keputusan selepas submit.</p></article><article><span>☁️</span><h3>Autosave</h3><p>Latihan belum siap boleh disambung tanpa bermula semula.</p></article></div>
+    </section>
 
-      <footer><div className="footer-brand"><span className="brand-mark small">G</span><div><b>GeoBoost Tingkatan 2</b><small>Latihan Pengukuhan Interaktif Geografi</small></div></div><span>By Cikgu Zulhasif · v1.3</span></footer>
-    </main>
-  );
+    <section className="public-cta"><div><small>BANK GEOBOOST</small><b>{totalQuestionBank}</b><span>soalan Geografi Tingkatan 2</span></div><a className="primary" href="/murid">Mula GeoBoost →</a></section>
+
+    <footer><div className="footer-brand"><span className="brand-mark small">G</span><div><b>GeoBoost Tingkatan 2</b><small>Latihan Pengukuhan Interaktif Geografi</small></div></div><span>By Cikgu Zulhasif · v2.0</span></footer>
+  </main>;
 }
