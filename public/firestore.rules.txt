@@ -80,8 +80,17 @@ service cloud.firestore {
     }
     function rosterHasStudent(classCode, localStudentId, studentName) {
       return classExists(classCode)
-        && classDoc(classCode).data.keys().hasAll(["studentRoster"])
-        && {"id": localStudentId, "name": studentName} in classDoc(classCode).data.studentRoster;
+        && (
+          (
+            classDoc(classCode).data.keys().hasAll(["studentRoster"])
+            && {"id": localStudentId, "name": studentName} in classDoc(classCode).data.studentRoster
+          )
+          ||
+          (
+            classDoc(classCode).data.keys().hasAll(["studentNames"])
+            && studentName in classDoc(classCode).data.studentNames
+          )
+        );
     }
     function isStudent(studentId) {
       return signedIn() && request.auth.uid == studentId;
