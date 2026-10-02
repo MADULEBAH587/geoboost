@@ -4,6 +4,7 @@ export type StudentSession = {
   className: string;
   classCode: string;
   createdAt: number;
+  verifiedAt: number;
   pendingRoster?: boolean;
 };
 
@@ -15,13 +16,14 @@ export function getStudentSession(): StudentSession | null {
     const raw = localStorage.getItem(KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    if (!parsed?.id || !parsed?.name || !parsed?.className) return null;
+    if (!parsed?.id || !parsed?.name || !parsed?.className || !parsed?.verifiedAt) return null;
     return {
       id: String(parsed.id),
       name: String(parsed.name),
       className: String(parsed.className),
       classCode: String(parsed.classCode || ""),
       createdAt: Number(parsed.createdAt || Date.now()),
+      verifiedAt: Number(parsed.verifiedAt),
       pendingRoster: Boolean(parsed.pendingRoster),
     };
   } catch {
