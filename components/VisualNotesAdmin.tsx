@@ -3,8 +3,8 @@
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { chapters } from "@/lib/data";
 import {
-  VisualAssetCategory, VisualAssetMeta, archiveVisualAsset, deleteVisualAsset,
-  listVisualAssets, saveVisualAsset,
+  archiveVisualAsset, deleteVisualAsset, listVisualAssets, saveVisualAsset,
+  type VisualAssetCategory, type VisualAssetMeta,
 } from "@/lib/visualNotesMedia";
 
 const MAX_FILE_BYTES=480*1024;
@@ -94,9 +94,11 @@ export function VisualNotesAdmin({canEdit}:{canEdit:boolean}){
     setBusy(true);setMessage("");
     try{
       let order=current.filter(x=>x.category===category).reduce((m,x)=>Math.max(m,x.order),0)+1;
+      let batchUsed=used;
       for(let i=0;i<files.length;i++){
         const prepared=await compressImage(files[i]);
-        if(used+prepared.sizeBytes>INTERNAL_LIBRARY_BYTES)throw new Error("Muat naik dihentikan kerana melebihi had dalaman 100 MB.");
+        if(batchUsed+prepared.sizeBytes>INTERNAL_LIBRARY_BYTES)throw new Error("Muat naik dihentikan kerana melebihi had dalaman 100 MB.");
+        batchUsed+=prepared.sizeBytes;
         await saveVisualAsset({
           chapter,category,
           title:(title.trim()||files[i].name.replace(/\.[^.]+$/,""))+(files.length>1?" · "+(i+1):""),
