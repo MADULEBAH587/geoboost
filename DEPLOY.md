@@ -1,57 +1,42 @@
 # Deploy GeoBoost ke Firebase + Vercel
 
-## 1. Firebase
-1. Cipta projek baharu di Firebase Console.
-2. Tambah **Web App**.
-3. Authentication → Sign-in method → aktifkan **Anonymous** dan **Google**.
-4. Firestore Database → Create database → Production mode.
-5. Salin konfigurasi Web App ke `.env.local` atau Vercel Environment Variables:
-   - `NEXT_PUBLIC_FIREBASE_API_KEY`
-   - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
-   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
-   - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
-   - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
-   - `NEXT_PUBLIC_FIREBASE_APP_ID`
-6. Deploy rules dan indexes dalam folder `firebase/`.
+## 1. Vercel
+Repository production menggunakan Next.js dan deploy automatik daripada branch `main`.
 
-Contoh dengan Firebase CLI:
+URL production:
+`https://geoboost-tingkatan-2.vercel.app`
+
+## 2. Firebase Authentication
+Dalam projek Firebase `geoboost-tingkatan-2`, aktifkan:
+- Anonymous — murid
+- Google — guru
+
+## 3. Aktifkan Firebase P1 dari GeoBoost
+GeoBoost v2.1 menyediakan setup tanpa perlu menyalin rules secara manual ke Firebase Console.
+
+1. Buka `/guru`.
+2. Log masuk dengan akaun Google pemilik/editor projek Firebase.
+3. Jika belum ada akaun guru, tekan **Aktifkan Admin + Firebase P1**.
+4. Jika akaun admin sudah ada, buka **Tetapan → Firebase P1** dan tekan **Aktifkan Firebase P1**.
+5. Luluskan consent Google/Firebase sekali sahaja.
+
+Sistem menerbitkan Firestore Rules, menyediakan admin pertama, memigrasi kelas legacy kepada `ownerTeacherId`, memberi ID unik kepada roster dan menjana kod akses murid.
+
+## 4. Ujian aliran production
+Selepas P1 aktif:
+- Guru: `/guru` → Google login → Control Center.
+- Guru cipta kelas dan masukkan/import roster.
+- Guru tekan **Salin Kod Akses** untuk mendapatkan PIN murid.
+- Murid: `/murid` → kod kelas → pilih nama → PIN 6 digit.
+- Guru terbitkan tugasan.
+- Murid menjawab tugasan.
+- Percubaan muncul di Ringkasan/Laporan dan aktiviti muncul di Live Monitoring.
+- Had percubaan tugasan kekal walaupun murid menggunakan peranti lain selepas rekod diselaraskan.
+
+## 5. Deploy manual kecemasan
+Fail rules dan indexes masih disimpan dalam folder `firebase/`. Jika setup dalam aplikasi tidak boleh digunakan, Firebase CLI boleh digunakan:
 ```bash
 npx firebase-tools login
 npx firebase-tools use --add
 npx firebase-tools deploy --config firebase/firebase.json --only firestore:rules,firestore:indexes,storage
 ```
-
-## 2. Akaun guru pertama
-1. Deploy aplikasi dahulu atau jalankan secara lokal.
-2. Buka `/guru` dan log masuk menggunakan Google.
-3. Salin UID guru yang dipaparkan jika akses belum diberikan.
-4. Di Firestore, cipta dokumen `teachers/{UID}` dengan contoh medan:
-```json
-{
-  "name": "Cikgu Zulhasif",
-  "email": "email-guru@example.com"
-}
-```
-5. Log masuk semula di `/guru`.
-
-## 3. Kelas
-Dalam Panel Guru, tambah nama kelas dan kod seperti `2E` / `2E26`. Murid yang memasukkan kod kelas akan disahkan terhadap dokumen `classes/{KOD}`.
-
-## 4. Vercel
-Import repository/folder GeoBoost sebagai projek baharu, pilih Next.js, tambah keenam-enam environment variables Firebase, kemudian deploy.
-
-Jika menggunakan Vercel CLI:
-```bash
-npx vercel
-npx vercel --prod
-```
-
-## 5. Semakan selepas deploy
-- `/` dashboard terbuka
-- `/murid` boleh simpan profil
-- Bab 1–10 boleh mula latihan
-- pilihan jawapan berubah kedudukan antara sesi
-- `/guru` boleh log masuk Google selepas UID didaftarkan
-- kelas boleh dicipta dan kod kelas murid boleh disahkan
-- keputusan murid muncul di panel guru
-- PWA boleh ditambah ke Home Screen
