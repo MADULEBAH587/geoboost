@@ -1,6 +1,6 @@
 "use client";
 
-import { collection, doc, getDocs, limit, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import { ensureAnonymousFirebaseUser, getFirebaseServices } from "./firebase";
 
 export type AttemptResponse = {
@@ -10,6 +10,7 @@ export type AttemptResponse = {
   answer: string;
   correct: boolean;
   difficulty: "easy" | "medium" | "kbat";
+  unsure?: boolean;
 };
 
 export type RegisteredStudent = {
@@ -40,6 +41,20 @@ export type AttemptRecord = {
   firebaseSynced?: boolean;
 };
 
+export type LiveProgress = {
+  uid: string;
+  localStudentId: string;
+  studentName: string;
+  className: string;
+  classCode: string;
+  title: string;
+  mode: string;
+  current: number;
+  total: number;
+  status: "active" | "complete";
+  updatedAt: number;
+};
+
 const KEY = "geoboost_attempts";
 
 export function getLocalAttempts(): AttemptRecord[] {
@@ -53,8 +68,7 @@ function setLocalAttempts(attempts: AttemptRecord[]) {
 
 function markAttemptSynced(id: string) {
   const attempts = getLocalAttempts();
-  const next = attempts.map((attempt) => attempt.id === id ? { ...attempt, firebaseSynced: true } : attempt);
-  setLocalAttempts(next);
+  setLocalAttempts(attempts.map(attempt => attempt.id === id ? { ...attempt, firebaseSynced: true } : attempt));
 }
 
 export async function syncStudentProfile(profile: { localStudentId: string; name: string; className: string; classCode?: string }) {
@@ -104,11 +118,8 @@ async function uploadAttempt(attempt: AttemptRecord) {
 
 export async function saveAttempt(attempt: AttemptRecord) {
   if (attempt.studentId === "demo") return { synced: false, savedLocally: false };
-  const local = getLocalAttempts();
   const localAttempt = { ...attempt, firebaseSynced: false };
-  local.unshift(localAttempt);
-  setLocalAttempts(local);
-
+  setLocalAttempts([localAttempt, ...getLocalAttempts()]);
   try {
     const synced = await uploadAttempt(localAttempt);
     if (synced) markAttemptSynced(attempt.id);
@@ -119,57 +130,70 @@ export async function saveAttempt(attempt: AttemptRecord) {
 }
 
 export async function syncPendingAttempts(maxItems = 50) {
-  const pending = getLocalAttempts().filter((attempt) => attempt.studentId !== "demo" && !attempt.firebaseSynced).slice(0, maxItems);
-  if (!pending.length) return { attempted: 0, synced: 0 };
+  const pending = getLocalAttempts().filter(attempt => attempt.studentId !== "demo" && !attempt.firebaseSynced).slice(0, maxItems);
   let synced = 0;
   for (const attempt of pending) {
     try {
-      if (await uploadAttempt(attempt)) {
-        markAttemptSynced(attempt.id);
-        synced++;
-      }
-    } catch {
-      // Kekalkan rekod tempatan untuk cuba semula pada sesi berikutnya.
-    }
+      if (await uploadAttempt(attempt)) { markAttemptSynced(attempt.id); synced++; }
+    } catch {}
   }
   return { attempted: pending.length, synced };
+}
+
+function fromAttemptDoc(snapshot: any): AttemptRecord {
+  const data = snapshot.data() as Record<string, any>;
+  return {
+    id: data.id || snapshot.id,
+    studentId: data.localStudentId || data.studentId || "",
+    studentName: data.studentName || "Murid",
+    className: data.className || "-",
+    classCode: data.classCode || "",
+    chapter: Number(data.chapter || 0),
+    label: data.label || "",
+    mode: data.mode || "",
+    score: Number(data.score || 0),
+    total: Number(data.total || 0),
+    percentage: Number(data.percentage || 0),
+    durationSeconds: Number(data.durationSeconds || 0),
+    wrongSubtopics: Array.isArray(data.wrongSubtopics) ? data.wrongSubtopics : [],
+    responses: Array.isArray(data.responses) ? data.responses : [],
+    completedAt: data.completedAt?.toMillis?.() ?? data.completedAt ?? Date.now(),
+    firebaseSynced: true,
+  };
 }
 
 export async function getRemoteAttempts(): Promise<AttemptRecord[]> {
   const services = getFirebaseServices();
   if (!services) return [];
-  const snap = await getDocs(query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(500)));
-  return snap.docs.flatMap((snapshot) => {
-    const data = snapshot.data() as Record<string, any>;
-    if (data.className === "__QA__" || data.mode === "qa") return [];
-    const completedAt = data.completedAt?.toMillis?.() ?? data.completedAt ?? Date.now();
-    return [{
-      id: data.id || snapshot.id,
-      studentId: data.localStudentId || data.studentId || "",
-      studentName: data.studentName || "Murid",
-      className: data.className || "-",
-      classCode: data.classCode || "",
-      chapter: Number(data.chapter || 0),
-      label: data.label || "",
-      mode: data.mode || "",
-      score: Number(data.score || 0),
-      total: Number(data.total || 0),
-      percentage: Number(data.percentage || 0),
-      durationSeconds: Number(data.durationSeconds || 0),
-      wrongSubtopics: Array.isArray(data.wrongSubtopics) ? data.wrongSubtopics : [],
-      responses: Array.isArray(data.responses) ? data.responses : [],
-      completedAt,
-      firebaseSynced: true,
-    }];
+  const snap = await getDocs(query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(1000)));
+  return snap.docs.flatMap(snapshot => {
+    const item = fromAttemptDoc(snapshot);
+    return item.className === "__QA__" || item.mode === "qa" ? [] : [item];
   });
 }
 
+export async function getStudentCloudAttempts(localStudentId: string): Promise<AttemptRecord[]> {
+  const services = getFirebaseServices();
+  if (!services) return [];
+  const user = await ensureAnonymousFirebaseUser();
+  if (!user) return [];
+  const found = new Map<string, AttemptRecord>();
+  try {
+    const own = await getDocs(query(collection(services.db, "attempts"), where("studentId","==",user.uid), limit(500)));
+    own.docs.forEach(d => { const item=fromAttemptDoc(d); found.set(item.id,item); });
+  } catch {}
+  try {
+    const cross = await getDocs(query(collection(services.db, "attempts"), where("localStudentId","==",localStudentId), limit(500)));
+    cross.docs.forEach(d => { const item=fromAttemptDoc(d); found.set(item.id,item); });
+  } catch {}
+  return [...found.values()].sort((a,b)=>b.completedAt-a.completedAt);
+}
 
 export async function getRemoteStudents(): Promise<RegisteredStudent[]> {
   const services = getFirebaseServices();
   if (!services) return [];
   const snap = await getDocs(query(collection(services.db, "students"), orderBy("updatedAt", "desc"), limit(1000)));
-  return snap.docs.map((snapshot) => {
+  return snap.docs.map(snapshot => {
     const data = snapshot.data() as Record<string, any>;
     return {
       uid: snapshot.id,
@@ -180,4 +204,46 @@ export async function getRemoteStudents(): Promise<RegisteredStudent[]> {
       updatedAt: data.updatedAt?.toMillis?.() ?? data.updatedAt ?? Date.now(),
     };
   });
+}
+
+export async function saveLiveProgress(input: Omit<LiveProgress,"uid"|"updatedAt">) {
+  const services = getFirebaseServices();
+  if (!services) return;
+  const user = await ensureAnonymousFirebaseUser();
+  if (!user) return;
+  await setDoc(doc(services.db,"progress",user.uid), {
+    ...input,
+    studentId: user.uid,
+    updatedAt: serverTimestamp(),
+  }, { merge: true });
+}
+
+export function watchLiveProgress(callback: (items: LiveProgress[]) => void) {
+  const services = getFirebaseServices();
+  if (!services) return () => {};
+  return onSnapshot(collection(services.db,"progress"), snap => {
+    const items = snap.docs.map(d => {
+      const data=d.data() as Record<string,any>;
+      return {
+        uid:d.id,
+        localStudentId:String(data.localStudentId||""),
+        studentName:String(data.studentName||"Murid"),
+        className:String(data.className||"-"),
+        classCode:String(data.classCode||""),
+        title:String(data.title||"Latihan"),
+        mode:String(data.mode||""),
+        current:Number(data.current||0),
+        total:Number(data.total||0),
+        status:data.status==="complete" ? "complete" : "active",
+        updatedAt:data.updatedAt?.toMillis?.() ?? Date.now(),
+      } satisfies LiveProgress;
+    });
+    callback(items.sort((a,b)=>b.updatedAt-a.updatedAt));
+  },()=>callback([]));
+}
+
+export async function deleteRemoteAttempt(id: string) {
+  const services=getFirebaseServices();
+  if(!services) throw new Error("Firebase belum dikonfigurasi");
+  await deleteDoc(doc(services.db,"attempts",id));
 }
