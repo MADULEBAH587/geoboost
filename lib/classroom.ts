@@ -3,13 +3,27 @@
 import { collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import { ensureAnonymousFirebaseUser, getFirebaseServices } from "./firebase";
 
+export type ClassAssignment = {
+  id: string;
+  title: string;
+  chapter: number;
+  questionCount: number;
+  dueDate: string;
+  active: boolean;
+  createdAt: number;
+};
+
 export type ClassRecord = {
   id: string;
   code: string;
   name: string;
   active: boolean;
   studentNames: string[];
+  openChapters: number[];
+  assignments: ClassAssignment[];
 };
+
+const ALL_CHAPTERS = [1,2,3,4,5,6,7,8,9,10];
 
 export function normalizeClassCode(code: string) {
   return code.trim().toUpperCase().replace(/\s+/g, "").replace(/[^A-Z0-9_-]/g, "");
@@ -29,16 +43,36 @@ export function stableStudentId(classCode: string, name: string) {
   return `roster-${normalizeClassCode(classCode).toLowerCase()}-${(hash >>> 0).toString(36)}`;
 }
 
+function cleanAssignments(value: unknown): ClassAssignment[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item: any) => {
+    const chapter = Number(item?.chapter || 0);
+    if (!item?.id || !item?.title || chapter < 1 || chapter > 10) return [];
+    return [{
+      id: String(item.id),
+      title: String(item.title),
+      chapter,
+      questionCount: Math.min(20, Math.max(5, Number(item.questionCount || 20))),
+      dueDate: String(item.dueDate || ""),
+      active: item.active !== false,
+      createdAt: Number(item.createdAt || Date.now()),
+    }];
+  }).sort((a,b)=>b.createdAt-a.createdAt);
+}
+
 function classFromData(id: string, data: Record<string, unknown>): ClassRecord {
   const names = Array.isArray(data.studentNames)
     ? data.studentNames.map((name) => normalizeStudentName(String(name))).filter(Boolean)
     : [];
+  const rawOpen = Array.isArray(data.openChapters) ? data.openChapters.map(Number).filter((n)=>n>=1&&n<=10) : ALL_CHAPTERS;
   return {
     id,
     code: String(data.code || id),
     name: String(data.name || id),
     active: data.active !== false,
     studentNames: [...new Set(names)].sort((a, b) => a.localeCompare(b, "ms")),
+    openChapters: [...new Set(rawOpen)].sort((a,b)=>a-b),
+    assignments: cleanAssignments(data.assignments),
   };
 }
 
@@ -71,11 +105,18 @@ export async function saveClass(input: { name: string; code: string }) {
   if (!code || !name) throw new Error("Nama dan kod kelas diperlukan");
   const ref = doc(services.db, "classes", code);
   const existing = await getDoc(ref);
-  const studentNames = existing.exists() && Array.isArray(existing.data().studentNames)
-    ? existing.data().studentNames
-    : [];
-  await setDoc(ref, { code, name, active: true, studentNames, updatedAt: serverTimestamp() }, { merge: true });
-  return { id: code, code, name, active: true, studentNames: studentNames.map(String) } satisfies ClassRecord;
+  const current = existing.exists() ? classFromData(existing.id, existing.data() as Record<string, unknown>) : null;
+  const payload = {
+    code,
+    name,
+    active: true,
+    studentNames: current?.studentNames || [],
+    openChapters: current?.openChapters || ALL_CHAPTERS,
+    assignments: current?.assignments || [],
+    updatedAt: serverTimestamp(),
+  };
+  await setDoc(ref, payload, { merge: true });
+  return { id: code, ...payload, updatedAt: undefined } as unknown as ClassRecord;
 }
 
 export async function saveClassRoster(classCode: string, names: string[]) {
@@ -83,10 +124,7 @@ export async function saveClassRoster(classCode: string, names: string[]) {
   if (!services) throw new Error("Firebase belum dikonfigurasi");
   const code = normalizeClassCode(classCode);
   const clean = [...new Set(names.map(normalizeStudentName).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ms"));
-  await setDoc(doc(services.db, "classes", code), {
-    studentNames: clean,
-    updatedAt: serverTimestamp(),
-  }, { merge: true });
+  await setDoc(doc(services.db, "classes", code), { studentNames: clean, updatedAt: serverTimestamp() }, { merge: true });
   return clean;
 }
 
@@ -117,6 +155,49 @@ export async function removeRosterStudent(classCode: string, name: string) {
   return next;
 }
 
+export async function setOpenChapters(classCode: string, chapters: number[]) {
+  const services = getFirebaseServices();
+  if (!services) throw new Error("Firebase belum dikonfigurasi");
+  const code = normalizeClassCode(classCode);
+  const clean = [...new Set(chapters.map(Number).filter((n)=>n>=1&&n<=10))].sort((a,b)=>a-b);
+  await setDoc(doc(services.db, "classes", code), { openChapters: clean, updatedAt: serverTimestamp() }, { merge: true });
+  return clean;
+}
+
+export async function saveAssignment(classCode: string, input: Omit<ClassAssignment, "id" | "createdAt"> & { id?: string; createdAt?: number }) {
+  const services = getFirebaseServices();
+  if (!services) throw new Error("Firebase belum dikonfigurasi");
+  const code = normalizeClassCode(classCode);
+  const ref = doc(services.db, "classes", code);
+  const snapshot = await getDoc(ref);
+  if (!snapshot.exists()) throw new Error("Kelas tidak dijumpai");
+  const record = classFromData(snapshot.id, snapshot.data() as Record<string, unknown>);
+  const assignment: ClassAssignment = {
+    id: input.id || crypto.randomUUID(),
+    title: input.title.trim(),
+    chapter: Number(input.chapter),
+    questionCount: Math.min(20, Math.max(5, Number(input.questionCount || 20))),
+    dueDate: input.dueDate || "",
+    active: input.active !== false,
+    createdAt: input.createdAt || Date.now(),
+  };
+  const next = [assignment, ...record.assignments.filter((item)=>item.id!==assignment.id)].sort((a,b)=>b.createdAt-a.createdAt);
+  await setDoc(ref, { assignments: next, updatedAt: serverTimestamp() }, { merge: true });
+  return next;
+}
+
+export async function deleteAssignment(classCode: string, assignmentId: string) {
+  const services = getFirebaseServices();
+  if (!services) throw new Error("Firebase belum dikonfigurasi");
+  const code = normalizeClassCode(classCode);
+  const ref = doc(services.db, "classes", code);
+  const snapshot = await getDoc(ref);
+  if (!snapshot.exists()) return [];
+  const record = classFromData(snapshot.id, snapshot.data() as Record<string, unknown>);
+  const next = record.assignments.filter((item)=>item.id!==assignmentId);
+  await setDoc(ref, { assignments: next, updatedAt: serverTimestamp() }, { merge: true });
+  return next;
+}
 
 export async function removeClass(code: string) {
   const services = getFirebaseServices();
