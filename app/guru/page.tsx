@@ -728,6 +728,10 @@ export default function TeacherPage(){
     const own=selectedStudentAttempts.filter(a=>a.chapter===ch.id);
     return{id:ch.id,avg:pct(own.map(a=>a.percentage)),count:own.length};
   }).filter(item=>item.count>0);
+  const selectedResponses=selectedStudentAttempts.flatMap(item=>item.responses||[]);
+  const selectedCorrect=selectedResponses.filter(item=>item.correct).length;
+  const selectedWrong=selectedResponses.length-selectedCorrect;
+  const selectedDuration=selectedStudentAttempts.reduce((sum,item)=>sum+(item.durationSeconds||0),0);
   const assignmentClass=managedClasses.find(c=>c.code===assignmentClassCode)||null;
 
   const interventionRows=useMemo(()=>registeredStudents.map(student=>{
@@ -896,6 +900,13 @@ export default function TeacherPage(){
                     <div><span>Purata</span><b>{selectedStudentRow.attempts.length?selectedStudentRow.average+"%":"—"}</b></div>
                     <div><span>Terbaik</span><b>{selectedStudentRow.attempts.length?selectedStudentRow.best+"%":"—"}</b></div>
                     <div><span>Percubaan</span><b>{selectedStudentRow.attempts.length}</b></div>
+                  </div>
+
+                  <div className="profile-metrics profile-metrics-v2">
+                    <div><span>Soalan</span><b>{selectedResponses.length}</b></div>
+                    <div><span>Betul</span><b>{selectedCorrect}</b></div>
+                    <div><span>Salah</span><b>{selectedWrong}</b></div>
+                    <div><span>Masa</span><b>{Math.round(selectedDuration/60)} min</b></div>
                   </div>
 
                   <div className="student-profile-section"><div className="subsection-title"><strong>Prestasi Mengikut Bab</strong><span>{selectedChapterPerformance.length}</span></div>
