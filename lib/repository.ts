@@ -194,6 +194,24 @@ export async function getRemoteAttempts(classCodes: string[] = [], allowAll = fa
   }).sort((a,b)=>b.completedAt-a.completedAt);
 }
 
+export function watchRemoteAttempts(callback: (items: AttemptRecord[]) => void, classCodes: string[] = [], allowAll = false) {
+  const services = getFirebaseServices();
+  if (!services) { callback([]); return () => {}; }
+  if (!allowAll && !classCodes.length) { callback([]); return () => {}; }
+  const source = allowAll
+    ? query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(1000))
+    : query(collection(services.db, "attempts"), where("classCode", "in", classCodes.slice(0,30)), limit(1000));
+  return onSnapshot(source, snap => {
+    const items=snap.docs.flatMap(snapshot=>{
+      const item=fromAttemptDoc(snapshot);
+      return item.className==="__QA__"||item.mode==="qa"?[]:[item];
+    }).sort((a,b)=>b.completedAt-a.completedAt);
+    callback(items);
+  }, error => {
+    console.error("watchRemoteAttempts failed",error);
+  });
+}
+
 export async function getStudentCloudAttempts(localStudentId: string): Promise<AttemptRecord[]> {
   const services = getFirebaseServices();
   if (!services) return [];
