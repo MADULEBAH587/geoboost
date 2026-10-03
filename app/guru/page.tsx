@@ -732,6 +732,7 @@ export default function TeacherPage(){
   const selectedCorrect=selectedResponses.filter(item=>item.correct).length;
   const selectedWrong=selectedResponses.length-selectedCorrect;
   const selectedDuration=selectedStudentAttempts.reduce((sum,item)=>sum+(item.durationSeconds||0),0);
+  const selectedLive=selectedStudent&&liveItems.find(item=>item.localStudentId===selectedStudent.localStudentId&&item.classCode===selectedStudent.classCode&&item.status==="active"&&Date.now()-item.updatedAt<5*60*1000)||null;
   const assignmentClass=managedClasses.find(c=>c.code===assignmentClassCode)||null;
 
   const interventionRows=useMemo(()=>registeredStudents.map(student=>{
@@ -901,6 +902,8 @@ export default function TeacherPage(){
                     <div><span>Terbaik</span><b>{selectedStudentRow.attempts.length?selectedStudentRow.best+"%":"—"}</b></div>
                     <div><span>Percubaan</span><b>{selectedStudentRow.attempts.length}</b></div>
                   </div>
+
+                  {selectedLive?<div className="student-live-progress"><div><strong>🟢 Sedang menjawab sekarang</strong><small>{selectedLive.title}</small></div><b>{Math.min(selectedLive.current,selectedLive.total)}/{selectedLive.total}</b></div>:null}
 
                   <div className="profile-metrics profile-metrics-v2">
                     <div><span>Soalan</span><b>{selectedResponses.length}</b></div>
