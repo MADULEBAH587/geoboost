@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { clearStudentSession, getStudentSession, saveStudentSession, StudentSession } from "@/lib/session";
-import { syncPendingAttempts, syncStudentProfile } from "@/lib/repository";
+import { repairCurrentStudentCloudRecords, syncStudentProfile } from "@/lib/repository";
 import { firebaseConfigured, signOutFirebaseUser } from "@/lib/firebase";
 import { ClassRecord, normalizeClassCode, normalizeStudentName, validateClassCode } from "@/lib/classroom";
 import { registerStudentPresence } from "@/lib/studentPresence";
@@ -98,7 +98,7 @@ export default function StudentLoginPage() {
                 studentName:selectedStudent.name,
               });
             }catch(error){console.warn("Student presence sync pending",error)}
-            try{await syncPendingAttempts()}catch{}
+            try{await repairCurrentStudentCloudRecords({localStudentId:selectedStudent.id,name:selectedStudent.name,className:classRecord.name,classCode:classRecord.code})}catch{}
           }else{
             localStorage.setItem("geoboost_cloud_profile_pending",JSON.stringify({
               ...session,
