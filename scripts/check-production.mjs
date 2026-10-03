@@ -15,10 +15,17 @@ const source = fs.readFileSync(path.join(root, "lib/questions.ts"), "utf8");
 const engine = fs.readFileSync(path.join(root, "lib/questionEngine.ts"), "utf8");
 const total = (source.match(/q\("GB\d{2}-\d{3}"/g) || []).length;
 const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
+const repository = fs.readFileSync(path.join(root, "lib/repository.ts"), "utf8");
+const teacher = fs.readFileSync(path.join(root, "app/guru/page.tsx"), "utf8");
+const studentPortal = fs.readFileSync(path.join(root, "components/StudentPortal.tsx"), "utf8");
 const checks = {
   totalQuestions: total === 390,
   optionShuffle: engine.includes("options: shuffle(question.options)"),
   version: pkg.version === "2.5.0",
+  realtimeAttempts: repository.includes("watchRemoteAttempts") && teacher.includes("watchRemoteAttempts(setAttempts"),
+  rosterStudentCount: teacher.includes("rosterStudents=activeClasses.reduce"),
+  studentRepairSync: repository.includes("repairCurrentStudentCloudRecords") && studentPortal.includes("repairCurrentStudentCloudRecords"),
+  explicitStudentLogout: studentPortal.includes("Log Keluar Murid"),
 };
 
 if (missing.length || Object.values(checks).some((value) => !value)) {
