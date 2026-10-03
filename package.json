@@ -8,7 +8,8 @@
     "start": "next start",
     "bank:check": "node scripts/audit-bank.mjs",
     "production:check": "node scripts/check-production.mjs",
-    "qa": "npm run bank:check && npm run production:check"
+    "qa": "npm run bank:check && npm run production:check && npm run e2e:contract",
+    "e2e:contract": "node scripts/e2e-data-flow.mjs"
   },
   "dependencies": {
     "firebase": "^12.3.0",

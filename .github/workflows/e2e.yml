@@ -1,0 +1,18 @@
+name: GeoBoost E2E Contract
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  data-flow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate student-to-teacher data flow contract
+        run: node scripts/e2e-data-flow.mjs
