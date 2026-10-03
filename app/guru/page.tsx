@@ -5,7 +5,7 @@ import { chapters } from "@/lib/data";
 import { questions, type Difficulty, type QuestionType } from "@/lib/questions";
 import {
   AttemptRecord, RegisteredStudent, LiveProgress, deleteRemoteAttempt, getLocalAttempts,
-  getRemoteAttempts, getRemoteStudents, watchLiveProgress,
+  getRemoteAttempts, getRemoteStudents, watchLiveProgress, watchRemoteAttempts,
 } from "@/lib/repository";
 import {
   firebaseConfigured, linkCurrentTeacherPassword, reauthenticateTeacher, registerTeacherWithEmail,
@@ -251,6 +251,12 @@ export default function TeacherPage(){
     const stopLive=watchLiveProgress(setLiveItems,classCodes,teacherProfile.role==="admin");
     const stopPresence=watchStudentPresence(setStudentPresence,classCodes,teacherProfile.role==="admin");
     return ()=>{stopLive();stopPresence()};
+  },[source,teacherProfile,managedClasses]);
+
+  useEffect(()=>{
+    if(source!=="firebase"||!teacherProfile)return;
+    const classCodes=managedClasses.map(item=>item.code);
+    return watchRemoteAttempts(setAttempts,classCodes,teacherProfile.role==="admin");
   },[source,teacherProfile,managedClasses]);
 
   useEffect(()=>{
@@ -737,7 +743,7 @@ export default function TeacherPage(){
   }).filter(x=>x.needs).sort((a,b)=>b.missing-a.missing||a.average-b.average),[registeredStudents,attempts,managedClasses]);
 
   const now=Date.now();
-  const currentLive=liveItems.filter(x=>now-x.updatedAt<30*60*1000);
+  const currentLive=liveItems.filter(x=>x.status==="active"&&now-x.updatedAt<5*60*1000);
   const duplicateSessions=studentPresence.filter(item=>item.duplicate&&item.duplicateUntilMs>now);
   const pendingTeachers=teacherProfiles.filter(item=>item.status==="pending");
   const adminTeacher=teacherProfiles.find(item=>item.uid===adminTeacherUid)||null;
@@ -929,8 +935,8 @@ export default function TeacherPage(){
 
         {activeSection==="live"?<section className="panel live-panel">
           <div className="panel-title"><div><small>AKTIVITI MURID</small><h2>Aktiviti Semasa</h2></div><span>{currentLive.length}</span></div>
-          <p className="class-help">Status berubah apabila murid bergerak ke soalan seterusnya. Rekod lebih 30 minit tidak dianggap aktif.</p>
-          {currentLive.length?<div className="live-grid">{currentLive.map(item=><div key={item.uid}><span className={"live-dot "+item.status}/><div><strong>{item.studentName}</strong><small>{item.className} · {item.title}</small></div><b>{item.status==="complete"?"Selesai":item.current+"/"+item.total}</b><em>{item.total?Math.round(item.current/item.total*100):0}%</em></div>)}</div>:<div className="panel-empty">Tiada murid aktif dalam 30 minit terakhir.</div>}
+          <p className="class-help">Status berubah apabila murid bergerak ke soalan seterusnya. Hanya aktiviti dalam 5 minit terakhir dianggap aktif.</p>
+          {currentLive.length?<div className="live-grid">{currentLive.map(item=><div key={item.uid}><span className={"live-dot "+item.status}/><div><strong>{item.studentName}</strong><small>{item.className} · {item.title}</small></div><b>{item.status==="complete"?"Selesai":item.current+"/"+item.total}</b><em>{item.total?Math.round(item.current/item.total*100):0}%</em></div>)}</div>:<div className="panel-empty">Tiada murid aktif dalam 5 minit terakhir.</div>}
           {duplicateSessions.length?<div className="duplicate-session-box"><strong>⚠️ Nama digunakan pada beberapa peranti</strong><p>Nama berikut baru digunakan pada lebih daripada satu peranti. Semak jika perlu.</p>{duplicateSessions.slice(0,12).map(item=><div key={item.id}><span>{item.studentName}</span><small>{managedClasses.find(c=>c.code===item.classCode)?.name||item.classCode}</small><b>2+ peranti</b></div>)}</div>:null}
         </section>:null}
 
