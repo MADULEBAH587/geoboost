@@ -37,9 +37,7 @@ type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"int
 const NAV:{id:TeacherSection;icon:string;label:string}[]=[
   {id:"dashboard",icon:"▦",label:"Ringkasan"},{id:"classes",icon:"🏫",label:"Kelas"},
   {id:"students",icon:"👥",label:"Murid"},{id:"assignments",icon:"📝",label:"Tugasan"},
-  {id:"live",icon:"🟢",label:"Aktiviti Semasa"},{id:"interventions",icon:"🎯",label:"Pemulihan"},
-  {id:"analytics",icon:"📊",label:"Analitik"},{id:"reports",icon:"🖨️",label:"Laporan"},
-  {id:"notes",icon:"📚",label:"Nota Visual"},{id:"bank",icon:"🗂️",label:"Bank Soalan"},{id:"teachers",icon:"🧑‍🏫",label:"Pengurusan Guru"},
+  {id:"analytics",icon:"📊",label:"Analitik & Laporan"},{id:"bank",icon:"🗂️",label:"Kandungan"},
   {id:"settings",icon:"⚙️",label:"Tetapan"},
 ];
 
