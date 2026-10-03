@@ -54,6 +54,67 @@ function downloadCsv(attempts:AttemptRecord[]){
 }
 function pct(list:number[]){return list.length?Math.round(list.reduce((s,v)=>s+v,0)/list.length):0}
 
+const STUDENT_NAME_HEADERS=new Set([
+  "nama","nama murid","nama pelajar","nama penuh","nama penuh murid","nama penuh pelajar",
+  "name","student","student name","full name","student full name",
+]);
+
+function rosterHeaderKey(value:unknown){
+  return String(value??"").trim().toLowerCase().replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim();
+}
+
+function isProbableStudentName(value:unknown){
+  const name=normalizeStudentName(String(value??""));
+  if(name.length<3||name.length>120)return false;
+  if(/^\d/.test(name)||/^[-–—]/.test(name))return false;
+  if(!/[A-ZÀ-ÖØ-Þ]/.test(name))return false;
+  if([
+    /^SENARAI\b/,/^JUMLAH\b/,/^BIL\.?$/,/^NO\.?$/,/^NAMA(?:\s+(?:MURID|PELAJAR|PENUH))?$/,
+    /^KELAS\b/,/^TINGKATAN\b/,/^TARIKH\b/,/^SEKOLAH\b/,/^SMK\b/,/^SK\b/,/^DARJAH\b/,
+  ].some(pattern=>pattern.test(name)))return false;
+  const compact=name.replace(/\s/g,"");
+  const letters=(compact.match(/[A-ZÀ-ÖØ-Þ]/g)||[]).length;
+  return letters>=2&&letters/Math.max(compact.length,1)>=0.55;
+}
+
+function extractStudentNamesFromRows(rows:any[][]){
+  const scanLimit=Math.min(rows.length,30);
+  let headerRow=-1;
+  let nameColumn=-1;
+  for(let r=0;r<scanLimit&&headerRow<0;r++){
+    const row=Array.isArray(rows[r])?rows[r]:[];
+    for(let col=0;col<row.length;col++){
+      if(STUDENT_NAME_HEADERS.has(rosterHeaderKey(row[col]))){
+        headerRow=r;nameColumn=col;break;
+      }
+    }
+  }
+
+  if(nameColumn<0){
+    const maxCols=Math.min(20,rows.reduce((max,row)=>Math.max(max,Array.isArray(row)?row.length:0),0));
+    let bestScore=-1;
+    for(let col=0;col<maxCols;col++){
+      const samples=rows.slice(0,250).map(row=>Array.isArray(row)?row[col]:"").filter(value=>String(value??"").trim());
+      const names=samples.map(value=>normalizeStudentName(String(value??""))).filter(value=>isProbableStudentName(value));
+      if(!names.length)continue;
+      const avgLength=names.reduce((sum,name)=>sum+name.length,0)/names.length;
+      const score=names.length*100+avgLength;
+      if(score>bestScore){bestScore=score;nameColumn=col;}
+    }
+  }
+
+  if(nameColumn<0)return {names:[] as string[],headerRow:-1,nameColumn:-1};
+  const start=headerRow>=0?headerRow+1:0;
+  const names:string[]=[];
+  const seen=new Set<string>();
+  for(const row of rows.slice(start)){
+    const name=normalizeStudentName(String((Array.isArray(row)?row[nameColumn]:"")??""));
+    if(!isProbableStudentName(name)||seen.has(name))continue;
+    seen.add(name);names.push(name);
+  }
+  return {names,headerRow,nameColumn};
+}
+
 function teacherRoleLabel(role?:string){
   if(role==="admin")return "Pentadbir";
   if(role==="viewer")return "Paparan Sahaja";
@@ -138,6 +199,8 @@ export default function TeacherPage(){
   const [rosterClassCode,setRosterClassCode]=useState("");
   const [manualStudentName,setManualStudentName]=useState("");
   const [importing,setImporting]=useState(false);
+  const [studentBulkBusy,setStudentBulkBusy]=useState(false);
+  const [checkedStudentIds,setCheckedStudentIds]=useState<string[]>([]);
   const [selectedStudentKey,setSelectedStudentKey]=useState("");
   const [studentSearch,setStudentSearch]=useState("");
   const [studentStatusFilter,setStudentStatusFilter]=useState<"all"|"logged"|"new"|"intervention"|"duplicate">("all");
@@ -430,6 +493,65 @@ export default function TeacherPage(){
     }catch(error){console.error(error);setMessage("Akses peranti murid tidak dapat dikosongkan.")}
   }
 
+  function toggleStudentChecked(studentId:string){
+    setCheckedStudentIds(current=>current.includes(studentId)?current.filter(id=>id!==studentId):[...current,studentId]);
+  }
+
+  function toggleAllVisibleStudents(){
+    const visibleIds=visibleStudentRows.map(row=>row.student.id);
+    if(!visibleIds.length)return;
+    const selected=new Set(checkedStudentIds);
+    const allVisibleSelected=visibleIds.every(id=>selected.has(id));
+    if(allVisibleSelected){
+      const visibleSet=new Set(visibleIds);
+      setCheckedStudentIds(current=>current.filter(id=>!visibleSet.has(id)));
+    }else{
+      setCheckedStudentIds(current=>[...new Set([...current,...visibleIds])]);
+    }
+  }
+
+  async function clearCheckedStudentSessions(){
+    if(!rosterClass||!checkedStudentIds.length||!canManageClassCode(rosterClassCode))return;
+    const ids=new Set(checkedStudentIds);
+    const students=rosterClass.studentRoster.filter(student=>ids.has(student.id));
+    if(!students.length)return;
+    setStudentBulkBusy(true);
+    try{
+      await Promise.all(students.map(student=>resetStudentPresence(rosterClassCode,student.id)));
+      setStudentPresence(current=>current.filter(item=>!(item.classCode===rosterClassCode&&ids.has(item.studentId))));
+      await log("MURID_RESET_SESI",students.length+" murid · "+rosterClassCode);
+      setMessage("Akses peranti "+students.length+" murid telah dikosongkan.");
+      setCheckedStudentIds([]);
+    }catch(error){
+      console.error(error);setMessage("Akses peranti murid terpilih tidak dapat dikosongkan.");
+    }finally{setStudentBulkBusy(false)}
+  }
+
+  async function removeCheckedStudents(){
+    if(!rosterClass||!checkedStudentIds.length||!canManageClassCode(rosterClassCode))return;
+    const ids=new Set(checkedStudentIds);
+    const students=rosterClass.studentRoster.filter(student=>ids.has(student.id));
+    if(!students.length)return;
+    if(!confirm("Buang "+students.length+" murid terpilih daripada "+rosterClass.name+"?"))return;
+    setStudentBulkBusy(true);
+    try{
+      await Promise.all(students.map(async student=>{
+        try{await resetStudentPresence(rosterClassCode,student.id)}catch{}
+        if(studentLoginMode==="legacy-pin"){try{await removeStudentAccessCode(rosterClassCode,student.id)}catch{}}
+      }));
+      const remainingNames=rosterClass.studentRoster.filter(student=>!ids.has(student.id)).map(student=>student.name);
+      const roster=await saveClassRoster(rosterClassCode,remainingNames);
+      await updateRosterState(rosterClassCode,roster);
+      setStudentPresence(current=>current.filter(item=>!(item.classCode===rosterClassCode&&ids.has(item.studentId))));
+      setSelectedStudentKey(current=>ids.has(current)?"":current);
+      setCheckedStudentIds([]);
+      await log("MURID_BUANG",students.length+" murid · "+rosterClassCode);
+      setMessage(students.length+" murid berjaya dibuang daripada kelas.");
+    }catch(error){
+      console.error(error);setMessage("Murid terpilih tidak dapat dibuang.");
+    }finally{setStudentBulkBusy(false)}
+  }
+
   async function copyLegacyAccessCodes(){
     if(!rosterClass||studentLoginMode!=="legacy-pin")return;
     const rows=rosterClass.studentRoster.map((student,index)=>{
@@ -445,21 +567,35 @@ export default function TeacherPage(){
     if(!canManageClassCode(rosterClassCode)){setMessage("Memasukkan senarai ke kelas guru lain memerlukan kebenaran suntingan pentadbir.");return;}
     setImporting(true);
     try{
-      const XLSX=await import("xlsx");const data=await file.arrayBuffer();const wb=XLSX.read(data,{type:"array"});const sheet=wb.Sheets[wb.SheetNames[0]];
-      const rows=XLSX.utils.sheet_to_json<any[]>(sheet,{header:1,defval:""});const first=rows.findIndex(row=>row.some(cell=>String(cell).trim()));if(first<0)throw new Error("kosong");
-      const header=rows[first].map(cell=>String(cell).trim().toLowerCase());let col=header.findIndex(cell=>["nama","nama murid","nama pelajar","name","student","student name"].includes(cell));let start=first;
-      if(col>=0)start=first+1;else col=0;
-      const imported=rows.slice(start).map(row=>normalizeStudentName(String(row[col]||""))).filter(name=>name.length>=2);
+      const XLSX=await import("xlsx");
+      const data=await file.arrayBuffer();
+      const wb=XLSX.read(data,{type:"array"});
+      const candidates=wb.SheetNames.map(sheetName=>{
+        const sheet=wb.Sheets[sheetName];
+        const rows=XLSX.utils.sheet_to_json<any[]>(sheet,{header:1,defval:"",raw:false});
+        return {sheetName,...extractStudentNamesFromRows(rows)};
+      }).filter(item=>item.names.length>0)
+        .sort((a,b)=>b.names.length-a.names.length||Number(b.headerRow>=0)-Number(a.headerRow>=0));
+      const best=candidates[0];
+      if(!best)throw new Error("Tiada nama murid dapat dikenal pasti");
+
       const current=[...(managedClasses.find(x=>x.code===rosterClassCode)?.studentNames||[])];
-      const baseline=new Map<string,number>();current.forEach(name=>baseline.set(name,(baseline.get(name)||0)+1));
-      const seen=new Map<string,number>();
-      imported.forEach(name=>{
-        const n=(seen.get(name)||0)+1;seen.set(name,n);
-        if(n>(baseline.get(name)||0)){current.push(name);baseline.set(name,(baseline.get(name)||0)+1)}
+      const existing=new Set(current.map(normalizeStudentName));
+      let added=0;
+      best.names.forEach(name=>{
+        if(existing.has(name))return;
+        current.push(name);existing.add(name);added++;
       });
+
       const saved=await saveClassRoster(rosterClassCode,current);
-      await updateRosterState(rosterClassCode,saved);await log("MURID_IMPORT",imported.length+" nama · "+rosterClassCode);setMessage("Senarai murid berjaya dimasukkan: "+saved.length+" murid.");
-    }catch(e){console.error(e);setMessage("Import gagal. Gunakan Excel/CSV dengan kolum Nama.");}finally{setImporting(false)}
+      await updateRosterState(rosterClassCode,saved);
+      await log("MURID_IMPORT",best.names.length+" nama dibaca · "+added+" baharu · "+rosterClassCode);
+      const detected=best.headerRow>=0?"kolum Nama dikesan automatik":"format tanpa tajuk dikesan automatik";
+      setMessage("Import berjaya: "+best.names.length+" nama dibaca dari sheet \""+best.sheetName+"\" ("+detected+"), "+added+" murid baharu ditambah. Jumlah kelas: "+saved.length+".");
+    }catch(error){
+      console.error(error);
+      setMessage("Import gagal. GeoBoost boleh membaca Excel/CSV secara automatik, tetapi fail ini tidak mempunyai senarai nama yang dapat dikenal pasti.");
+    }finally{setImporting(false)}
   }
 
   async function createAssignment(extra?:{questionIds?:string[];targetStudentIds?:string[];title?:string;chapter?:number;count?:number}){
@@ -856,7 +992,7 @@ export default function TeacherPage(){
         {activeSection==="students"?<section className="panel roster-manager student-manager-v2">
           <div className="student-manager-head">
             <div><small>PENGURUSAN MURID</small><h2>Senarai & profil murid</h2><p>Pilih kelas, cari murid dan klik nama untuk lihat prestasi lengkap.</p></div>
-            <label>Kelas<select value={rosterClassCode} onChange={e=>{setRosterClassCode(e.target.value);setSelectedStudentKey("");setMobileStudentProfile(false)}}>{activeClasses.map(c=><option key={c.code} value={c.code}>{c.name} · {c.code}</option>)}</select></label>
+            <label>Kelas<select value={rosterClassCode} onChange={e=>{setRosterClassCode(e.target.value);setSelectedStudentKey("");setCheckedStudentIds([]);setMobileStudentProfile(false)}}>{activeClasses.map(c=><option key={c.code} value={c.code}>{c.name} · {c.code}</option>)}</select></label>
           </div>
 
           {!activeClasses.length?<div className="panel-empty">Cipta atau aktifkan kelas dahulu.</div>:<>
@@ -870,8 +1006,9 @@ export default function TeacherPage(){
             <div className="student-toolbar-v2">
               <div className="student-search-box"><span>⌕</span><input value={studentSearch} onChange={e=>setStudentSearch(e.target.value)} placeholder="Cari nama murid..."/></div>
               <button className="student-add-button" onClick={()=>setStudentAddOpen(true)} disabled={!canManageClassCode(rosterClassCode)}>+ Tambah Murid</button>
-              <label className="student-import-button">{importing?"Memasukkan senarai...":"⇧ Import Excel / CSV"}<input type="file" accept=".xlsx,.xls,.csv,.txt" disabled={!canManageClassCode(rosterClassCode)||importing} onChange={importStudents}/></label>
+              <label className="student-import-button">{importing?"Membaca fail...":"⇧ Import Excel / CSV"}<input type="file" accept=".xlsx,.xls,.csv,.txt" disabled={!canManageClassCode(rosterClassCode)||importing} onChange={importStudents}/></label>
             </div>
+            <div className="student-import-hint">Excel boleh ada tajuk, nombor bilangan, kolum kelas atau baris kosong — GeoBoost akan mencari kolum nama murid secara automatik.</div>
 
             <div className="student-filter-pills">
               {[
@@ -883,18 +1020,31 @@ export default function TeacherPage(){
               ].map(([id,label,count])=><button key={String(id)} className={studentStatusFilter===id?"active":""} onClick={()=>setStudentStatusFilter(id as typeof studentStatusFilter)}>{label}<b>{count}</b></button>)}
             </div>
 
+            {checkedStudentIds.length?<div className="student-bulk-bar">
+              <div><strong>{checkedStudentIds.length} murid dipilih</strong><span>Tindakan di bawah akan digunakan pada semua murid yang ditanda.</span></div>
+              <div>
+                <button onClick={()=>setCheckedStudentIds([])} disabled={studentBulkBusy}>Batal Pilihan</button>
+                <button onClick={clearCheckedStudentSessions} disabled={studentBulkBusy||!canManageClassCode(rosterClassCode)}>Kosongkan Akses</button>
+                <button className="danger" onClick={removeCheckedStudents} disabled={studentBulkBusy||!canManageClassCode(rosterClassCode)}>Buang Murid</button>
+              </div>
+            </div>:null}
+
             <div className={"student-admin-layout modern "+(mobileStudentProfile?"show-profile":"")}>
               <div className="student-roster-pane">
-                <div className="student-list-head"><span>#</span><span>Nama Murid</span><span>Status</span><span>Prestasi</span><span>Aktiviti</span><span/></div>
+                <div className="student-list-head">
+                  <span className="student-check-cell"><input className="student-check" type="checkbox" aria-label="Pilih semua murid yang dipaparkan" checked={visibleStudentRows.length>0&&visibleStudentRows.every(row=>checkedStudentIds.includes(row.student.id))} onChange={toggleAllVisibleStudents}/></span>
+                  <span>#</span><span>Nama Murid</span><span>Status</span><span>Prestasi</span><span>Aktiviti</span><span/>
+                </div>
                 <div className="student-roster-modern">
-                  {visibleStudentRows.length?visibleStudentRows.map(row=><div key={row.student.id} className={"student-row-modern "+(selectedStudentKey===row.student.id?"selected":"")} onClick={()=>{setSelectedStudentKey(row.student.id);setMobileStudentProfile(true)}}>
+                  {visibleStudentRows.length?visibleStudentRows.map(row=>{const checked=checkedStudentIds.includes(row.student.id);return <div key={row.student.id} className={"student-row-modern "+(selectedStudentKey===row.student.id?"selected ":"")+(checked?"checked":"")} onClick={()=>{setSelectedStudentKey(row.student.id);setMobileStudentProfile(true)}}>
+                    <span className="student-check-cell" onClick={e=>e.stopPropagation()}><input className="student-check" type="checkbox" aria-label={"Pilih "+row.student.name} checked={checked} onChange={()=>toggleStudentChecked(row.student.id)}/></span>
                     <span className="student-index">{row.index+1}</span>
                     <div className="student-name-cell"><strong>{row.student.name}</strong><small>{rosterClass?.name} · {rosterClass?.code}</small></div>
                     <div className="student-status-cell">{row.duplicate?<span className="status-chip duplicate">⚠ 2+ peranti</span>:row.logged?<span className="status-chip logged">● Pernah masuk</span>:<span className="status-chip new">○ Belum masuk</span>}</div>
                     <div className="student-performance-cell"><b>{row.attempts.length?row.average+"%":"—"}</b><small>{row.attempts.length} percubaan</small></div>
                     <div className="student-activity-cell">{row.lastActivity?<><b>{new Date(row.lastActivity).toLocaleDateString("ms-MY")}</b><small>{new Date(row.lastActivity).toLocaleTimeString("ms-MY",{hour:"2-digit",minute:"2-digit"})}</small></>:<span>—</span>}</div>
                     <button className="student-row-arrow" aria-label={"Buka profil "+row.student.name}>›</button>
-                  </div>):<div className="panel-empty">Tiada murid sepadan dengan carian atau penapis ini.</div>}
+                  </div>}):<div className="panel-empty">Tiada murid sepadan dengan carian atau penapis ini.</div>}
                 </div>
               </div>
 

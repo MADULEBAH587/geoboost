@@ -365,3 +365,34 @@ button:disabled{cursor:not-allowed;opacity:.48}
 .pwa-install-card h2{margin:3px 0 5px}.pwa-install-card p{margin:0;line-height:1.5}.pwa-install-card .primary{width:100%;border:0;cursor:pointer}
 .pwa-install-help{font-size:13px;background:#f1f5f4;padding:10px;border-radius:10px}.pwa-install-later{border:0;background:transparent;padding:8px;font-weight:700;cursor:pointer}
 @media(max-width:640px){.student-header-logout{padding:8px 9px;font-size:12px}.student-top-user span{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.student-home-summary{align-items:flex-start;flex-direction:column}.student-bottom-nav{grid-template-columns:repeat(3,1fr)!important}}
+
+
+/* ===== GeoBoost v2.6: smart roster import + bulk student management ===== */
+.student-import-hint{margin:-3px 0 10px;color:#64748b;font-size:9px;line-height:1.45}
+.student-bulk-bar{margin:0 0 12px;padding:10px 12px;border:1px solid #b7e8df;background:#effcf9;border-radius:13px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.student-bulk-bar>div:first-child{display:flex;flex-direction:column;gap:2px;min-width:0}
+.student-bulk-bar strong{font-size:11px;color:#0f766e}
+.student-bulk-bar span{font-size:8px;color:#64748b}
+.student-bulk-bar>div:last-child{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.student-bulk-bar button{border:0;border-radius:9px;padding:8px 10px;background:#dfecef;color:#334155;font-size:9px;font-weight:850;cursor:pointer}
+.student-bulk-bar button.danger{background:#fff1f2;color:#be123c}
+.student-bulk-bar button:disabled{opacity:.45;cursor:not-allowed}
+.student-check-cell{display:grid;place-items:center}
+.student-check{width:16px;height:16px;margin:0;accent-color:#0f766e;cursor:pointer}
+.student-list-head,.student-row-modern{grid-template-columns:30px 40px minmax(170px,1.6fr) minmax(105px,.8fr) 90px 110px 32px}
+.student-row-modern.checked{background:#f5fffc}
+.student-row-modern.checked.selected{background:#e9fbf6}
+@media(max-width:1050px){
+  .student-list-head,.student-row-modern{grid-template-columns:30px 38px minmax(150px,1.5fr) minmax(100px,.8fr) 75px 32px}
+  .student-list-head>span:nth-child(6),.student-row-modern>.student-activity-cell{display:none}
+}
+@media(max-width:820px){
+  .student-bulk-bar{align-items:stretch;flex-direction:column}
+  .student-bulk-bar>div:last-child{justify-content:stretch}
+  .student-bulk-bar button{flex:1;min-height:38px}
+  .student-row-modern{grid-template-columns:24px 34px minmax(0,1fr) auto 24px;grid-template-areas:"check idx name perf arrow" "check idx status perf arrow"}
+  .student-check-cell{grid-area:check}
+}
+@media(max-width:480px){
+  .student-bulk-bar>div:last-child{display:grid;grid-template-columns:1fr}
+}
