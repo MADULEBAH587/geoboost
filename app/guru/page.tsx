@@ -644,10 +644,11 @@ export default function TeacherPage(){
   const filtered=useMemo(()=>attempts.filter(a=>(classFilter==="SEMUA"||a.className===classFilter)&&(!chapterFilter||a.chapter===chapterFilter)),[attempts,classFilter,chapterFilter]);
   const stats=useMemo(()=>{
     const avg=filtered.length?Math.round(filtered.reduce((s,a)=>s+a.percentage,0)/filtered.length):0;
-    const students=new Set(filtered.map(a=>a.studentId||a.studentName+"|"+a.className)).size;
+    const rosterStudents=activeClasses.reduce((sum,item)=>sum+item.studentRoster.length,0);
+    const attemptStudents=new Set(filtered.map(a=>a.studentId||a.studentName+"|"+a.className)).size;
     const passed=filtered.filter(a=>a.percentage>=60).length;
-    return{avg,students,completed:filtered.length,passRate:filtered.length?Math.round(passed/filtered.length*100):0};
-  },[filtered]);
+    return{avg,students:classFilter==="SEMUA" ? rosterStudents : Math.max(attemptStudents,activeClasses.filter(c=>c.name===classFilter).reduce((sum,item)=>sum+item.studentRoster.length,0)),completed:filtered.length,passRate:filtered.length?Math.round(passed/filtered.length*100):0};
+  },[filtered,classFilter,managedClasses]);
   const weak=useMemo(()=>{
     const counts=new Map<string,number>();filtered.forEach(a=>a.wrongSubtopics.forEach(s=>counts.set(s,(counts.get(s)||0)+1)));
     return[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10);
