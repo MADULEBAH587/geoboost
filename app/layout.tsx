@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { PWARegister } from "@/components/PWARegister";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 
 export const metadata: Metadata = {
   title: "GeoBoost Tingkatan 2 · By Cikgu Zulhasif",
@@ -19,5 +20,5 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ms"><body><PWARegister />{children}</body></html>;
+  return <html lang="ms"><body><PWARegister /><PWAInstallPrompt />{children}</body></html>;
 }

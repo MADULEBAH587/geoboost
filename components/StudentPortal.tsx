@@ -156,6 +156,7 @@ export function StudentPortal({ section }: { section: Section }) {
   ].filter(Boolean) as string[][];
 
   async function logout(){
+    if(!window.confirm("Log keluar daripada akaun murid ini?")) return;
     clearStudentSession();
     try{await signOutFirebaseUser()}catch{}
     window.location.href="/murid";
@@ -174,14 +175,14 @@ export function StudentPortal({ section }: { section: Section }) {
     <main className="student-app">
       <header className="student-app-top">
         <a className="brand" href="/murid/utama"><span className="brand-mark">G</span><span><b>GEOBOOST</b><small>TINGKATAN 2</small></span></a>
-        <div className="student-top-user"><span>{student.name}</span><b>{student.className}</b></div>
+        <div className="student-top-actions"><a className="student-top-user" href="/murid/profil"><span>{student.name}</span><b>{student.className}</b></a><button className="student-header-logout" onClick={logout}>🚪 Log Keluar</button></div>
       </header>
 
       <section className="student-app-content">
         {section==="utama"?<>
           <div className="student-welcome">
-            <div><span className="eyebrow dark">UTAMA</span><h1>Hai, {student.name.split(" ")[0]} 👋</h1><p>{student.className} · {masteryLabel(avg)} · {avg}% purata</p></div>
-            <div className="student-level"><small>Mata Ilmu</small><b>{xp}</b><span>{completedChapters}/10 bab dikuasai</span></div>
+            <div><span className="eyebrow dark">UTAMA</span><h1>Hai, {student.name.split(" ")[0]} 👋</h1><p>{student.className}</p></div>
+            <div className="student-level"><small>⭐ Mata Ilmu</small><b>{xp}</b></div>
           </div>
 
           {student.pendingRoster?<div className="student-notice warn">⏳ Nama anda sedang menunggu semakan guru. Anda masih boleh menggunakan GeoBoost.</div>:null}
@@ -191,13 +192,15 @@ export function StudentPortal({ section }: { section: Section }) {
           {assignmentInfo.some(x=>!x.completed&&!x.late&&x.item.active)?<section className="student-home-section"><div className="student-section-head"><div><small>PERLU DIBUAT</small><h2>Tugasan Guru</h2></div><a href="/murid/tugasan">Lihat semua →</a></div>{assignmentInfo.filter(x=>!x.completed&&!x.late&&x.item.active).slice(0,2).map(assignmentCard)}</section>:null}
 
           <section className="student-focus-card recommendation">
-            <div><small>CADANGAN UNTUK SAYA</small><h2>{weakChapter?"Kuatkan Bab "+weakChapter.id:"Mulakan latihan pertama"}</h2><p>{weakChapter?weakChapter.title+" · terbaik "+weakChapter.best+"%":"Pilih mana-mana bab yang telah dibuka oleh guru."}</p></div>
-            <a className="primary" href={weakChapter?"/bab/"+weakChapter.id:"/murid/latihan"}>{weakChapter?"Latih Sekarang":"Pilih Bab"} →</a>
+            <div><small>🎯 FOKUS UNTUK ANDA</small><h2>{weakChapter?"Kuatkan Bab "+weakChapter.id:"Mulakan latihan pertama"}</h2><p>{weakChapter?weakChapter.title+" · prestasi terbaik "+weakChapter.best+"%":"Pilih mana-mana bab yang telah dibuka oleh guru."}</p></div>
+            <a className="primary" href={weakChapter?"/bab/"+weakChapter.id:"/murid/utama"}>{weakChapter?"Kuatkan Bab Ini":"Pilih Bab"} →</a>
           </section>
 
-          <section className="student-home-section"><div className="student-section-head"><div><small>KEMAJUAN</small><h2>Bab Saya</h2></div><a href="/murid/prestasi">Prestasi penuh →</a></div><div className="student-chapter-compact">{byChapter.map(ch=>{const locked=classRecord?!classRecord.openChapters.includes(ch.id):false;return <a key={ch.id} className={locked?"locked":""} href={locked?"#":"/bab/"+ch.id}><span>{ch.icon}</span><div><small>BAB {ch.id}</small><b>{ch.title}</b><i>{locked?"🔒 Ditutup":ch.tries?ch.label:"Belum cuba"}</i></div><strong>{locked?"—":ch.best+"%"}</strong></a>})}</div></section>
+          <section className="student-home-section"><div className="student-section-head"><div><small>KEMAJUAN</small><h2>Bab Saya</h2></div></div><div className="student-chapter-compact">{byChapter.map(ch=>{const locked=classRecord?!classRecord.openChapters.includes(ch.id):false;return <a key={ch.id} className={locked?"locked":""} href={locked?"#":"/bab/"+ch.id}><span>{ch.icon}</span><div><small>BAB {ch.id}</small><b>{ch.title}</b><i>{locked?"🔒 Ditutup":ch.tries?ch.label:"Belum cuba"}</i></div><strong>{locked?"—":ch.best+"%"}</strong></a>})}</div></section>
 
           <section className="student-quick-grid"><a href="/murid/nota"><span>📚</span><b>Nota Visual</b><small>Poster, slide & rajah</small></a><a href="/harian"><span>⚡</span><b>Misi Hari Ini</b><small>5 soalan pantas</small></a><a href="/pemulihan"><span>🎯</span><b>Pemulihan Pintar</b><small>Fokus kelemahan</small></a><a href="/uasa"><span>🏆</span><b>Simulasi UASA</b><small>Simulasi peperiksaan</small></a></section>
+          <section className="student-home-summary"><div><small>PRESTASI RINGKAS</small><b>{avg}% purata · {completedChapters}/10 bab dikuasai</b></div><a href="/murid/prestasi">Lihat perkembangan →</a></section>
+          <button className="student-danger-button student-home-logout" onClick={logout}>🚪 Log Keluar Murid</button>
         </>:null}
 
         {section==="tugasan"?<>
