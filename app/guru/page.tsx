@@ -733,6 +733,13 @@ export default function TeacherPage(){
   const selectedWrong=selectedResponses.length-selectedCorrect;
   const selectedDuration=selectedStudentAttempts.reduce((sum,item)=>sum+(item.durationSeconds||0),0);
   const selectedLive=selectedStudent&&liveItems.find(item=>item.localStudentId===selectedStudent.localStudentId&&item.classCode===selectedStudent.classCode&&item.status==="active"&&Date.now()-item.updatedAt<5*60*1000)||null;
+  const selectedWeakTopics=(()=>{
+    const counts=new Map<string,number>();
+    selectedStudentAttempts.forEach(item=>item.wrongSubtopics.forEach(topic=>counts.set(topic,(counts.get(topic)||0)+1)));
+    return [...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
+  })();
+  const selectedAssignments=(rosterClass?.assignments||[]).filter(item=>item.active&&(!item.targetStudentIds?.length||item.targetStudentIds.includes(selectedStudent?.localStudentId||"")));
+  const selectedAssignmentDone=selectedAssignments.filter(item=>selectedStudentAttempts.some(attempt=>attempt.mode==="tugasan:"+item.id)).length;
   const assignmentClass=managedClasses.find(c=>c.code===assignmentClassCode)||null;
 
   const interventionRows=useMemo(()=>registeredStudents.map(student=>{
@@ -910,6 +917,11 @@ export default function TeacherPage(){
                     <div><span>Betul</span><b>{selectedCorrect}</b></div>
                     <div><span>Salah</span><b>{selectedWrong}</b></div>
                     <div><span>Masa</span><b>{Math.round(selectedDuration/60)} min</b></div>
+                  </div>
+
+                  <div className="student-profile-section"><div className="subsection-title"><strong>Fokus & Tugasan</strong><span>{selectedAssignmentDone}/{selectedAssignments.length} siap</span></div>
+                    {selectedWeakTopics.length?<div className="student-weak-topics">{selectedWeakTopics.map(([topic,count])=><span key={topic}>{topic} · {count}× salah</span>)}</div>:<div className="student-empty-mini">Belum ada subtopik lemah direkodkan.</div>}
+                    {selectedAssignments.length?<div className="student-recent-attempts">{selectedAssignments.map(item=>{const done=selectedStudentAttempts.some(attempt=>attempt.mode==="tugasan:"+item.id);return <div key={item.id}><div><b>{item.title}</b></div><strong>{done?"✓ Siap":"Belum siap"}</strong></div>})}</div>:null}
                   </div>
 
                   <div className="student-profile-section"><div className="subsection-title"><strong>Prestasi Mengikut Bab</strong><span>{selectedChapterPerformance.length}</span></div>
