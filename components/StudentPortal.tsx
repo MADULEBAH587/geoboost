@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { chapters } from "@/lib/data";
 import { questions } from "@/lib/questions";
 import { ClassRecord, validateClassCode } from "@/lib/classroom";
-import { AttemptRecord, getLocalAttempts, getStudentCloudAttempts, syncPendingAttempts, syncStudentProfile } from "@/lib/repository";
+import { AttemptRecord, getLocalAttempts, getStudentCloudAttempts, repairCurrentStudentCloudRecords } from "@/lib/repository";
 import { clearStudentSession, getStudentSession, StudentSession } from "@/lib/session";
 import { firebaseConfigured, signOutFirebaseUser } from "@/lib/firebase";
 import { registerStudentPresence } from "@/lib/studentPresence";
@@ -47,13 +47,13 @@ export function StudentPortal({ section }: { section: Section }) {
       if(firebaseConfigured){
         void (async()=>{
           try{
-            const result=await syncStudentProfile({
+            const result=await repairCurrentStudentCloudRecords({
               localStudentId:current.id,
               name:current.name,
               className:current.className,
               classCode:current.classCode,
             });
-            if(result.synced){
+            if(result.profileSynced){
               localStorage.removeItem("geoboost_cloud_profile_pending");
               try{
                 await registerStudentPresence({
@@ -62,7 +62,6 @@ export function StudentPortal({ section }: { section: Section }) {
                   studentName:current.name,
                 });
               }catch{}
-              try{await syncPendingAttempts()}catch{}
             }
           }catch{}
         })();

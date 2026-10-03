@@ -145,6 +145,19 @@ export async function syncPendingAttempts(maxItems = 50) {
   return { attempted: pending.length, synced };
 }
 
+export async function repairCurrentStudentCloudRecords(profile: { localStudentId: string; name: string; className: string; classCode: string }) {
+  const syncedProfile = await syncStudentProfile(profile);
+  if (!syncedProfile.synced) return { profileSynced:false, attempted:0, synced:0 };
+  const pending = getLocalAttempts()
+    .filter(attempt => attempt.studentId === profile.localStudentId && !attempt.firebaseSynced)
+    .map(attempt => ({...attempt, studentName:profile.name, className:profile.className, classCode:profile.classCode}));
+  let synced=0;
+  for(const attempt of pending){
+    try{ if(await uploadAttempt(attempt)){ markAttemptSynced(attempt.id); synced++; } }catch{}
+  }
+  return { profileSynced:true, attempted:pending.length, synced };
+}
+
 function fromAttemptDoc(snapshot: any): AttemptRecord {
   const data = snapshot.data() as Record<string, any>;
   return {

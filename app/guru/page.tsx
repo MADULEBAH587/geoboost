@@ -225,7 +225,7 @@ export default function TeacherPage(){
     void touchTeacherLastSeen(user.uid);
     const first=classes.find(c=>!c.archived)?.code||classes[0]?.code||"";
     setRosterClassCode(current=>current||first);setAssignmentClassCode(current=>current||first);
-    setMessage("Berjaya memuat "+remote.length+" rekod, "+students.length+" profil murid dan "+classes.length+" kelas.");
+    setMessage("");
   }
 
   useEffect(()=>{
