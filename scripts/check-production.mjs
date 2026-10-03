@@ -18,6 +18,9 @@ const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"))
 const repository = fs.readFileSync(path.join(root, "lib/repository.ts"), "utf8");
 const teacher = fs.readFileSync(path.join(root, "app/guru/page.tsx"), "utf8");
 const studentPortal = fs.readFileSync(path.join(root, "components/StudentPortal.tsx"), "utf8");
+const studentLogin = fs.readFileSync(path.join(root, "app/murid/page.tsx"), "utf8");
+const firestoreRules = fs.readFileSync(path.join(root, "firebase/firestore.rules"), "utf8");
+const storageRules = fs.readFileSync(path.join(root, "firebase/storage.rules"), "utf8");
 const checks = {
   totalQuestions: total === 390,
   optionShuffle: engine.includes("options: shuffle(question.options)"),
@@ -26,6 +29,9 @@ const checks = {
   rosterStudentCount: teacher.includes("rosterStudents=activeClasses.reduce"),
   studentRepairSync: repository.includes("repairCurrentStudentCloudRecords") && studentPortal.includes("repairCurrentStudentCloudRecords"),
   explicitStudentLogout: studentPortal.includes("Log Keluar Murid"),
+  scopedStudentRetry: studentLogin.includes("repairCurrentStudentCloudRecords") && !studentLogin.includes("syncPendingAttempts"),
+  studentAttemptIdentity: firestoreRules.includes("request.resource.data.localStudentId == currentStudentLocalId()") && firestoreRules.includes("request.resource.data.classCode == currentStudentClassCode()"),
+  storageWriteNeedsAuth: storageRules.includes("allow write: if request.auth != null"),
 };
 
 if (missing.length || Object.values(checks).some((value) => !value)) {
