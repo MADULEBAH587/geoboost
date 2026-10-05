@@ -69,6 +69,21 @@ async function enableEmailPassword(token:string){
   });
 }
 
+async function enableAnonymousStudentAuth(token:string){
+  const url=
+    "https://identitytoolkit.googleapis.com/admin/v2/projects/"+
+    encodeURIComponent(PROJECT_ID)+
+    "/config?updateMask=signIn.anonymous.enabled";
+  await api(url,token,{
+    method:"PATCH",
+    body:JSON.stringify({
+      signIn:{
+        anonymous:{enabled:true},
+      },
+    }),
+  });
+}
+
 async function publishRules(token:string) {
   const rulesResponse=await fetch("/firestore.rules.txt",{cache:"no-store"});
   if(!rulesResponse.ok)throw new Error("Fail Firestore Rules tidak dapat dimuat");
@@ -172,6 +187,7 @@ export async function deployGeoBoostFirestoreRules() {
 export async function deployGeoBoostMultiTeacher() {
   const {token,user}=await getAdminOAuth();
   await enableEmailPassword(token);
+  await enableAnonymousStudentAuth(token);
   const rulesetName=await publishRules(token);
   const uid=await upsertAdminTeacher(token,user);
   await setMultiTeacherConfig(token);
@@ -181,12 +197,14 @@ export async function deployGeoBoostMultiTeacher() {
     name:user.displayName||user.email||"Admin GeoBoost",
     rulesetName,
     emailPasswordEnabled:true,
+    anonymousStudentAuthEnabled:true,
   };
 }
 
 export async function bootstrapGeoBoostAdmin() {
   const {token,user}=await getAdminOAuth();
   await enableEmailPassword(token);
+  await enableAnonymousStudentAuth(token);
   const rulesetName=await publishRules(token);
   const uid=await upsertAdminTeacher(token,user);
   await setMultiTeacherConfig(token);
@@ -196,5 +214,6 @@ export async function bootstrapGeoBoostAdmin() {
     name:user.displayName||user.email||"Admin GeoBoost",
     rulesetName,
     emailPasswordEnabled:true,
+    anonymousStudentAuthEnabled:true,
   };
 }
