@@ -307,14 +307,22 @@ export async function getRemoteStudents(classCodes: string[] = [], allowAll = fa
 
 export async function saveLiveProgress(input: Omit<LiveProgress,"uid"|"updatedAt">) {
   const services = getFirebaseServices();
-  if (!services) return;
-  const user = await ensureAnonymousFirebaseUser();
-  if (!user) return;
-  await setDoc(doc(services.db,"progress",user.uid), {
+  if (!services) return false;
+  // Cloud-first: every progress write establishes the roster-backed cloud
+  // identity first. This makes each answer independent from login-time sync.
+  const profile=await syncStudentProfile({
+    localStudentId:input.localStudentId,
+    name:input.studentName,
+    className:input.className,
+    classCode:input.classCode,
+  });
+  if(!profile.synced||!profile.uid)return false;
+  await setDoc(doc(services.db,"progress",profile.uid), {
     ...input,
-    studentId: user.uid,
+    studentId: profile.uid,
     updatedAt: serverTimestamp(),
   }, { merge: true });
+  return true;
 }
 
 export function watchLiveProgress(callback: (items: LiveProgress[]) => void, classCodes: string[] = [], allowAll = false) {
