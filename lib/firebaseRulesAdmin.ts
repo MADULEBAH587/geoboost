@@ -180,8 +180,12 @@ async function upsertAdminTeacher(token:string,user:User) {
 
 export async function deployGeoBoostFirestoreRules() {
   const {token}=await getAdminOAuth();
+  // Student cloud writes depend on anonymous Firebase Auth. Keep this coupled
+  // to every rules deployment so production cannot drift into a state where
+  // rules are correct but every learner is unable to authenticate.
+  await enableAnonymousStudentAuth(token);
   const rulesetName=await publishRules(token);
-  return {rulesetName};
+  return {rulesetName,anonymousStudentAuthEnabled:true};
 }
 
 export async function deployGeoBoostMultiTeacher() {
