@@ -9,6 +9,8 @@ import { validateClassCode } from "@/lib/classroom";
 import { GeoStimulus, stimulusForQuestion } from "@/components/GeoStimulus";
 import { HotspotChoice, isHotspotQuestion } from "@/components/HotspotChoice";
 
+function studentSyncBanner(synced:boolean|null){return synced===null?null:<div className={"sync-banner "+(synced?"online":"offline")}>{synced?"☁️ Rekod guru berjaya disimpan":"⚠️ Rekod masih di peranti ini dan BELUM masuk rekod guru. Pastikan Internet aktif dan buka semula portal murid untuk recovery."}</div>}
+
 export function ExamRunner() {
   const [session,setSession]=useState<Question[]>([]);
   const [index,setIndex]=useState(0);
@@ -18,6 +20,7 @@ export function ExamRunner() {
   const [submitted,setSubmitted]=useState(false);
   const [saving,setSaving]=useState(false);
   const [score,setScore]=useState(0);
+  const [synced,setSynced]=useState<boolean|null>(null);
 
   useEffect(()=>{
     async function init(){
@@ -57,18 +60,18 @@ export function ExamRunner() {
     }));
     const correct=responses.filter(r=>r.correct).length;
     const wrongSubtopics=[...new Set(responses.filter(r=>!r.correct).map(r=>r.subtopic))];
-    await saveAttempt({
+    const saved=await saveAttempt({
       id:crypto.randomUUID(),studentId:student?.id||"demo",studentName:student?.name||"Murid Demo",className:student?.className||"Demo",classCode:student?.classCode||"",
       chapter:0,label:"Simulasi UASA",mode:"UASA",score:correct,total:session.length,percentage:Math.round(correct/session.length*100),durationSeconds:35*60-seconds,wrongSubtopics,responses,completedAt:Date.now()
     });
-    setScore(correct);setSubmitted(true);setSaving(false);
+    setSynced(saved.synced);setScore(correct);setSubmitted(true);setSaving(false);
   }
 
   if(!session.length)return <main className="quiz-shell"><div className="empty-state"><h1>Menyediakan simulasi UASA…</h1></div></main>;
 
   if(submitted){
     const pct=Math.round(score/session.length*100);
-    return <main className="quiz-shell result-shell"><section className="result-card"><span className="result-icon">🏆</span><span className="eyebrow dark">SIMULASI UASA SELESAI</span><h1>{pct}%</h1><p>{score} daripada {session.length} jawapan betul.</p><div className="result-stats"><div><small>Dijawab</small><b>{answered}/{session.length}</b></div><div><small>Ditanda</small><b>{Object.values(review).filter(Boolean).length}</b></div><div><small>Masa baki</small><b>{minutes}:{secs}</b></div></div><div className="result-actions"><a className="primary" href="/murid/prestasi">Lihat Prestasi</a><a className="secondary dark-button" href="/uasa">Cuba Lagi</a></div></section></main>;
+    return <main className="quiz-shell result-shell"><section className="result-card"><span className="result-icon">🏆</span><span className="eyebrow dark">SIMULASI UASA SELESAI</span><h1>{pct}%</h1><p>{score} daripada {session.length} jawapan betul.</p>{studentSyncBanner(synced)}<div className="result-stats"><div><small>Dijawab</small><b>{answered}/{session.length}</b></div><div><small>Ditanda</small><b>{Object.values(review).filter(Boolean).length}</b></div><div><small>Masa baki</small><b>{minutes}:{secs}</b></div></div><div className="result-actions"><a className="primary" href="/murid/prestasi">Lihat Prestasi</a><a className="secondary dark-button" href="/uasa">Cuba Lagi</a></div></section></main>;
   }
 
   const stimulus=stimulusForQuestion(current);
