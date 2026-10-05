@@ -207,8 +207,8 @@ export async function getRemoteAttempts(classCodes: string[] = [], allowAll = fa
   const codes=[...new Set(classCodes.map(code=>String(code||"").trim()).filter(Boolean))];
   if (!allowAll && !codes.length) return [];
   const sources = allowAll
-    ? [query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(1000))]
-    : codes.map(code=>query(collection(services.db, "attempts"), where("classCode", "==", code), limit(1000)));
+    ? [query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(5000))]
+    : codes.map(code=>query(collection(services.db, "attempts"), where("classCode", "==", code), limit(5000)));
   const settled=await Promise.allSettled(sources.map(source=>getDocs(source)));
   const snapshots=settled.flatMap(result=>result.status==="fulfilled"?[result.value]:[]);
   if(!snapshots.length&&settled.some(result=>result.status==="rejected")){
@@ -235,7 +235,7 @@ export function watchRemoteAttempts(
   if (!allowAll && !codes.length) { callback([]); return () => {}; }
 
   if(allowAll){
-    const source=query(collection(services.db,"attempts"),orderBy("completedAt","desc"),limit(1000));
+    const source=query(collection(services.db,"attempts"),orderBy("completedAt","desc"),limit(5000));
     return onSnapshot(source,snap=>{
       const items=snap.docs.flatMap(snapshot=>{
         const item=fromAttemptDoc(snapshot);
@@ -252,7 +252,7 @@ export function watchRemoteAttempts(
     callback([...found.values()].sort((a,b)=>b.completedAt-a.completedAt));
   };
   const stops=codes.map(code=>{
-    const source=query(collection(services.db,"attempts"),where("classCode","==",code),limit(1000));
+    const source=query(collection(services.db,"attempts"),where("classCode","==",code),limit(5000));
     return onSnapshot(source,snap=>{
       byClass.set(code,snap.docs.flatMap(snapshot=>{
         const item=fromAttemptDoc(snapshot);
