@@ -99,6 +99,33 @@ export function StudentPortal({ section }: { section: Section }) {
     return()=>{live=false};
   },[]);
 
+  useEffect(()=>{
+    if(!student||!firebaseConfigured)return;
+    let busy=false;
+    const repair=async()=>{
+      if(busy)return;
+      busy=true;
+      try{
+        const result=await repairCurrentStudentCloudRecords({
+          localStudentId:student.id,name:student.name,className:student.className,classCode:student.classCode,
+        });
+        if(result.synced>0){
+          const local=getLocalAttempts().filter(a=>a.studentId===student.id);
+          let remote:AttemptRecord[]=[];
+          try{remote=await getStudentCloudAttempts(student.id)}catch{}
+          setAttempts(mergeAttempts(local,remote));
+        }
+      }catch{}finally{busy=false}
+    };
+    const onOnline=()=>void repair();
+    const onVisible=()=>{if(document.visibilityState==="visible")void repair()};
+    window.addEventListener("online",onOnline);
+    window.addEventListener("focus",onOnline);
+    document.addEventListener("visibilitychange",onVisible);
+    const timer=window.setInterval(()=>void repair(),60000);
+    return()=>{window.removeEventListener("online",onOnline);window.removeEventListener("focus",onOnline);document.removeEventListener("visibilitychange",onVisible);window.clearInterval(timer)};
+  },[student]);
+
   const own=attempts;
   const byChapter=useMemo(()=>chapters.map(ch=>{
     const list=own.filter(a=>a.chapter===ch.id);
