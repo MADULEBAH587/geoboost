@@ -183,33 +183,62 @@ function fromAttemptDoc(snapshot: any): AttemptRecord {
 export async function getRemoteAttempts(classCodes: string[] = [], allowAll = false): Promise<AttemptRecord[]> {
   const services = getFirebaseServices();
   if (!services) return [];
-  if (!allowAll && !classCodes.length) return [];
-  const source = allowAll
-    ? query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(1000))
-    : query(collection(services.db, "attempts"), where("classCode", "in", classCodes.slice(0,30)), limit(1000));
-  const snap = await getDocs(source);
-  return snap.docs.flatMap(snapshot => {
-    const item = fromAttemptDoc(snapshot);
-    return item.className === "__QA__" || item.mode === "qa" ? [] : [item];
-  }).sort((a,b)=>b.completedAt-a.completedAt);
+  const codes=[...new Set(classCodes.map(code=>String(code||"").trim()).filter(Boolean))];
+  if (!allowAll && !codes.length) return [];
+  const sources = allowAll
+    ? [query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(1000))]
+    : codes.map(code=>query(collection(services.db, "attempts"), where("classCode", "==", code), limit(1000)));
+  const snapshots=await Promise.all(sources.map(source=>getDocs(source)));
+  const found=new Map<string,AttemptRecord>();
+  snapshots.forEach(snap=>snap.docs.forEach(snapshot=>{
+    const item=fromAttemptDoc(snapshot);
+    if(item.className!=="__QA__"&&item.mode!=="qa")found.set(item.id,item);
+  }));
+  return [...found.values()].sort((a,b)=>b.completedAt-a.completedAt);
 }
 
-export function watchRemoteAttempts(callback: (items: AttemptRecord[]) => void, classCodes: string[] = [], allowAll = false) {
+export function watchRemoteAttempts(
+  callback: (items: AttemptRecord[]) => void,
+  classCodes: string[] = [],
+  allowAll = false,
+  onError?: (error: unknown) => void,
+) {
   const services = getFirebaseServices();
   if (!services) { callback([]); return () => {}; }
-  if (!allowAll && !classCodes.length) { callback([]); return () => {}; }
-  const source = allowAll
-    ? query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(1000))
-    : query(collection(services.db, "attempts"), where("classCode", "in", classCodes.slice(0,30)), limit(1000));
-  return onSnapshot(source, snap => {
-    const items=snap.docs.flatMap(snapshot=>{
-      const item=fromAttemptDoc(snapshot);
-      return item.className==="__QA__"||item.mode==="qa"?[]:[item];
-    }).sort((a,b)=>b.completedAt-a.completedAt);
-    callback(items);
-  }, error => {
-    console.error("watchRemoteAttempts failed",error);
+  const codes=[...new Set(classCodes.map(code=>String(code||"").trim()).filter(Boolean))];
+  if (!allowAll && !codes.length) { callback([]); return () => {}; }
+
+  if(allowAll){
+    const source=query(collection(services.db,"attempts"),orderBy("completedAt","desc"),limit(1000));
+    return onSnapshot(source,snap=>{
+      const items=snap.docs.flatMap(snapshot=>{
+        const item=fromAttemptDoc(snapshot);
+        return item.className==="__QA__"||item.mode==="qa"?[]:[item];
+      }).sort((a,b)=>b.completedAt-a.completedAt);
+      callback(items);
+    },error=>{console.error("watchRemoteAttempts failed",error);onError?.(error)});
+  }
+
+  const byClass=new Map<string,AttemptRecord[]>();
+  const emit=()=>{
+    const found=new Map<string,AttemptRecord>();
+    byClass.forEach(items=>items.forEach(item=>found.set(item.id,item)));
+    callback([...found.values()].sort((a,b)=>b.completedAt-a.completedAt));
+  };
+  const stops=codes.map(code=>{
+    const source=query(collection(services.db,"attempts"),where("classCode","==",code),limit(1000));
+    return onSnapshot(source,snap=>{
+      byClass.set(code,snap.docs.flatMap(snapshot=>{
+        const item=fromAttemptDoc(snapshot);
+        return item.className==="__QA__"||item.mode==="qa"?[]:[item];
+      }));
+      emit();
+    },error=>{
+      console.error("watchRemoteAttempts failed for "+code,error);
+      onError?.(error);
+    });
   });
+  return ()=>stops.forEach(stop=>stop());
 }
 
 export async function getStudentCloudAttempts(localStudentId: string): Promise<AttemptRecord[]> {
