@@ -38,6 +38,7 @@ const checks = {
   failedAttemptRecovery: repository.includes("saveAttempt cloud upload failed") && repository.includes("repairCurrentStudentCloudRecords"),
   fullStudentReconciliation: repository.includes("filter(attempt => attempt.studentId === profile.localStudentId)") && studentPortal.includes('setInterval(()=>void repair(),60000)'),
   submissionEnsuresCloudIdentity: repository.includes("saveAttempt profile prerequisite failed") && repository.indexOf("syncStudentProfile({", repository.indexOf("export async function saveAttempt")) > -1,
+  cloudFirstProgress: repository.includes("Cloud-first: every progress write") && practiceRunner.includes("answer progress cloud sync failed"),
 };
 
 if (missing.length || Object.values(checks).some((value) => !value)) {
