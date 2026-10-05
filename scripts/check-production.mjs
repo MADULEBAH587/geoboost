@@ -34,7 +34,8 @@ const checks = {
   explicitStudentLogout: studentPortal.includes("Log Keluar Murid"),
   scopedStudentRetry: studentLogin.includes("repairCurrentStudentCloudRecords") && !studentLogin.includes("syncPendingAttempts"),
   studentAttemptIdentity: firestoreRules.includes("request.resource.data.localStudentId == currentStudentLocalId()") && firestoreRules.includes("request.resource.data.classCode == currentStudentClassCode()"),
-  storageWriteNeedsAuth: storageRules.includes("allow write: if request.auth != null"),
+  storageTeacherOnlyWrite: storageRules.includes("allow write: if activeTeacher()") && storageRules.includes("firestore.exists"),
+  failedAttemptRecovery: repository.includes("saveAttempt cloud upload failed") && repository.includes("repairCurrentStudentCloudRecords"),
 };
 
 if (missing.length || Object.values(checks).some((value) => !value)) {
