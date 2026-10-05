@@ -317,7 +317,11 @@ export default function TeacherPage(){
   useEffect(()=>{
     if(source!=="firebase"||!teacherProfile)return;
     const classCodes=managedClasses.map(item=>item.code);
-    return watchRemoteAttempts(setAttempts,classCodes,teacherProfile.role==="admin");
+    return watchRemoteAttempts(setAttempts,classCodes,teacherProfile.role==="admin",()=>{
+      void getRemoteAttempts(classCodes,teacherProfile.role==="admin").then(items=>{
+        if(items.length)setAttempts(items);
+      }).catch(error=>console.error("Teacher attempt recovery failed",error));
+    });
   },[source,teacherProfile,managedClasses]);
 
   useEffect(()=>{
