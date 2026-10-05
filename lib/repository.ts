@@ -126,6 +126,19 @@ export async function saveAttempt(attempt: AttemptRecord) {
   const localAttempt = { ...attempt, firebaseSynced: false };
   setLocalAttempts([localAttempt, ...getLocalAttempts()]);
   try {
+    // Submission must be self-sufficient. Student login intentionally remains
+    // usable during a temporary cloud failure, so never assume the Firestore
+    // student profile already exists when the learner finishes an exercise.
+    const profile = await syncStudentProfile({
+      localStudentId: attempt.studentId,
+      name: attempt.studentName,
+      className: attempt.className,
+      classCode: attempt.classCode || "",
+    });
+    if (!profile.synced) {
+      console.error("saveAttempt profile prerequisite failed", profile.errorCode);
+      return { synced: false, savedLocally: true };
+    }
     const synced = await uploadAttempt(localAttempt);
     if (synced) markAttemptSynced(attempt.id);
     return { synced, savedLocally: true };
