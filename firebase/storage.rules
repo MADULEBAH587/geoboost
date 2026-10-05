@@ -1,9 +1,16 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    function activeTeacher() {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/teachers/$(request.auth.uid))
+        && firestore.get(/databases/(default)/documents/teachers/$(request.auth.uid)).data.active == true;
+    }
     match /stimuli/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null;
+      // Student sessions use anonymous Firebase Auth, so "authenticated" alone
+      // is not sufficient. Only an active teacher may upload/replace stimuli.
+      allow write: if activeTeacher();
     }
     match /{allPaths=**} {
       allow read, write: if false;
