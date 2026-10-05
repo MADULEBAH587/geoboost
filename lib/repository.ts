@@ -151,8 +151,13 @@ export async function syncPendingAttempts(maxItems = 50) {
 export async function repairCurrentStudentCloudRecords(profile: { localStudentId: string; name: string; className: string; classCode: string }) {
   const syncedProfile = await syncStudentProfile(profile);
   if (!syncedProfile.synced) return { profileSynced:false, attempted:0, synced:0 };
+  // Reconcile ALL local records for the current roster student, not only records
+  // previously marked unsynced. Older builds could mark a local attempt as synced
+  // while its cloud identity/class metadata was stale. setDoc(merge) is idempotent,
+  // so replaying the current student's attempts safely repairs Ethan-like cases.
   const pending = getLocalAttempts()
-    .filter(attempt => attempt.studentId === profile.localStudentId && !attempt.firebaseSynced)
+    .filter(attempt => attempt.studentId === profile.localStudentId)
+    .slice(0, 500)
     .map(attempt => ({...attempt, studentName:profile.name, className:profile.className, classCode:profile.classCode}));
   let synced=0;
   for(const attempt of pending){
