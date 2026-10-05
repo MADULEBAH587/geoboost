@@ -793,6 +793,34 @@ export default function TeacherPage(){
     const passed=filtered.filter(a=>a.percentage>=60).length;
     return{avg,students:classFilter==="SEMUA" ? rosterStudents : Math.max(attemptStudents,activeClasses.filter(c=>c.name===classFilter).reduce((sum,item)=>sum+item.studentRoster.length,0)),completed:filtered.length,passRate:filtered.length?Math.round(passed/filtered.length*100):0};
   },[filtered,classFilter,managedClasses]);
+  const dataHealth=useMemo(()=>{
+    const rosterIds=new Set(activeClasses.flatMap(cls=>cls.studentRoster.map(student=>cls.code+"|"+student.id)));
+    const answeredKeys=new Set<string>();
+    const unmatched:AttemptRecord[]=[];
+    attempts.forEach(attempt=>{
+      const key=(attempt.classCode||"")+"|"+(attempt.studentId||"");
+      if(attempt.classCode&&attempt.studentId&&rosterIds.has(key))answeredKeys.add(key);
+      else unmatched.push(attempt);
+    });
+    const totalRoster=activeClasses.reduce((sum,cls)=>sum+cls.studentRoster.length,0);
+    return {
+      totalRoster,
+      answered:answeredKeys.size,
+      unanswered:Math.max(0,totalRoster-answeredKeys.size),
+      attempts:attempts.length,
+      unmatched:unmatched.length,
+      lastAttempt:attempts.length?Math.max(...attempts.map(item=>item.completedAt||0)):0,
+    };
+  },[attempts,activeClasses]);
+  async function refreshTeacherAttempts(){
+    if(source!=="firebase"||!teacherProfile)return;
+    setMessage("Menyegarkan rekod jawapan murid...");
+    try{
+      const items=await getRemoteAttempts(managedClasses.map(item=>item.code),teacherProfile.role==="admin");
+      setAttempts(items);
+      setMessage("Data dikemas kini: "+new Set(items.map(item=>(item.classCode||item.className)+"|"+(item.studentId||item.studentName))).size+" murid · "+items.length+" percubaan.");
+    }catch(error){console.error(error);setMessage("Refresh gagal. Semak sambungan atau akses Firestore.");}
+  }
   const weak=useMemo(()=>{
     const counts=new Map<string,number>();filtered.forEach(a=>a.wrongSubtopics.forEach(s=>counts.set(s,(counts.get(s)||0)+1)));
     return[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10);
@@ -983,6 +1011,7 @@ export default function TeacherPage(){
 
       <section className="teacher-content">
         {activeSection==="dashboard"?<>
+          <section className="panel data-health-panel"><div className="panel-title"><div><small>DATA HEALTH</small><h2>Status jawapan murid</h2><p>Semakan terus antara roster kelas dan rekod jawapan Firestore.</p></div><button onClick={refreshTeacherAttempts}>↻ Refresh Data</button></div><div className="teacher-stats"><div><small>Jumlah roster</small><b>{dataHealth.totalRoster}</b></div><div><small>Sudah jawab</small><b>{dataHealth.answered}</b></div><div><small>Belum jawab</small><b>{dataHealth.unanswered}</b></div><div><small>Jumlah percubaan</small><b>{dataHealth.attempts}</b></div><div><small>Tak sepadan</small><b>{dataHealth.unmatched}</b></div></div>{dataHealth.unmatched?<div className="teacher-message">⚠ {dataHealth.unmatched} rekod jawapan tidak sepadan dengan roster semasa. Rekod ini kekal dalam data dan perlu dipulihkan/padankan.</div>:null}{dataHealth.lastAttempt?<small>Rekod terakhir: {new Date(dataHealth.lastAttempt).toLocaleString("ms-MY")}</small>:null}</section>
           <div className="teacher-stats"><div><small>Murid</small><b>{stats.students}</b></div><div><small>Latihan selesai</small><b>{stats.completed}</b></div><div><small>Purata</small><b>{stats.avg}%</b></div><div><small>Kadar ≥60%</small><b>{stats.passRate}%</b></div><div><small>Aktif sekarang</small><b>{currentLive.filter(x=>x.status==="active").length}</b></div></div>
           <div className="teacher-grid"><section className="panel"><div className="panel-title"><div><small>TERKINI</small><h2>Percubaan murid</h2></div><span>{attempts.length}</span></div>{attempts.length?<div className="attempt-table">{attempts.slice(0,12).map(a=><div className="attempt-row" key={a.id}><div><strong>{a.studentName}</strong><small>{a.className} · {a.chapter?"Bab "+a.chapter:(a.label||a.mode)}</small></div><b>{a.percentage}%</b><span>{new Date(a.completedAt).toLocaleDateString("ms-MY")}</span></div>)}</div>:<div className="panel-empty">Belum ada rekod.</div>}</section><section className="panel"><div className="panel-title"><div><small>PERLU TINDAKAN</small><h2>Cadangan Pemulihan</h2></div><span>{interventionRows.length}</span></div>{interventionRows.slice(0,6).map(x=><div className="intervention-mini" key={x.student.uid}><div><b>{x.student.name}</b><small>{x.student.className} · {x.weakTopic}</small></div><span>{x.average}%</span></div>)}</section></div>
         </>:null}
