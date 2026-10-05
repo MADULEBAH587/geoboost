@@ -36,6 +36,7 @@ const checks = {
   studentAttemptIdentity: firestoreRules.includes("request.resource.data.localStudentId == currentStudentLocalId()") && firestoreRules.includes("request.resource.data.classCode == currentStudentClassCode()"),
   storageTeacherOnlyWrite: storageRules.includes("allow write: if activeTeacher()") && storageRules.includes("firestore.exists"),
   failedAttemptRecovery: repository.includes("saveAttempt cloud upload failed") && repository.includes("repairCurrentStudentCloudRecords"),
+  fullStudentReconciliation: repository.includes("filter(attempt => attempt.studentId === profile.localStudentId)") && studentPortal.includes('setInterval(()=>void repair(),60000)'),
 };
 
 if (missing.length || Object.values(checks).some((value) => !value)) {
