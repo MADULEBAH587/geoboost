@@ -138,6 +138,15 @@ export function PracticeRunner({
     if(!selected||checked)return;
     const response:AttemptResponse={questionId:current.id,subtopic:current.subtopic,selected,answer:current.answer,correct:selected===current.answer,difficulty:current.difficulty,unsure};
     setChecked(true);setResponses(a=>[...a,response]);
+    // Cloud-first heartbeat after every checked answer. The teacher can see
+    // current/total immediately; final detailed responses still go to attempts.
+    const student=getStudentSession();
+    if(student){
+      void saveLiveProgress({
+        localStudentId:student.id,studentName:student.name,className:student.className,classCode:student.classCode,
+        title,mode,current:Math.min(index+1,session.length),total:session.length,status:"active"
+      }).catch(error=>console.error("answer progress cloud sync failed",error));
+    }
   }
 
   async function next(){
