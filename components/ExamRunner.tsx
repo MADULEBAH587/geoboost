@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { buildQuestionSession } from "@/lib/questionEngine";
 import { questions, Question } from "@/lib/questions";
 import { getStudentSession } from "@/lib/session";
-import { saveAttempt } from "@/lib/repository";
+import { saveAttempt, saveLiveProgress } from "@/lib/repository";
 import { validateClassCode } from "@/lib/classroom";
 import { GeoStimulus, stimulusForQuestion } from "@/components/GeoStimulus";
 import { HotspotChoice, isHotspotQuestion } from "@/components/HotspotChoice";
@@ -64,7 +64,7 @@ export function ExamRunner() {
       id:crypto.randomUUID(),studentId:student?.id||"demo",studentName:student?.name||"Murid Demo",className:student?.className||"Demo",classCode:student?.classCode||"",
       chapter:0,label:"Simulasi UASA",mode:"UASA",score:correct,total:session.length,percentage:Math.round(correct/session.length*100),durationSeconds:35*60-seconds,wrongSubtopics,responses,completedAt:Date.now()
     });
-    setSynced(saved.synced);setScore(correct);setSubmitted(true);setSaving(false);
+    if(student)void saveLiveProgress({localStudentId:student.id,studentName:student.name,className:student.className,classCode:student.classCode,title:"Simulasi UASA",mode:"UASA",current:session.length,total:session.length,status:"complete"}).catch(()=>{});setSynced(saved.synced);setScore(correct);setSubmitted(true);setSaving(false);
   }
 
   if(!session.length)return <main className="quiz-shell"><div className="empty-state"><h1>Menyediakan simulasi UASA…</h1></div></main>;
@@ -82,7 +82,7 @@ export function ExamRunner() {
       <section className="question-card exam-question">
         <div className="question-meta"><span>Soalan {index+1}</span><span>Bab {current.chapter}</span><span className={"difficulty "+current.difficulty}>{current.difficulty==="easy"?"MUDAH":current.difficulty==="medium"?"SEDERHANA":"KBAT"}</span></div>
         {stimulus?<GeoStimulus kind={stimulus}/>:null}<h1>{current.prompt}</h1>
-        {isHotspotQuestion(current.id)?<HotspotChoice questionId={current.id} options={current.options} selected={answers[current.id]||null} disabled={false} onSelect={value=>setAnswers(a=>({...a,[current.id]:value}))}/>:<div className="option-list">{current.options.map((option,i)=><button key={option} onClick={()=>setAnswers(a=>({...a,[current.id]:option}))} className={"option "+(answers[current.id]===option?"selected":"")}><span>{String.fromCharCode(65+i)}</span><b>{option}</b></button>)}</div>}
+        {isHotspotQuestion(current.id)?<HotspotChoice questionId={current.id} options={current.options} selected={answers[current.id]||null} disabled={false} onSelect={value=>{setAnswers(a=>({...a,[current.id]:value}));const s=getStudentSession();if(s)void saveLiveProgress({localStudentId:s.id,studentName:s.name,className:s.className,classCode:s.classCode,title:"Simulasi UASA",mode:"UASA",current:Math.min(Object.keys({...answers,[current.id]:value}).length,session.length),total:session.length,status:"active"}).catch(()=>{})}}/>:<div className="option-list">{current.options.map((option,i)=><button key={option} onClick={()=>{setAnswers(a=>({...a,[current.id]:option}));const s=getStudentSession();if(s)void saveLiveProgress({localStudentId:s.id,studentName:s.name,className:s.className,classCode:s.classCode,title:"Simulasi UASA",mode:"UASA",current:Math.min(Object.keys({...answers,[current.id]:option}).length,session.length),total:session.length,status:"active"}).catch(()=>{})}} className={"option "+(answers[current.id]===option?"selected":"")}><span>{String.fromCharCode(65+i)}</span><b>{option}</b></button>)}</div>}
         <div className="exam-actions"><button className={review[current.id]?"review-active":""} onClick={()=>setReview(r=>({...r,[current.id]:!r[current.id]}))}>⭐ {review[current.id]?"Ditanda":"Tanda untuk semak"}</button><div>{index>0?<button onClick={()=>setIndex(i=>i-1)}>← Sebelum</button>:null}{index<session.length-1?<button onClick={()=>setIndex(i=>i+1)}>Seterusnya →</button>:<button onClick={()=>{if(confirm("Hantar simulasi UASA sekarang?"))void finish()}}>Hantar →</button>}</div></div>
       </section>
     </div>
