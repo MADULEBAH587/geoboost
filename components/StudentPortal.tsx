@@ -224,7 +224,7 @@ export function StudentPortal({ section }: { section: Section }) {
 
           <section className="student-home-section"><div className="student-section-head"><div><small>KEMAJUAN</small><h2>Bab Saya</h2></div></div><div className="student-chapter-compact">{byChapter.map(ch=>{const locked=classRecord?!classRecord.openChapters.includes(ch.id):false;return <a key={ch.id} className={locked?"locked":""} href={locked?"#":"/bab/"+ch.id}><span>{ch.icon}</span><div><small>BAB {ch.id}</small><b>{ch.title}</b><i>{locked?"🔒 Ditutup":ch.tries?ch.label:"Belum cuba"}</i></div><strong>{locked?"—":ch.best+"%"}</strong></a>})}</div></section>
 
-          <section className="student-quick-grid"><a href="/murid/nota"><span>📚</span><b>Nota Visual</b><small>Poster, slide & rajah</small></a><a href="/harian"><span>⚡</span><b>Misi Hari Ini</b><small>5 soalan pantas</small></a><a href="/pemulihan"><span>🎯</span><b>Pemulihan Pintar</b><small>Fokus kelemahan</small></a><a href="/uasa"><span>🏆</span><b>Simulasi UASA</b><small>Simulasi peperiksaan</small></a></section>
+          <section className="student-quick-grid"><a href="/harian"><span>⚡</span><b>Misi Hari Ini</b><small>5 soalan pantas</small></a><a href="/pemulihan"><span>🎯</span><b>Pemulihan Pintar</b><small>Fokus kelemahan</small></a><a href="/uasa"><span>🏆</span><b>Simulasi UASA</b><small>Simulasi peperiksaan</small></a></section>
           <section className="student-home-summary"><div><small>PRESTASI RINGKAS</small><b>{avg}% purata · {completedChapters}/10 bab dikuasai</b></div><a href="/murid/prestasi">Lihat perkembangan →</a></section>
           <button className="student-danger-button student-home-logout" onClick={logout}>🚪 Log Keluar Murid</button>
         </>:null}
