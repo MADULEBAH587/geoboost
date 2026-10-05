@@ -11,11 +11,14 @@ export function PWAInstallPrompt(){
 
   useEffect(()=>{
     if(window.location.pathname.startsWith("/guru")) return;
+    const sessionKey="geoboost_install_prompt_seen";
+    if(sessionStorage.getItem(sessionKey)==="1") return;
+    sessionStorage.setItem(sessionKey,"1");
     const standalone=window.matchMedia("(display-mode: standalone)").matches || (navigator as any).standalone===true;
     if(standalone) return;
     setIos(/iphone|ipad|ipod/i.test(navigator.userAgent));
     setShow(true);
-    const handler=(event:Event)=>{ event.preventDefault(); setInstallEvent(event as InstallEvent); setShow(true); };
+    const handler=(event:Event)=>{ event.preventDefault(); setInstallEvent(event as InstallEvent); };
     window.addEventListener("beforeinstallprompt",handler);
     return()=>window.removeEventListener("beforeinstallprompt",handler);
   },[]);
