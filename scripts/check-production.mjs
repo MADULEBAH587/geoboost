@@ -27,6 +27,8 @@ const checks = {
   version: pkg.version === "2.5.0",
   realtimeAttempts: repository.includes("watchRemoteAttempts") && teacher.includes("watchRemoteAttempts(setAttempts"),
   resilientTeacherFeed: repository.includes('where("classCode","==",code)') && teacher.includes("Teacher attempt recovery failed"),
+  partialClassRecovery: repository.includes("Promise.allSettled") && repository.includes("Attempt class fetch failed"),
+  teacherDataHealth: teacher.includes("Status jawapan murid") && teacher.includes("refreshTeacherAttempts") && teacher.includes("Tak sepadan"),
   rosterStudentCount: teacher.includes("rosterStudents=activeClasses.reduce"),
   studentRepairSync: repository.includes("repairCurrentStudentCloudRecords") && studentPortal.includes("repairCurrentStudentCloudRecords"),
   explicitStudentLogout: studentPortal.includes("Log Keluar Murid"),
