@@ -188,7 +188,12 @@ export async function getRemoteAttempts(classCodes: string[] = [], allowAll = fa
   const sources = allowAll
     ? [query(collection(services.db, "attempts"), orderBy("completedAt", "desc"), limit(1000))]
     : codes.map(code=>query(collection(services.db, "attempts"), where("classCode", "==", code), limit(1000)));
-  const snapshots=await Promise.all(sources.map(source=>getDocs(source)));
+  const settled=await Promise.allSettled(sources.map(source=>getDocs(source)));
+  const snapshots=settled.flatMap(result=>result.status==="fulfilled"?[result.value]:[]);
+  if(!snapshots.length&&settled.some(result=>result.status==="rejected")){
+    throw (settled.find(result=>result.status==="rejected") as PromiseRejectedResult).reason;
+  }
+  settled.forEach(result=>{if(result.status==="rejected")console.error("Attempt class fetch failed",result.reason)});
   const found=new Map<string,AttemptRecord>();
   snapshots.forEach(snap=>snap.docs.forEach(snapshot=>{
     const item=fromAttemptDoc(snapshot);
