@@ -28,11 +28,10 @@ import { bootstrapGeoBoostAdmin, deployGeoBoostFirestoreRules, deployGeoBoostMul
 import { StudentPresence, resetStudentPresence, watchStudentPresence } from "@/lib/studentPresence";
 import { StudentAccessRecord, ensureStudentAccessCodes, removeStudentAccessCode } from "@/lib/studentAccess";
 import { getStudentLoginMode, type StudentLoginMode } from "@/lib/systemConfig";
-import { VisualNotesAdmin } from "@/components/VisualNotesAdmin";
 import { endAdminEditSession, startAdminEditSession } from "@/lib/adminDelegation";
 
 type Source = "local"|"firebase";
-type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"notes"|"bank"|"teachers"|"settings";
+type TeacherSection = "dashboard"|"classes"|"students"|"assignments"|"live"|"interventions"|"analytics"|"reports"|"bank"|"teachers"|"settings";
 
 const NAV:{id:TeacherSection;icon:string;label:string}[]=[
   {id:"dashboard",icon:"▦",label:"Ringkasan"},{id:"classes",icon:"🏫",label:"Kelas"},
@@ -1163,9 +1162,8 @@ export default function TeacherPage(){
           {filtered.length?<table className="report-table"><thead><tr><th>Nama</th><th>Kelas</th><th>Bab / Aktiviti</th><th>Markah</th><th>%</th><th>Tarikh</th><th className="no-print">Tindakan</th></tr></thead><tbody>{filtered.map(a=><tr key={a.id}><td>{a.studentName}</td><td>{a.className}</td><td>{a.chapter?"Bab "+a.chapter:a.mode}</td><td>{a.score}/{a.total}</td><td>{a.percentage}%</td><td>{new Date(a.completedAt).toLocaleDateString("ms-MY")}</td><td className="no-print"><button className="reset-attempt" disabled={!canEdit} onClick={()=>resetAttempt(a.id)}>Padam Rekod</button></td></tr>)}</tbody></table>:<div className="panel-empty">Tiada rekod.</div>}
         </section>:null}
 
-        {activeSection==="notes"?<VisualNotesAdmin canEdit={canEdit}/>:null}
 
-        {activeSection==="bank"?<><VisualNotesAdmin canEdit={canEdit}/><section className="panel bank-manager">
+        {activeSection==="bank"?<><section className="panel bank-manager">
           <div className="panel-title"><div><small>BANK SOALAN</small><h2>{questions.length} soalan asal + {customQuestions.filter(q=>q.active).length} soalan tambahan</h2></div><span>{bankSelection.length} dipilih</span></div>
           <div className="bank-toolbar"><label>Bab<select value={bankChapter} onChange={e=>{setBankChapter(Number(e.target.value));setQuestionForm(f=>({...f,chapter:Number(e.target.value),subtopic:e.target.value+".1"}))}}>{chapters.map(ch=><option key={ch.id} value={ch.id}>Bab {ch.id} · {ch.title}</option>)}</select></label><div><button onClick={makeWorksheet} disabled={!bankSelection.length}>Jana Lembaran Kerja</button><button onClick={()=>setBankSelection([])} disabled={!bankSelection.length}>Kosongkan pilihan</button></div></div>
           {canEdit?<div className="question-editor"><div className="question-editor-title"><b>{questionForm.id?"Edit "+questionForm.id:"Tambah Soalan Baharu"}</b>{questionForm.id?<button onClick={()=>setQuestionForm({id:"",chapter:bankChapter,subtopic:bankChapter+".1",difficulty:"medium",type:"mcq",prompt:"",a:"",b:"",c:"",d:"",answer:"A",explanation:""})}>Batal edit</button>:null}</div><div className="question-editor-grid"><label>Bab<input type="number" min="1" max="10" value={questionForm.chapter} onChange={e=>setQuestionForm(f=>({...f,chapter:Number(e.target.value)}))}/></label><label>Subtopik<input value={questionForm.subtopic} onChange={e=>setQuestionForm(f=>({...f,subtopic:e.target.value}))}/></label><label>Aras<select value={questionForm.difficulty} onChange={e=>setQuestionForm(f=>({...f,difficulty:e.target.value as Difficulty}))}><option value="easy">Mudah</option><option value="medium">Sederhana</option><option value="kbat">KBAT</option></select></label><label>Jawapan<select value={questionForm.answer} onChange={e=>setQuestionForm(f=>({...f,answer:e.target.value}))}>{["A","B","C","D"].map(x=><option key={x}>{x}</option>)}</select></label></div><label>Soalan<textarea value={questionForm.prompt} onChange={e=>setQuestionForm(f=>({...f,prompt:e.target.value}))}/></label><div className="question-options-edit">{(["a","b","c","d"] as const).map((key,i)=><label key={key}>{String.fromCharCode(65+i)}<input value={questionForm[key]} onChange={e=>setQuestionForm(f=>({...f,[key]:e.target.value}))}/></label>)}</div><label>Penerangan<textarea value={questionForm.explanation} onChange={e=>setQuestionForm(f=>({...f,explanation:e.target.value}))}/></label><button className="primary" onClick={saveQuestion}>Simpan Soalan</button></div>:null}
