@@ -129,7 +129,10 @@ export async function saveAttempt(attempt: AttemptRecord) {
     const synced = await uploadAttempt(localAttempt);
     if (synced) markAttemptSynced(attempt.id);
     return { synced, savedLocally: true };
-  } catch {
+  } catch (error) {
+    console.error("saveAttempt cloud upload failed", error);
+    // Keep the attempt locally. StudentPortal/login will retry only this student's
+    // records after the roster-backed cloud profile is restored.
     return { synced: false, savedLocally: true };
   }
 }
