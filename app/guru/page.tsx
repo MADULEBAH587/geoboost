@@ -37,6 +37,7 @@ const NAV:{id:TeacherSection;icon:string;label:string}[]=[
   {id:"dashboard",icon:"▦",label:"Ringkasan"},{id:"classes",icon:"🏫",label:"Kelas"},
   {id:"students",icon:"👥",label:"Murid"},{id:"assignments",icon:"📝",label:"Tugasan"},
   {id:"analytics",icon:"📊",label:"Analitik & Laporan"},{id:"bank",icon:"🗂️",label:"Kandungan"},
+  {id:"teachers",icon:"👩‍🏫",label:"Pengurusan Guru"},
   {id:"settings",icon:"⚙️",label:"Tetapan"},
 ];
 
